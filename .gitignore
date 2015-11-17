@@ -6,6 +6,11 @@ ehthumbs.db
 Debug/
 Release/
 
+#dev-c++нд╪Ч
+*.o
+*.exe
+
+
 # Folder config file
 Desktop.ini
 

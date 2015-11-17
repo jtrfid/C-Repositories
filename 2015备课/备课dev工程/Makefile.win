@@ -1,0 +1,51 @@
+# Project: 备课
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o homework.o $(RES)
+LINKOBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o homework.o $(RES)
+LIBS =  -L"E:/Dev-Cpp/lib"  
+INCS =  -I"E:/Dev-Cpp/include" 
+CXXINCS =  -I"E:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"E:/Dev-Cpp/include/c++/3.4.2/backward"  -I"E:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"E:/Dev-Cpp/include/c++/3.4.2"  -I"E:/Dev-Cpp/include" 
+BIN  = 备课.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before 备课.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o "备课.exe" $(LIBS)
+
+main.o: main.c
+	$(CC) -c main.c -o main.o $(CFLAGS)
+
+ch2.o: ch2.c
+	$(CC) -c ch2.c -o ch2.o $(CFLAGS)
+
+ch1.o: ch1.c
+	$(CC) -c ch1.c -o ch1.o $(CFLAGS)
+
+ch3.o: ch3.c
+	$(CC) -c ch3.c -o ch3.o $(CFLAGS)
+
+ch5.o: ch5.c
+	$(CC) -c ch5.c -o ch5.o $(CFLAGS)
+
+ch6.o: ch6.c
+	$(CC) -c ch6.c -o ch6.o $(CFLAGS)
+
+ch7.o: ch7.c
+	$(CC) -c ch7.c -o ch7.o $(CFLAGS)
+
+homework.o: homework.c
+	$(CC) -c homework.c -o homework.o $(CFLAGS)
