@@ -335,6 +335,7 @@ void ch8_10()
      { 
        scanf("%d",&m); 
        if (m==0) break;
+       if (m < 1 || m >12) puts("非法月份号,重新输入。"); 
        puts(month[m-1]); 
      }
 } 
