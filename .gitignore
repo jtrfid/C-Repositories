@@ -6,10 +6,15 @@ ehthumbs.db
 Debug/
 Release/
 
-#dev-c++文件
+################### 
+# dev-c++文件
 *.o
 *.exe
-
+# 打开文件布局记录 
+*.layout
+# 编译脚本，可以自动生成 
+Makefile.win 
+################### 
 
 # Folder config file
 Desktop.ini
