@@ -1,18 +1,18 @@
-# Windows image file caches
+ï»¿# Windows image file caches
 Thumbs.db
 ehthumbs.db
 
-#±àÒëÎÄ¼ş
+#ç¼–è¯‘æ–‡ä»¶
 Debug/
 Release/
 
 ################### 
-# dev-c++ÎÄ¼ş
+# dev-c++æ–‡ä»¶
 *.o
 *.exe
-# ´ò¿ªÎÄ¼ş²¼¾Ö¼ÇÂ¼ 
+# æ‰“å¼€æ–‡ä»¶å¸ƒå±€è®°å½• 
 *.layout
-# ±àÒë½Å±¾£¬¿ÉÒÔ×Ô¶¯Éú³É 
+# ç¼–è¯‘è„šæœ¬ï¼Œå¯ä»¥è‡ªåŠ¨ç”Ÿæˆ 
 Makefile.win 
 ################### 
 
