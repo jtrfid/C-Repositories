@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o ch4.o ch8.o $(RES)
-LINKOBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o ch4.o ch8.o $(RES)
+OBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o ch4.o ch8.o ch9.o $(RES)
+LINKOBJ  = main.o ch2.o ch1.o ch3.o ch5.o ch6.o ch7.o ch4.o ch8.o ch9.o $(RES)
 LIBS =  -L"E:/Dev-Cpp/lib"  
 INCS =  -I"E:/Dev-Cpp/include" 
 CXXINCS =  -I"E:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"E:/Dev-Cpp/include/c++/3.4.2/backward"  -I"E:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"E:/Dev-Cpp/include/c++/3.4.2"  -I"E:/Dev-Cpp/include" 
@@ -52,3 +52,6 @@ ch4.o: ch4.c
 
 ch8.o: ch8.c
 	$(CC) -c ch8.c -o ch8.o $(CFLAGS)
+
+ch9.o: ch9.c
+	$(CC) -c ch9.c -o ch9.o $(CFLAGS)

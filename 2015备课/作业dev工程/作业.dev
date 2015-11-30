@@ -1,7 +1,7 @@
 [Project]
 FileName=作业.dev
 Name=作业
-UnitCount=9
+UnitCount=10
 Type=1
 Ver=1
 ObjFiles=
@@ -131,6 +131,16 @@ BuildCmd=
 FileName=ch8.c
 CompileCpp=0
 Folder=作业
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=ch9.c
+CompileCpp=0
+Folder=
 Compile=1
 Link=1
 Priority=1000
