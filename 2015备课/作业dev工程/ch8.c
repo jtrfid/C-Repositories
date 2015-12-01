@@ -12,7 +12,7 @@
  * matrixPrint(&matrix1[0][0],3,3); // ok
  * // matrixPrint(*matrix1,3,3);    // ok
  *******************************************/
-void matrixPrint1(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方式指明行数、列数，如a[3][3]或a[][3]不方便 
+void matrixPrint1(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方式指明行数、列数，如a[3][3]或a[][3]不利于通用函数的设计 
 // void  matrixPrint(int *a,int m,int n) // 等效 
 {
      int i,j;
