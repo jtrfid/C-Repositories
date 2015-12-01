@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
   //ch5();
   //ch6();
   //ch7();
-  //ch8(); 
-  ch9();
+  ch8(); 
+  //ch9();
   system("PAUSE");	 // ͬsystem("pause");
   return 0;
 }

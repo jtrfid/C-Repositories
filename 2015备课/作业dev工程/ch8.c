@@ -3,14 +3,16 @@
 #include <stdlib.h>
 
 /*******************************************
- * 通用函数，m*n矩阵打印输出(m行，n列)，m=1,即为一维数组 
+ * 通用函数，m*n矩阵打印输出(m行，n列)，m=1,即为一维数组
+ * 实参：二维数组，形参一维数组 
+ * 方法一：用两重循环遍历二维数组。 
  * int matrix1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
  * //matrixPrint(matrix1,3,3);   // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type  
  * //matrixPrint(matrix1[],3,3); // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type
  * matrixPrint(&matrix1[0][0],3,3); // ok
  * // matrixPrint(*matrix1,3,3);    // ok
  *******************************************/
-void matrixPrint(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方式指明行数、列数，如a[3][3]或a[][3]不方便 
+void matrixPrint1(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方式指明行数、列数，如a[3][3]或a[][3]不方便 
 // void  matrixPrint(int *a,int m,int n) // 等效 
 {
      int i,j;
@@ -25,10 +27,39 @@ void matrixPrint(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方
        }
        putchar('\n');
      }
-} 
+}
 
 /*******************************************
- * 通用函数，n*n矩阵转置，即n*n方阵转置 
+ * 通用函数，m*n矩阵打印输出(m行，n列)，m=1,即为一维数组 
+ * 实参：二维数组，形参一维数组 
+ * 方法二：用指针遍历 
+ * int matrix1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+ * //matrixPrint(matrix1,3,3);   // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type  
+ * //matrixPrint(matrix1[],3,3); // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type
+ * matrixPrint(&matrix1[0][0],3,3); // ok
+ * // matrixPrint(*matrix1,3,3);    // ok
+ *******************************************/
+void matrixPrint(int a[],int m,int n)    // 参数如果定义为二维数组，必须以下标方式指明行数、列数，如a[3][3]或a[][3]不方便 
+// void  matrixPrint(int *a,int m,int n) // 等效 
+{
+     int i,j;
+     int *p = a; // 指向数组第一个元素，或者：p=&a[0]; 
+     for(i=0;i<m;i++)
+     {
+       for(j=0;j<n;j++)  
+       {
+          // 由于参数说明为一维数组，因此下面语句会出错。 
+          //printf("%4d",a[i][j]); // Error: subscripted value is neither array nor pointer 
+          
+          printf("%4d",*p++); // 先使用p，即先取得p指向的内容，再p自增，指向下一个元素 
+       }
+       putchar('\n');
+     }
+}  
+
+/*******************************************
+ * 通用函数，n*n矩阵转置，即n*n方阵转置
+ * 实参：二维数组，形参一维数组  
  * int matrix1[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
  * //NmatrixTranspose(matrix1,3);   // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type  
  * //NmatrixTranspose(matrix1[],3); // [Warning] passing arg 1 of `matrixPrint' from incompatible pointer type
@@ -56,7 +87,8 @@ void NmatrixTranspose(int a[],int n)  // 适合于方阵
 } 
 
 /*******************************************
- * 通用函数，由m*n矩阵a[m][n]，转置生成n*m的矩阵b[n][m] 
+ * 通用函数，由m*n矩阵a[m][n]，转置生成n*m的矩阵b[n][m]
+ * 实参：二维数组，形参一维数组  
  * int a[3][2] = {{1,2},{3,4},{5,6}};
  * int b[2][3]
  * matrixTranspose(&a[0][0],3,2,&b[0][0]); // ok
