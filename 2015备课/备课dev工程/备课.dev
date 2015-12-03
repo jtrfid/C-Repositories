@@ -1,7 +1,7 @@
 [Project]
 FileName=备课.dev
 Name=备课
-UnitCount=7
+UnitCount=9
 Type=1
 Ver=1
 ObjFiles=
@@ -118,7 +118,17 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=homework.c
+FileName=ch8.c
+CompileCpp=0
+Folder=备课
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=ch9.c
 CompileCpp=0
 Folder=备课
 Compile=1

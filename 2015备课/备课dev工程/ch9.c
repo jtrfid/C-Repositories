@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -54,7 +54,7 @@ void value_trans_str()
 	arg.a=27;   arg.b=3;    arg.c=arg.a+arg.b; strcpy(arg.str,"ABC");
 	printf("arg.a=%d arg.b=%d arg.c=%d arg.str=%s\n",arg.a,arg.b,arg.c,arg.str); // arg.a=27 arg.b=3 arg.c=30 arg.str=ABC
 	value_func_str(arg);
-	printf("arg.a=%d arg.b=%d arg.c=%d arg.str%s\n",arg.a,arg.b,arg.c,arg.str); // arg.a=27 arg.b=3 arg.c=30 arg.strABC
+	printf("arg.a=%d arg.b=%d arg.c=%d arg.str=%s\n",arg.a,arg.b,arg.c,arg.str); // arg.a=27 arg.b=3 arg.c=30 arg.str=ABC
 }
 
 void value_func_str(struct data_str  parm)

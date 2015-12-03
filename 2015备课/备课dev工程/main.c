@@ -5,6 +5,10 @@ void ch1();
 void ch2();
 void ch3();
 void ch5(); 
+void ch6();
+void ch7();
+void ch8();
+void ch9(); 
  
 int main(int argc, char *argv[])
 {
@@ -14,7 +18,9 @@ int main(int argc, char *argv[])
   //ch2(); 
   //ch3();
   //ch5();
-  ch7(); 
+  //ch7();
+  //ch8();
+  ch9(); 
   system("PAUSE");	 // ͬsystem("pause");
   return 0;
 }
