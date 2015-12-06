@@ -6,6 +6,7 @@
  *************************************************************/ 
 void ch9_1()
 {
+	 printf("=================ch9_1()\n");
      /************* 形式一 ************** 
      typedef struct
      {
@@ -38,7 +39,7 @@ struct time_struct
         int minute;
         int second;
      }; 
-// 结构体变量初始化(方法一) 
+// 结构体变量初始化(方法一,形参使用指向结构体的指针) 
 void varInit_1(struct time_struct *ts,int hour,int minute,int second)
 {
      ts->hour = hour;
@@ -46,9 +47,19 @@ void varInit_1(struct time_struct *ts,int hour,int minute,int second)
      ts->second = second;
 }
 
-// 结构体变量初始化(方法二) 
+// 结构体变量初始化(方法二，形参使用结构体变量，返回结构体变量) 
 struct time_struct varInit_2(struct time_struct ts,int hour,int minute,int second)
 {
+     ts.hour = hour;
+     ts.minute = minute;
+     ts.second = second;
+     return ts;
+}
+
+// 结构体变量初始化(方法三，形参不使用结构体，返回结构体变量) 
+struct time_struct varInit_3(int hour,int minute,int second)
+{
+	 struct time_struct ts; 
      ts.hour = hour;
      ts.minute = minute;
      ts.second = second;
@@ -63,11 +74,15 @@ void print_time_struct(struct time_struct ts)
 
 void ch9_2()
 {
+	 printf("=================ch9_2()\n");
      struct time_struct ts;
      varInit_1(&ts,12,0,0);
      print_time_struct(ts);
      // 或
      ts = varInit_2(ts,13,0,0);
+     print_time_struct(ts);
+     // 或
+     ts = varInit_3(14,0,0); 
      print_time_struct(ts);
 } 
 
@@ -81,7 +96,8 @@ struct time_struct Update(struct time_struct ts)
 }
 void ch9_3()
 {
-     struct time_struct ts;
+     printf("=================ch9_3()\n");
+	 struct time_struct ts;
      varInit_1(&ts,12,0,0);
      ts = Update(ts);
      print_time_struct(ts);
@@ -102,9 +118,10 @@ struct date
         int year;
      }; 
 // (1) 用函数读入成员数据；
-struct date readDate(struct date d,int day,int month,int year)
+struct date readDate(int day,int month,int year)
 {
-    d.day = day;
+    struct date d; 
+	d.day = day;
     d.month = month;
     d.year = year;
     return d; 
@@ -216,6 +233,7 @@ struct date nextday(struct date d)
 
 void ch9_4()
 {
+	 printf("=================ch9_4()\n");
      struct date d;
      int day,month,year;
      while(1)
@@ -224,7 +242,7 @@ void ch9_4()
         scanf("%d%d%d",&year,&month,&day);
         if (year==0 && month==0 && day==0) break;
         // 读入成员 
-        d = readDate(d,day,month,year); 
+        d = readDate(day,month,year); 
         // 检查 
         if (checkDate(d)) {
            puts("输入不合法，重新输入！"); 
@@ -291,7 +309,8 @@ void printVector(vector v)
 
 void ch9_5()
 {
-     vector v;
+     printf("=================ch9_5()\n");
+	 vector v;
      int a[NUM] = {10,20,30,40,50};
      
      // (1) 创建一个向量；用n个整数的数组a,初始化向量v 
