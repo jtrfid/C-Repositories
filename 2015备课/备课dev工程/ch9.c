@@ -102,14 +102,74 @@ void union_test()
 void union_test1()
 {
 	printf("===================union_test1()\n");
+	/***********
+	// 使用无符号数更准确 
+	union
+	{
+		unsigned int i; unsigned char ch[2];
+	} x;
+	********/
+
 	union
 	{
 		int i; char ch[2];
 	} x;
 
+    printf("int size=%d\n",sizeof(int)); // 4
 	x.i=24897;
-	printf("i=%o\n");
-	printf("ch0=%o,ch1=%o\n",x.ch[0],x.ch[1]);
+	printf("i=%d\n",x.i);
+	printf("ch0=%d,ch1=%d\n",x.ch[0],x.ch[1]);
+	printf("i=%#x\n",x.i);
+	printf("ch0=%#x,ch1=%#x\n",x.ch[0],x.ch[1]);
+	/***
+	 输出：
+     x.i=24897;
+     i=0x6141  两个字节  ch0 ch1
+     ch0=0x41,ch1=0x61，低字节在前，高字节在后
+     ***/ 
+}
+
+void union_test2()
+{
+	printf("===================union_test2()\n");
+	union
+	{
+		int i; char ch[2];
+	} x;
+
+    printf("int size=%d\n",sizeof(int)); // 4
+	x.i=248;
+	printf("i=%d\n",x.i);
+	printf("ch0=%d,ch1=%d\n",x.ch[0],x.ch[1]);
+	printf("i=%#x\n",x.i);
+	printf("ch0=%#x,ch1=%#x\n",x.ch[0],x.ch[1]);
+	/***
+	 x.i=248;  
+     i=0xf8 一个字节，与ch[0]对齐，因为是正数，因此最高位(从左到右，第四个字节最高位是0)
+     ch0=0xfffffff8,ch1=0，一个字节存入ch[0]，由于打印char类型的原因，将原来的f8打印成fffffff8
+	 ***/
+}
+
+void union_test3()
+{
+	printf("===================union_test3()\n");
+	union
+	{
+		int i; unsigned char ch[4];
+	} x;
+
+    printf("int size=%d\n",sizeof(int)); // 4
+	x.i=-248;
+	printf("i=%d\n",x.i);
+	printf("ch0=%d,ch1=%d\n",x.ch[0],x.ch[1]);
+	printf("i=%#x\n",x.i);
+	printf("ch0=%#x,ch1=%#x,ch2=%#x,ch3=%#x\n",x.ch[0],x.ch[1],x.ch[2],x.ch[3]);
+	/***
+	 i=-248  
+     ch0=8,ch1=255
+     i=0xffffff08  // -248的补码表示 
+     ch0=0x8,ch1=0xff,ch2=0xff,ch3=0xff
+	 ***/
 }
 
 
@@ -122,4 +182,6 @@ void ch9()
 	address_trans_str();
 	union_test();
 	union_test1();
+	union_test2();
+	union_test3(); 
 }
