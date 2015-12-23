@@ -272,7 +272,7 @@ void ch9_4()
      {
         int a;
      }vector[NUM]; 
-      
+     
 // (1) 创建一个向量；用n个整数的数组a,初始化向量v 
 void buildVector(vector v,int a[],int n)
 {
