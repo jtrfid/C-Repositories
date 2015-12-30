@@ -15,7 +15,7 @@ void ch5_1()
         sum += 1.0/i;  // 注意1.0/i,而不是1/i 
         //printf("i=%d,sum=%f\n",i,sum);  // 验证   
     } 
-    printf("sum=%f\n",i,sum);
+    printf("sum=%f\n",sum);
 } 
 
 /**********************************
@@ -231,7 +231,11 @@ void ch5_7()
      float pi,t;
      for(n=1,t=1; n <= 50; n++)
      {
-        t = t*(4*n*n)/((2*n-1)*(2*n+1)); 
+        t = t*(4*n*n)/((2*n-1)*(2*n+1));  // 分子自动转换为float 
+        // 注意，如果写成 t *= (4*n*n)/((2*n-1)*(2*n+1));
+        // 相当于：t= t* [4*n*n/((2*n-1)*(2*n+1))];  []内是整数/整数，舍掉了小数; 因此必须：
+        // t *= (float)(4*n*n)/((2*n-1)*(2*n+1)) 
+         
      } 
      pi = 2 * t;
      printf("pi=%f\n",pi);
@@ -299,9 +303,7 @@ void ch5_9()
     printf("ch5_10(),求100~150之间的素数.\n");
     int m, k, i, n=0;  
     for (m=101; m<=150; m=m+2)
-    {
-        //if ( n%5==0) printf("\n"); // 满5，换行 
-        
+    {     
         k=sqrt(m);
         for (i=2; i<=k;i++)
           if (m%i==0) break;  // 不是素数 
@@ -325,7 +327,7 @@ void ch5_9()
     float x0,x,a;
     printf("请输入a\n");
     scanf("%f",&a);
-    x = a/2; // 0 < 初值x1 < a 
+    x = a; // 0 < 初值x0 < a 
     do{
         x0 = x;  
         x = (x0+a/x0)/2;

@@ -101,6 +101,7 @@ void ch3_3()
 	{
 		scanf("%d",&m);
 		if (m==0) break;
+		if (m<0) { putchar('-'); m=-m; } // 处理负数 
 		while(1) {
           putchar(m%10 + '0');  // 字符数字的ascii码(整数) = 数字 + '0' ，如 '1' = 1 + '0' = 49 
           if (m >= 0 && m <=9) break; // 如果是一位数了，终止循环 
@@ -113,6 +114,7 @@ void ch3_3()
  // 递归调用，实现m的逆序输出 
  void ch3_4_3_3(int m)
  {    
+    if (m<0) { putchar('-'); m=-m; } // 处理负数 
     putchar(m%10+'0'); // 字符数字的ascii码(整数) = 数字 + '0' ，如 '1'的ascii = 1 + '0' = 49
     if (m >= 0 && m <=9) return; // 如果是一位数了，终止递归 
     else ch3_4_3_3(m/10);   

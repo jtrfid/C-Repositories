@@ -152,7 +152,7 @@ void ch8_3(char *s, int *Letter, int *Number, int *Space, int *Other)
 {    
      char c;
      *Letter = 0, *Number = 0, *Space = 0 , *Other = 0; 
-     while((c = *s++) != 0){
+     while((c = *s++) != 0){ // c = *s++相当于c = *s，s++ 
          if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) (*Letter)++;
          else if ('0' <= c && c <= '9') (*Number)++;
          else if (c == ' ') (*Space)++;
@@ -211,7 +211,7 @@ void order(int a[],int N,int ASC)
 	for (j=1;j<=N-1;j++){   // N-1趟排序 
 		flag = 1;
 		for (i=0;i<N-j;i++) {  // 相邻元素两两比较
-            if ((ASC==1 && a[i]>a[i+1]) || (ASC==0 && a[i]<a[i+1])) { // 由小到大排序，升序  || 由大到小排序，降序 
+            if ((ASC==1 && a[i]>a[i+1]) || (ASC==0 && a[i]<a[i+1])) { // 由小到大排序(升序)或由大到小排序(降序) 
 				t=a[i];
 				a[i]=a[i+1];
 				a[i+1]=t;
@@ -296,7 +296,7 @@ char* ch8_7(char *dest,const char *source)
 {   
     char *s = dest;
     
-    while ((*s++ = *source++) != '\0')
+    while ((*s++ = *source++) != '\0')  // *s++ 相当于*s, s++ 
       ;
     
     return (dest);  // 此时s指向最后一个字符'\0',因此，不能返回s.          
