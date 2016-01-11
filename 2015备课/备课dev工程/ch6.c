@@ -278,10 +278,30 @@ The sorted numbers:
 
 }
 
+void test()
+{
+     int j,k;
+     char c,s1[80]="a-b-e8-9",s2[80];
+     
+     j=k=0;
+     while((c=s1[j++])!='\0')
+        if(s1[j]=='-'&&s1[j+1]>=c)
+        {
+          j++;
+          while(c<s1[j]) 
+            s2[k++]=c++;
+        }
+        else
+           s2[k++]=c;
+     s2[k]='\0';
+     printf("%s\n",s2);
+} 
+
 void ch6()
 {
 	printf("=======ch6=====\n");
-	p119();
+	test(); 
+	//p119();
     /**** 
 	arrayAddress();
 	sum();
