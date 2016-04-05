@@ -1,0 +1,451 @@
+﻿#coursecontent {
+    margin-left: 10px;
+    text-align: left;
+}
+
+#contentleft {
+    float: left;
+    width: 300px;
+}
+
+#contentright {
+    float: right;
+    width: 640px;
+}
+
+#layernameno {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#coursename, #coursenamecn {
+    padding-right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#coursename2 {
+    padding-right: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+}
+
+#teachingphoto {
+    position: absolute;
+    left: -10000px;
+    top: -10000px;
+}
+
+#layerimg {
+    text-align: center;
+}
+
+#layerfav,#layerlike {
+    height: 80px;
+}
+.wfavlike
+{
+    width:200px;
+}
+#des, #des2 {
+    text-indent: 2em;
+}
+
+#des2 {
+    display: none;
+}
+
+#des DIV {
+    text-align: right;
+    margin-right: 20px;
+}
+
+.smalltitle {
+    border-bottom: solid 1px #E5F0F8;
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.smallcontent {
+    padding: 10px;
+    background-color: #f9f9f9;
+    padding-left: 20px;
+}
+
+.layerattr {
+    font-size: 12px;
+}
+
+    .layerattr DIV, #schoolnav, #subjectnav {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding-bottom: 3px;
+        border-bottom: solid 1px #ccc;
+        border-bottom-style: dashed;
+    }
+
+.left1 {
+    width: 100px;
+    margin-right: 10px;
+}
+
+#rescounttips, #lessoncounttips {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.doctyperow {
+    padding: 5px;
+    border-bottom: solid 1px #e0e0e0;
+    width: 200px;
+    margin-left: 30px;
+}
+
+    .doctyperow .doctypename {
+        display: inline-block;
+        width: 150px;
+    }
+
+    .doctyperow .doctypecount {
+        display: inline-block;
+        width: 50px;
+    }
+
+#relativeresource li {
+    list-style: none;
+    margin-bottom: 8px;
+}
+
+table {
+    border: solid 1px #ccc;
+    empty-cells: show;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    border-width: 1px;
+    font-size: 14px;
+}
+
+TD {
+    padding: 4px;
+}
+
+.coldt {
+    width: 150px;
+}
+
+.colcount {
+    width: 100px;
+    text-align: center;
+}
+
+UL {
+    margin: 0px;
+}
+
+.nav1 {
+    margin-left: 20px;
+}
+
+.nav2 {
+    margin-left: 40px;
+}
+
+.nav3 {
+    margin-left: 60px;
+}
+
+#floatlayer {
+    position: absolute;
+    left: -800px;
+    top: 380px;
+    width: 500px;
+    background-color: #f6e4a2;
+    z-index: 88;
+    border: solid 2px #333;
+}
+
+#floatlayertitle {
+    height: 20px;
+    padding-top: 5px;
+    background-color: #888;
+    color: #fff;
+    font-weight: bold;
+}
+
+#floatlayercontent {
+}
+
+.lytitle {
+    float: left;
+    padding-left: 10px;
+}
+
+.lyclose {
+    float: right;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+#tblyfield, #tblyvalue {
+    width: 400px;
+}
+
+#selectsubject {
+    width: 600px;
+    position: absolute;
+    margin-left: 330px;
+    min-height: 200px;
+    border: solid 5px #ddd;
+    text-align: left;
+    background: #fff;
+    top: 400px;
+    display: none;
+}
+
+.subcate {
+    min-width: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: block;
+    float: left;
+    cursor: pointer;
+}
+
+#reselect {
+    margin-left: 20px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#editschool, #editsubcode {
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#stitle {
+    height: 20px;
+    background-color: #6688ff;
+    padding: 10px;
+    color: #fff;
+}
+
+#scontent {
+    padding: 10px;
+}
+
+#curcode {
+    margin-left: 10px;
+    border: solid 1px #ddd;
+    width: 360px;
+}
+
+#btnoksubcode, #btncancelsubcode {
+    margin-left: 10px;
+}
+
+#subs, #topsubs {
+    padding: 10px;
+}
+
+#divaddrefbook {
+    display: none;
+    position: absolute;
+    top: 200px;
+    background-color: #fff;
+    width: 500px;
+    padding: 10px;
+    border: solid 4px #ddd;
+}
+
+#refbooktitle, #refdes, #refbooklink {
+    width: 430px;
+    margin-left: 20px;
+}
+
+#refdes {
+    height: 200px;
+}
+
+.delrb {
+    cursor: pointer;
+}
+
+.relcourse {
+    font-size: 12px;
+}
+
+.relinfo {
+    font-size: 9pt;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.relthisschool {
+    color: #f00;
+}
+
+.rbdes {
+    display: none;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    color: #666;
+    border-bottom: 1px dashed #ddd;
+}
+
+.rbclose {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #00f;
+    text-decoration: underline;
+}
+
+.rbookrow {
+    margin-bottom: 5px;
+}
+
+#editcoursename, #editdes {
+    cursor: pointer;
+}
+
+#paneditcoursename, #paneditdes {
+    display: none;
+}
+
+#tbeditcoursename {
+    width: 606px;
+    height: 80px;
+    font-size: 14px;
+}
+
+#tbeditdes {
+    width: 606px;
+    height: 200px;
+    font-size: 9pt;
+}
+
+#tbcopyrefbookfrom {
+    width: 340px;
+}
+
+#layerfunction {
+}
+
+.signred {
+    color: #ff0000;
+}
+
+#rbtable {
+    border: none;
+    width: 100%;
+    padding: 0;
+}
+
+TD {
+    padding: 0px;
+    margin: 0px;
+}
+
+.rbtitle {
+    font-size: 12px;
+    padding-top: 2px;
+    padding-bottom: 3px;
+}
+
+.bookauthor {
+    color: #888;
+    font-style: italic;
+    padding: 0px 0px 2px 0px;
+    font-size: 12px;
+}
+
+.bookpb {
+    font-size: 12px;
+}
+
+.version {
+    font-weight: normal;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.rblinks {
+    text-align: right;
+    font-size: 12px;
+    width: 80%;
+}
+
+.hidd {
+    display: none;
+}
+
+.divmore {
+    margin-right: 200px;
+    color: #000;
+    font-size: 16px;
+    text-align: center;
+}
+
+    .divmore SPAN {
+        cursor: pointer;
+    }
+
+#tbDoctypes TD {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#resgroups {
+    border: none;
+}
+
+    #resgroups TD {
+        vertical-align: top;
+        padding-right: 40px;
+    }
+
+#cname div {
+    padding-right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#favit2
+{
+    cursor: pointer;
+}
+.layerfavlike
+{
+    margin-bottom:20px;
+    text-align:center;
+}
+.layerfavlike img
+{
+    width:36px;
+    height:36px;
+}
+#likecount
+{
+    width: 30px;
+    display:inline-block;
+    text-align:left;
+}
+#haslike
+{
+    text-align:center;
+    color:#f00;
+}

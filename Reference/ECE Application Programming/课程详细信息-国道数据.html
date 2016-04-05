@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- saved from url=(0085)http://202.117.122.41:8080/views/detail.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>课程详细信息-国道数据</title>
+    <link href="./课程详细信息-国道数据_files/main.css" rel="stylesheet">
+    <link href="./课程详细信息-国道数据_files/detail.css" rel="stylesheet">
+    <script src="./课程详细信息-国道数据_files/jquery-1.7.1.min.js"></script>
+    <script src="./课程详细信息-国道数据_files/QueryString.js"></script>
+    <script src="./课程详细信息-国道数据_files/comm.js"></script>
+    <script src="./课程详细信息-国道数据_files/detail.js"></script>
+</head>
+<body>
+    <form name="form1" method="post" action="http://202.117.122.41:8080/views/detail.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d" id="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJMzgzMDczNjkxDxYCHgNybm8FJGE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZBYCAgEPZBYoAgEPZBYCAgEPZBYCAgEPFgIeCWlubmVyaHRtbAUi6KW/5a6J55S15a2Q56eR5oqA5aSn5a2mKHhhZHpramR4KWQCBA8VAVhodHRwOi8vMjAyLjExNy4xMjIuNDE6ODA4MC9taXJyb3IvY291cnNlcGhvdG8vYS9hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQuanBnZAIFDxYCHwEFBjE2LjIxNmQCBw8WAh8BBQzmlZnlrabor77nqItkAgkPFgIfAQUG5pys56eRZAILDxYCHwEFCUZhbGwgMjAxM2QCDQ8WAh8BBXY8YSBocmVmPScvdmlld3MvY291cnNlcy5hc3B4P2F1PU1pY2hhZWwrSi4rR2VpZ2VyJmZyb209dGVhY2hlcicgdGl0bGU9J+S4u+iusuaVmeW4iCc+TWljaGFlbCBKLiBHZWlnZXI8L2E+PHN1cD4xPC9zdXA+ZAIPDxYCHwEFATVkAhEPFgIfAQWNATxkaXYgY2xhc3M9J25hdjEnPjxpbWcgc3JjPScvaW1nL2xlZnQxNi5wbmcnIC8+PHNwYW4+PGEgaHJlZj0nY291cnNlcy5hc3B4P3NjaWQ9MzA4JmZyb209c2Nob29sJz7pqazokKjor7jloZ7lpKflraYt5rSb5Y6E5bCU5YiG5qChPC9hPjwvZGl2PmQCEw8WAh8BBeYCPGRpdiBjbGFzcz0nbmF2MSc+PGltZyBzcmM9Jy9pbWcvbGVmdDE2LnBuZycgLz48YSBocmVmPSdjb3Vyc2VzLmFzcHg/c2o9MDgmZnJvbT1jYXRlZ29yeSc+5bel5a2mPC9hPjwvZGl2PjxkaXYgY2xhc3M9J25hdjInPjxpbWcgc3JjPScvaW1nL2xlZnQxNi5wbmcnIC8+PGEgaHJlZj0nY291cnNlcy5hc3B4P3NqPTA4MTImZnJvbT1jYXRlZ29yeSc+6K6h566X5py656eR5a2m5LiO5oqA5pyvPC9hPjwvZGl2PjxkaXYgY2xhc3M9J25hdjMnPjxpbWcgc3JjPScvaW1nL2xlZnQxNi5wbmcnIC8+PGEgaHJlZj0nY291cnNlcy5hc3B4P3NqPTA4MTIwMyZmcm9tPWNhdGVnb3J5Jz7orqHnrpfmnLrlupTnlKjmioDmnK8gPC9hPjwvZGl2PmQCFQ8WAh8BBRtFQ0UgQXBwbGljYXRpb24gUHJvZ3JhbW1pbmdkAhcPFgIfAQUVRUNF5bqU55So56iL5bqP57yW56iLZAIZD2QWAgIBDxYCHwEF/ANDYXRhbG9nIERlc2NyaXB0aW9uOiBJbnRyb2R1Y2VzIEMgcHJvZ3JhbW1pbmcgZm9yIGVuZ2luZWVycy4gQ292ZXJzIGZ1bmRhbWVudGFscyBvZiANCnByb2NlZHVyYWwgcHJvZ3JhbW1pbmcgd2l0aCBhcHBsaWNhdGlvbnMgaW4gZWxlY3RyaWNhbCBhbmQgY29tcHV0ZXIgZW5naW5lZXJpbmcgYW5kIA0KZW1iZWRkZWQgc3lzdGVtcy4gVG9waWNzIGluY2x1ZGUgdmFyaWFibGVzLCBleHByZXNzaW9ucyBhbmQgc3RhdGVtZW50cywgY29uc29sZSANCmlucHV0L291dHB1dCwgbW9kdWxhcml6YXRpb24gYW5kIGZ1bmN0aW9ucywgYXJyYXlzLCBwb2ludGVycyBhbmQgc3RyaW5ncywgYWxnb3JpdGhtcywgDQpzdHJ1Y3R1cmVzLCBhbmQgZmlsZSBpbnB1dC9vdXRwdXQuIEludHJvZHVjZXMgd29ya2luZyB3aXRoIEMgYXQgdGhlIGJpdCBtYW5pcHVsYXRpb24gbGV2ZWwuIA0KTGFib3JhdG9yaWVzIGluY2x1ZGUgZGVzaWduaW5nIGFuZCBwcm9ncmFtbWluZyBlbmdpbmVlcmluZyBhcHBsaWNhdGlvbnMuZAIdDxYCHwEFKOatpOivvueoi+aciSAxMDQg5Liq6LWE5rqQLOWIhuexu+WmguS4izpkAh8PFgIfAQXQCzxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZkdD1TWSc+5pWZ5a2m5aSn57qyPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4xPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZkdD1DVic+5pWZ5biI566A5Y6GPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4xPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZkdD1DVyc+5pWZ5a2m6K++5Lu2PC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4zNTwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3Nvbi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmZHQ9UEonPuaVmeWtpuahiOS+izwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3Nvbi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmZHQ9UVMnPumXrumimOS+i+mimOS5oOmimOS9nOS4mjwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjc8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24uYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmR0PUVTJz7or5XljbfkuI7nrZTmoYg8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjI4PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZkdD1PVCc+6K++56iL5YW25LuW55u45YWz5L+h5oGvPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4xPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZkdD1BRyc+5L2c5LiaPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz45PC9zcGFuPjwvZGl2PmQCIQ8WAh8BBS3mraTor77nqIvmnIkgMTUg5Liq6K++6IqCLOi1hOa6kOWIhuW4g+WmguS4izpkAiMPFgIfAQXlGDxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89MCc+6K++56iL5L+h5oGvPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4yPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89MSc+6K++6IqCLTE8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjY8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24yLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZsZXNzb25ubz0yJz7or77oioItMjwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Nzwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3NvbjIuYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmxlc3Nvbm5vPTMnPuivvuiKgi0zPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz44PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89NCc+6K++6IqCLTQ8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjY8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24yLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZsZXNzb25ubz01Jz7or77oioItNTwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3NvbjIuYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmxlc3Nvbm5vPTYnPuivvuiKgi02PC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz43PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89Nyc+6K++6IqCLTc8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjQ8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24yLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZsZXNzb25ubz04Jz7or77oioItODwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Nzwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3NvbjIuYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmxlc3Nvbm5vPTknPuivvuiKgi05PC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz43PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89MTAnPuivvuiKgi0xMDwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3NvbjIuYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmxlc3Nvbm5vPTExJz7or77oioItMTE8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjU8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24yLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZsZXNzb25ubz0xMic+6K++6IqCLTEyPC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz42PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89MTMnPuivvuiKgi0xMzwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdkb2N0eXBlcm93Jz48c3BhbiBjbGFzcz0nZG9jdHlwZW5hbWUnPjxhIGhyZWY9J2xlc3NvbjIuYXNweD9ybm89YTY3MzRlZDMtNzQ1Ny00ODdmLTgzNGYtOWQzZmQ3NzUyNTBkJmxlc3Nvbm5vPTE0Jz7or77oioItMTQ8L2E+PC9zcGFuPjxzcGFuIGNsYXNzPSdkb2N0eXBlY291bnQnPjQ8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0nZG9jdHlwZXJvdyc+PHNwYW4gY2xhc3M9J2RvY3R5cGVuYW1lJz48YSBocmVmPSdsZXNzb24yLmFzcHg/cm5vPWE2NzM0ZWQzLTc0NTctNDg3Zi04MzRmLTlkM2ZkNzc1MjUwZCZsZXNzb25ubz0xNSc+6K++6IqCLTE1PC9hPjwvc3Bhbj48c3BhbiBjbGFzcz0nZG9jdHlwZWNvdW50Jz4xPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J2RvY3R5cGVyb3cnPjxzcGFuIGNsYXNzPSdkb2N0eXBlbmFtZSc+PGEgaHJlZj0nbGVzc29uMi5hc3B4P3Jubz1hNjczNGVkMy03NDU3LTQ4N2YtODM0Zi05ZDNmZDc3NTI1MGQmbGVzc29ubm89LTEnPuivvueoi+ebuOWFs+i1hOa6kDwvYT48L3NwYW4+PHNwYW4gY2xhc3M9J2RvY3R5cGVjb3VudCc+Mjg8L3NwYW4+PC9kaXY+ZAIlDxYCHgdWaXNpYmxlZxYCAgEPFgIfAQXrATxkaXY+PGRpdiBjbGFzcz0ncmVsY291cnNlJz48YSBocmVmPScvdmlld3MvdGV4dGJvb2suYXNweD9pZD0xMDQzNDUnPiwgQyBQcm9ncmFtbWluZzogQSBNb2Rlcm4gQXBwcm9hY2g8L2E+PC9kaXY+PGRpdiBjbGFzcz0ncmVsaW5mbyc+PHNwYW4+Sy5OLiBLaW5nPC9zcGFuPiAtIDxzcGFuPlcuIFcuIE5vcnRvbiAmIENvbXBhbnk8L3NwYW4+LCA8c3Bhbj5BcHJpbCAxOSwgMjAwODwvc3Bhbj48L2Rpdj48L2Rpdj5kAicPZBYCAgEPFgIfAQXJCDxkaXY+PGRpdiBjbGFzcz0ncmVsY291cnNlJz48YSBocmVmPSdkZXRhaWwuYXNweD9ybm89YjMzM2ZiMWMtNzJiZC00ZDU3LWJkYmEtMTE0NDhhZTMzNDUzJz5BZHZhbmNlZCBNYWNoaW5lIExlYXJuaW5nIGFuZCBOZXVyYWwgTmV0d29ya3MoQ1MgNjc4KTwvYT48L2Rpdj48ZGl2IGNsYXNzPSdyZWxpbmZvJz48c3Bhbj5CcmlnaGFtIFlvdW5nIFVuaXZlcnNpdHksIOiuoeeul+acuuenkeWtpuezuzwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSdyZWxjb3Vyc2UnPjxhIGhyZWY9J2RldGFpbC5hc3B4P3Jubz1kZGYxMTAyYS1jMzJjLTQ0ZjUtYjkyMy04YzMxMGE5MjMxMzgnPlZpZGVvIFByb2Nlc3NpbmcoRUwgNjEyMyk8L2E+PC9kaXY+PGRpdiBjbGFzcz0ncmVsaW5mbyc+PHNwYW4+TmV3IFlvcmsgVW5pdmVyc2l0eSwg5bel56iL5a2m6ZmiPC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J3JlbGNvdXJzZSc+PGEgaHJlZj0nZGV0YWlsLmFzcHg/cm5vPWJmYzA0ZTUzLTQ0NzctNDdlZC05YjcwLTYwOTY0OTA2NzFmNic+V2ViICYgTW9iaWxlIFN5c3RlbXMoQ1MgNDcyMCk8L2E+PC9kaXY+PGRpdiBjbGFzcz0ncmVsaW5mbyc+PHNwYW4+MTAzNSwg6K6h566X5py656eR5a2m57O7PC9zcGFuPjwvZGl2PjxkaXYgY2xhc3M9J3JlbGNvdXJzZSc+PGEgaHJlZj0nZGV0YWlsLmFzcHg/cm5vPWRkOTIzMTBlLWExOGYtNGY2YS04NjlhLTI3YjNkNTMyYWFiNyc+SW50cm9kdWN0aW9uIHRvIENvbXB1dGVyIE5ldHdvcmtpbmcoRUVDUyAzNDApPC9hPjwvZGl2PjxkaXYgY2xhc3M9J3JlbGluZm8nPjxzcGFuPk5vcnRod2VzdGVybiBVbml2ZXJzaXR5LCDnlLXmsJTlt6XnqIvkuI7orqHnrpfmnLrnp5Hlrabns7s8L3NwYW4+PC9kaXY+PGRpdiBjbGFzcz0ncmVsY291cnNlJz48YSBocmVmPSdkZXRhaWwuYXNweD9ybm89MWE3OWE1YWMtMTljMC00OWE5LTk0YzktMDQyYTFkMjIwZTIwJz5DcnlwdG9ncmFwaHkoQ1MgNDE5LzUxOSwgRUNFIDQ5OS81OTkpPC9hPjwvZGl2PjxkaXYgY2xhc3M9J3JlbGluZm8nPjxzcGFuPk9yZWdvbiBTdGF0ZSBVbml2ZXJzaXR5LCDnlLXmsJTlt6XnqIvkuI7orqHnrpfmnLrnp5Hlrabns7s8L3NwYW4+PC9kaXY+PC9kaXY+ZAIpD2QWAmYPFQIEMjAxNg4xMC4xNjkuMTQxLjEzNGRkeDIvVE8GyAEar7f/0RkkEw8QQtc=">
+</div>
+
+<div>
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="D48AEAEB">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBQLKsoycDwLTp4f2CAK95vnVBQLI+aunCQKUiLTlAgPb1ip9V32ZQ/YAf0GTT70a/UTy">
+</div>
+    <div class="container">
+        
+
+<div class="row">
+    <div class="bannerbox">
+        
+<style type="text/css">
+    .us_box {
+        background-color:rgba(255, 255, 255, 0.24);
+        padding:3px;
+        border-radius:4px;
+        position:relative;
+        right:10px;
+        top:10px;
+        text-align:right;
+        height:30px;
+    }
+    .us_box li {
+        float: right;
+        display:block;
+        padding-right:10px;
+    }
+</style>
+<div class="us_box" style="display:none">
+    <ul>
+		
+        <li><span id="wuc_top_wuc_userstatus_us_username">西安电子科技大学(xadzkjdx)</span></li>
+
+       
+    </ul>
+</div>
+    </div>
+</div>
+        
+<style type="text/css">
+    #nav1
+    {
+	    background-color:#E1F0F7;
+	    width: 976px;
+	    min-width: 967px;
+	    margin-bottom: 3px;
+	    margin-top: 1px;
+	    BACKGROUND-IMAGE: url(/img/navbak2.gif);
+	    BACKGROUND-REPEAT: repeat-x;
+	    height: 30px;
+    }
+
+    #nav1 A
+    {
+	    font-size: 14px;
+	    float: left;
+	    padding-left: 6px;
+	    padding-right: 5px;
+	    padding-top: 8px;
+	    padding-bottom: 6px;
+    }
+    .a
+    {
+	    background-image: url(/img/navbak2.gif);
+	    background-repeat: repeat-x;
+    }
+    #nav1 .b
+    {
+	    background-image: url(/img/navbak3.gif);
+	    background-repeat: repeat-x;
+	    color:#fff;
+	    font-weight:bold;
+    }
+    .h {
+        display: none;
+    }
+    #nav1 A:hover
+    {
+	    BACKGROUND-IMAGE: url(/img/navbak4.gif);
+    }
+    #nqd
+    {
+	    font-size: 14px;
+	    float: left;
+	    padding-left: 4px;
+	    padding-right: 4px;
+	    padding-top: 8px;
+	    padding-bottom: 6px;
+	    height:20px;
+    }
+    #nhz
+    {
+	    font-size: 14px;
+	    float: left;
+	    padding-left: 4px;
+	    padding-right: 4px;
+	    padding-top: 8px;
+	    padding-bottom: 6px;
+	    height:20px;
+    }
+</style>
+<div class="row">
+    <div id="nav1">
+        <div id="nqd" class="a"></div>
+        <a class="a" id="nxs" href="http://202.117.122.41:8080/views/default.aspx">首页</a>
+        <a class="a" id="nxk" href="http://202.117.122.41:8080/views/catenav.aspx">学科导航</a>
+        <a class="a" id="nyx" href="http://202.117.122.41:8080/views/schoolnav.aspx">院校导航</a>
+        <a class="a" id="nxb" href="http://202.117.122.41:8080/views/depnav.aspx">系别导航</a>
+        <a class="a" id="njs" href="http://202.117.122.41:8080/views/author.aspx">教师导航</a>
+        <a class="a" id="nlb" href="http://202.117.122.41:8080/views/wellcourse.aspx">精选课程</a>
+        <a class="a" id="nadv" href="http://202.117.122.41:8080/views/advsch.aspx">高级搜索</a>
+        <a class="a h" id="nyk" "="" style="display: none;">院校课程</a>
+        <a class="a h" id="njg" style="display: none;">搜索结果</a>
+        <a class="b" id="nkc">课程</a>
+        <a class="a h" id="nmm">多媒体</a>
+        <a class="a" id="njczx" href="http://202.117.122.41:8080/views/textbook.aspx">教材中心</a>
+        
+        
+        
+        
+
+        <a class="a h" id="ngl">管理</a>
+        <div id="nhz" class="a"></div>
+        <div style="clear:both;"></div>
+    </div>
+</div>
+
+        <script type="text/javascript">SetBkColor('nkc');</script>
+        <div id="coursecontent">
+            <div id="contentleft">
+                <div id="layerimg">
+                    <img src="./课程详细信息-国道数据_files/a6734ed3-7457-487f-834f-9d3fd775250d.jpg" onload="javascript:DrawImage(this,290,290);" width="206" height="290">                    
+                </div>
+                <div class="layerfavlike center">   
+                    <span id="spanlikeit">                                        
+                        <span id="likeit" class="btn btn-small btn-warning">
+                            <img src="./课程详细信息-国道数据_files/like.png"> Like +<span id="likecount">0</span>
+                        </span>
+                    </span> 
+                    
+                </div>
+                <div id="haslike" class="hidden"></div>
+                <div class="layerattr">
+                    <div>
+                        <span class="left1">课程编号:</span><span id="courseno">16.216</span></div>
+                    <div>
+                        <span class="left1">课程类型:</span><span id="cate">教学课程</span></div>
+                    <div>
+                        <span class="left1">课程级别:</span><span id="level">本科</span></div>
+                    <div>
+                        <span class="left1">授课时间:</span><span id="coursetime">Fall 2013</span></div>
+                    <div>
+                        <span class="left1">教学小组:</span><span id="courseteam"><a href="http://202.117.122.41:8080/views/courses.aspx?au=Michael+J.+Geiger&amp;from=teacher" title="主讲教师">Michael J. Geiger</a><sup>1</sup></span></div>
+                    <div>
+                        <span class="left1">课程评分:</span><span id="coursepoints">5</span></div>
+                </div>
+                <div id="layernav">
+                    <div>
+                        <a href="http://202.117.122.41:8080/views/schoolnav.aspx">院校导航</a></div>
+                    <div id="schoolnav"><div class="nav1"><img src="./课程详细信息-国道数据_files/left16.png"><span><a href="http://202.117.122.41:8080/views/courses.aspx?scid=308&amp;from=school">马萨诸塞大学-洛厄尔分校</a></span></div></div>
+                    <div>
+                        <a href="http://202.117.122.41:8080/views/catenav.aspx">学科导航</a></div>
+                    <div id="subjectnav"><div class="nav1"><img src="./课程详细信息-国道数据_files/left16.png"><a href="http://202.117.122.41:8080/views/courses.aspx?sj=08&amp;from=category">工学</a></div><div class="nav2"><img src="./课程详细信息-国道数据_files/left16.png"><a href="http://202.117.122.41:8080/views/courses.aspx?sj=0812&amp;from=category">计算机科学与技术</a></div><div class="nav3"><img src="./课程详细信息-国道数据_files/left16.png"><a href="http://202.117.122.41:8080/views/courses.aspx?sj=081203&amp;from=category">计算机应用技术 </a></div></div>
+                </div>
+            </div>
+            <div id="contentright">
+                <div id="layerdes">
+                    <div class="smalltitle">课程名称</div>
+                    <div class="smallcontent">
+                        <div id="coursename">ECE Application Programming</div>
+                        <div id="coursenamecn">ECE应用程序编程</div>
+                    </div>
+                    <div id="deslayer">
+                        <div class="smalltitle">课程介绍</div>
+                        <div id="des" class="smallcontent">Catalog Description: Introduces C programming for engineers. Covers fundamentals of 
+procedural programming with applications in electrical and computer engineering and 
+embedded systems. Topics include variables, expressions and statements, console 
+input/output, modularization and functions, arrays, pointers and strings, algorithms, 
+structures, and file input/output. Introduces working with C at the bit manipulation level. 
+Laboratories include designing and programming engineering applications.</div>
+                        <div id="des2" class="smallcontent"></div>
+                    </div>
+                    <div class="smalltitle">教学资源</div>
+                    <div class="smallcontent">
+                        <div id="courserighttips"></div>
+                        <table id="resgroups">
+                            <tbody><tr>
+                                <td>
+                                    <div id="rescounttips">此课程有 104 个资源,分类如下:</div>
+                                    <div id="resdoctypegroup"><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=SY">教学大纲</a></span><span class="doctypecount">1</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=CV">教师简历</a></span><span class="doctypecount">1</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=CW">教学课件</a></span><span class="doctypecount">35</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=PJ">教学案例</a></span><span class="doctypecount">2</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=QS">问题例题习题作业</a></span><span class="doctypecount">27</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=ES">试卷与答案</a></span><span class="doctypecount">28</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=OT">课程其他相关信息</a></span><span class="doctypecount">1</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;dt=AG">作业</a></span><span class="doctypecount">9</span></div></div>
+                                </td>
+                                <td>
+                                    <div id="lessoncounttips">此课程有 15 个课节,资源分布如下:</div>
+                                    <div id="lessongroup"><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=0">课程信息</a></span><span class="doctypecount">2</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=1">课节-1</a></span><span class="doctypecount">6</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=2">课节-2</a></span><span class="doctypecount">7</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=3">课节-3</a></span><span class="doctypecount">8</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=4">课节-4</a></span><span class="doctypecount">6</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=5">课节-5</a></span><span class="doctypecount">2</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=6">课节-6</a></span><span class="doctypecount">7</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=7">课节-7</a></span><span class="doctypecount">4</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=8">课节-8</a></span><span class="doctypecount">7</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=9">课节-9</a></span><span class="doctypecount">7</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=10">课节-10</a></span><span class="doctypecount">2</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=11">课节-11</a></span><span class="doctypecount">5</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=12">课节-12</a></span><span class="doctypecount">6</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=13">课节-13</a></span><span class="doctypecount">2</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=14">课节-14</a></span><span class="doctypecount">4</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=15">课节-15</a></span><span class="doctypecount">1</span></div><div class="doctyperow"><span class="doctypename"><a href="http://202.117.122.41:8080/views/lesson2.aspx?rno=a6734ed3-7457-487f-834f-9d3fd775250d&amp;lessonno=-1">课程相关资源</a></span><span class="doctypecount">28</span></div></div>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                    <div id="divrefbook">
+                        <div class="smalltitle">参考教材</div>
+                        <div id="refbooks" class="smallcontent"><div><div class="relcourse"><a href="http://202.117.122.41:8080/views/textbook.aspx?id=104345">, C Programming: A Modern Approach</a></div><div class="relinfo"><span>K.N. King</span> - <span>W. W. Norton &amp; Company</span>, <span>April 19, 2008</span></div></div></div>
+                    </div>
+                    <div id="divrelcourse">
+                        <div class="smalltitle">相关课程</div>
+                        <div id="relativeresource" class="smallcontent"><div><div class="relcourse"><a href="http://202.117.122.41:8080/views/detail.aspx?rno=b333fb1c-72bd-4d57-bdba-11448ae33453">Advanced Machine Learning and Neural Networks(CS 678)</a></div><div class="relinfo"><span>Brigham Young University, 计算机科学系</span></div><div class="relcourse"><a href="http://202.117.122.41:8080/views/detail.aspx?rno=ddf1102a-c32c-44f5-b923-8c310a923138">Video Processing(EL 6123)</a></div><div class="relinfo"><span>New York University, 工程学院</span></div><div class="relcourse"><a href="http://202.117.122.41:8080/views/detail.aspx?rno=bfc04e53-4477-47ed-9b70-6096490671f6">Web &amp; Mobile Systems(CS 4720)</a></div><div class="relinfo"><span>1035, 计算机科学系</span></div><div class="relcourse"><a href="http://202.117.122.41:8080/views/detail.aspx?rno=dd92310e-a18f-4f6a-869a-27b3d532aab7">Introduction to Computer Networking(EECS 340)</a></div><div class="relinfo"><span>Northwestern University, 电气工程与计算机科学系</span></div><div class="relcourse"><a href="http://202.117.122.41:8080/views/detail.aspx?rno=1a79a5ac-19c0-49a9-94c9-042a1d220e20">Cryptography(CS 419/519, ECE 499/599)</a></div><div class="relinfo"><span>Oregon State University, 电气工程与计算机科学系</span></div></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="gclear"></div>
+        </div>
+        
+<div class="gclear"></div>
+<div class="footer">
+    <div>
+        <span>2016©Guodao</span> - 
+        <span><a href="http://www.guodao.cn/download/dl-0302.aspx" target="_blank">关于MeTeL</a></span> - 
+        <span><a href="http://www.guodao.cn/" target="_blank">国道数据 主页</a></span> - 
+        <span><a href="http://218.246.35.13:85/lj/index.aspx" target="_blank">学术例句</a></span> - 
+        <span><a href="http://www.guodao.cn/vhelp/Default.aspx" target="_blank">MeTeL在线教程</a></span> - 
+        <span><a href="http://www.guodao.cn/Download/metel/xgxz/mhelp.ppt">使用指南</a></span> - 
+		<span><a href="http://202.117.122.41:8080/views/metelOrder.aspx" target="_blank">我要定制</a></span> -
+        <span><a href="http://guodao.cn/leave/pr-0605.aspx">意见反馈</a></span> - 
+        <span><a href="http://guodao.cn/copyright/cp-r.aspx">版权声明</a></span> - 
+        <span>QQ:<a href="http://sighttp.qq.com/cgi-bin/check?sigkey=c86b95ecda5ae1f55e4b52c56c2de4092226899a177e560eb8fbed4382d03888" onclick="var tempSrc=&#39;http://sighttp.qq.com/wpa.js?rantime=&#39;+Math.random()+&#39;&amp;sigkey=c86b95ecda5ae1f55e4b52c56c2de4092226899a177e560eb8fbed4382d03888&#39;;var oldscript=document.getElementById(&#39;testJs&#39;);var newscript=document.createElement(&#39;script&#39;);newscript.setAttribute(&#39;type&#39;,&#39;text/javascript&#39;); newscript.setAttribute(&#39;id&#39;, &#39;testJs&#39;);newscript.setAttribute(&#39;src&#39;,tempSrc);if(oldscript == null){document.body.appendChild(newscript);}else{oldscript.parentNode.replaceChild(newscript, oldscript);}return false;" target="_blank;"><img alt="" border="0" src="./课程详细信息-国道数据_files/pa"></a></span>
+    </div>
+    <div>
+        <span>访问本站最好使用分辨率不小于1024*768大小的屏幕，支持HTML5的浏览器(如IE9,<a href="http://www.google.cn/intl/zh-CN/chrome/browser/" target="_blank">chrome</a>和<a href="http://firefox.com.cn/" targe="_blank">firefox</a>最新版本)才能得到最佳效果</span>
+    </div>
+    <div>
+        <span>京ICP证100745号</span> - 
+        <span>京ICP备<a id="gongshang_logo" href="http://www.miibeian.gov.cn/" target="_blank">06067494</a>号</span> - 
+        <span>你的登录ip：10.169.141.134</span>
+        <span><a href="http://202.117.122.41:8080/views/sal/stat2.aspx">访问统计</a></span>
+    </div>
+</div>
+
+        <div class="hidden">
+            <input type="hidden" name="hdrno" id="hdrno" value="a6734ed3-7457-487f-834f-9d3fd775250d">
+			<input type="hidden" name="hdcategory" id="hdcategory" value="081203">
+			<input type="hidden" name="hdteacher" id="hdteacher" value="Michael J. Geiger">
+			<input type="hidden" name="hdvcode" id="hdvcode" value="7APmxC5D0fTuDKpWqBgSGH+vPkgcAj+nI6kLJGjI4ZqllVb9tvBK8A==">
+        </div>    
+    </div>
+		<script type="text/javascript">
+			calldata();
+		</script>
+    </form>
+
+
+</body></html>
