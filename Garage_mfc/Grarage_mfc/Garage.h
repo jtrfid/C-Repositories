@@ -8,6 +8,10 @@ extern "C" {
 extern int a;      // 声明C语言全局变量
 extern void print_test(); // 声明C语言函数
 
+/** 声明全局变量 */
+extern bool Running;       // 仿真正在运行: true; 否则,false 
+extern bool ButtonPressed; // 车库门开关被按下: true, 再按一次，弹出: false
+
 /** Height of the door in meters. */
 #define DoorHeight 2.13
 

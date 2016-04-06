@@ -33,4 +33,6 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedStart();
 	afx_msg void OnBnClickedStop();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedSwitch();
 };

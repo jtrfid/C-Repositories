@@ -45,7 +45,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CGrarage_mfcDlg 对话框
+// CGarage_mfcDlg 对话框
 
 
 
@@ -68,6 +68,8 @@ BEGIN_MESSAGE_MAP(CGarage_mfcDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CGarage_mfcDlg::OnBnClickedOk)
 	ON_BN_CLICKED(BTN_Start, &CGarage_mfcDlg::OnBnClickedStart)
 	ON_BN_CLICKED(BTN_STOP, &CGarage_mfcDlg::OnBnClickedStop)
+	ON_WM_TIMER()
+	ON_BN_CLICKED(BTN_Switch, &CGarage_mfcDlg::OnBnClickedSwitch)
 END_MESSAGE_MAP()
 
 
@@ -161,23 +163,52 @@ HCURSOR CGarage_mfcDlg::OnQueryDragIcon()
 }
 
 
-
+/** 关闭 */
 void CGarage_mfcDlg::OnBnClickedOk()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	print_test();
-	printf("ok!!,a=%d\n",a);
-	//CDialogEx::OnOK();
+	// 结束仿真
+	OnBnClickedStop();
+
+	CDialogEx::OnOK();
 }
 
 /** 开始仿真 */
 void CGarage_mfcDlg::OnBnClickedStart()
 {
 	GarageStartup();
+	// 启动定时器,100ms间隔
+	SetTimer(ID_CLOCK_TIMER,100,NULL);
 }
 
 /** 结束仿真 */
 void CGarage_mfcDlg::OnBnClickedStop()
 {
+	// 关闭定时器
+	KillTimer(ID_CLOCK_TIMER);
 	GarageShutdown();
+}
+
+
+void CGarage_mfcDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	static int n = 0;
+	switch(nIDEvent)
+	{
+	case ID_CLOCK_TIMER:
+		n++;
+		printf("定时器到，n=%d\n",n);
+		main_control();
+		break;
+	default:
+		break;
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+// 车库门开关
+void CGarage_mfcDlg::OnBnClickedSwitch()
+{
+	ButtonPressed = !ButtonPressed;
 }

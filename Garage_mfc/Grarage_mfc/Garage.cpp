@@ -10,7 +10,7 @@
 int a = 10;  // 定义全局变量，全局变量只能定义一次
 
 bool Running = false;
-bool ButtonPress = false;
+bool ButtonPressed = false;
 
 void print_test()
 {	
@@ -26,13 +26,23 @@ bool IsGarageRunning()
 
 void GarageStartup()
 {
+	// 如果正在运行,保持现在的运行状态
+	if(Running) {
+		printf("仿真正在运行!!\n");
+		return; 
+	}
 	Running = true;
-	printf("开始仿真....\n");
-	main_control();
+	ButtonPressed = false;
+	printf("开始仿真!!\n");
 }
 
 void GarageShutdown()
 {
+	// 如果不是运行状态,保持现在的非运行状态
+	if(!Running) {
+		printf("仿真没有开始!!\n");
+		return;
+	}
 	Running = false;
 	printf("结束仿真!!\n");
 }
@@ -51,13 +61,14 @@ void StateDoorClosed(int *state)
 	}
 }
 
+/** 每200ms被调用一次，如果仿真已经开始，检测车库门的状态 */
 void main_control()
 {
-	int state = DoorClosed;
+	static int state = DoorClosed;  // 初始是关门状态
 
-	while(IsGarageRunning())
+	if (IsGarageRunning())
 	{
-		printf("正在运行...\n");
+		printf("现在的状态，state=%d\n",state);
 		switch(state)
 		{
 		case DoorClosed:
@@ -67,8 +78,6 @@ void main_control()
 			//StateDoorOpening(&state);
 			break;
 		}
-
-
 	}
 }
 
