@@ -32,11 +32,20 @@ private:
 	int interval;
 	void DoorUpDown(int state);  // 门开关锁动画,currentDoorPosition在0和dorrHeight之间变化
 
-	// 仿真时钟,即采样间隔（周期,ms），缺省值100ms
-	int samplingInterval;
+	// 开门状态，特定时间内，无动作，自动关门 ，缺省值10000ms(10s)
+	int OpenInterval;
+	bool StartTimerClosing; // ID_Timer_Closing定时器启动否？
 
 	// 状态,初值为DoorClosed
 	int State;
+
+	// cat按钮在门外位置(初始位置)
+	int catOutDoor_top,catOutDoor_left;
+	// Cat按钮在门下的位置
+	int catInDoor_top,catInDoor_left;
+
+	// 打印当前状态
+	void printfState(int state);
 
 // 实现
 protected:
@@ -75,4 +84,10 @@ public:
 	// 定时器回调函数
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
+	// Cat按钮
+	CButton m_BtnCat;
+	afx_msg void OnBnClickedBtnCat();
+
+	// 即将显示或隐藏窗口时的处理程序
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };

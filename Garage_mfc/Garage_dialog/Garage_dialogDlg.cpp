@@ -13,8 +13,8 @@
 #define new DEBUG_NEW
 #endif
 
-#define ID_Timer_DOOR 100    // 开关门动画时钟
-#define ID_Timer_CLOCK 101   // 仿真时钟,即采样间隔（周期）
+#define ID_Timer_DOOR 100      // 开关门动画时钟
+#define ID_Timer_Closing 101   // 开门状态，特定时间内，无动作，自动关门 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -68,6 +68,7 @@ void CGarage_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
 	DDX_Control(pDX, IDC_BtnStart, m_BtnStart);
 	DDX_Control(pDX, IDC_BtnEnd, m_BtnEnd);
+	DDX_Control(pDX, IDC_BtnCat, m_BtnCat);
 }
 
 BEGIN_MESSAGE_MAP(CGarage_dialogDlg, CDialogEx)
@@ -80,6 +81,8 @@ BEGIN_MESSAGE_MAP(CGarage_dialogDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BtnStart, &CGarage_dialogDlg::OnBnClickedBtnStart)
 	ON_BN_CLICKED(IDCANCEL, &CGarage_dialogDlg::OnBnClickedCancel)
 	ON_BN_CLICKED(IDC_BtnEnd, &CGarage_dialogDlg::OnBnClickedBtnEnd)
+	ON_BN_CLICKED(IDC_BtnCat, &CGarage_dialogDlg::OnBnClickedBtnCat)
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -114,7 +117,6 @@ BOOL CGarage_dialogDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	// TODO: 在此添加额外的初始化代码
 	// 使程序弹出console，可以使用printf("ok!!");
 	AllocConsole();
 	freopen("CONOUT$","a+",stdout);
@@ -127,13 +129,17 @@ BOOL CGarage_dialogDlg::OnInitDialog()
 	m_btnSwitch.SetBitmap(hBmp); 
 	BITMAP bmSize;
 	bitmap.GetBitmap(&bmSize);
-	printf("%d,%d",bmSize.bmWidth,bmSize.bmHeight);
-	//m_btnSwitch.SetWindowPos(&wndTop,0,0,bmSize.bmWidth,bmSize.bmHeight,SWP_SHOWWINDOW);
+	// SWP_NOCOPYBITS：清除客户区的所有内容,SWP_NOMOVE：维持当前位置（忽略X和Y参数）
+	// SWP_DRAWFRAME：在窗口周围画一个边框（定义在窗口类描述中）,SWP_NOSIZE 保持当前的大小（忽略cx和cy参数）
+	// SWP_NOZORDER: 不改变窗口听Z轴位置,忽略第一个参数
 	m_btnSwitch.SetWindowPos(&wndTop,0,0,bmSize.bmWidth,bmSize.bmHeight,SWP_NOMOVE);
 	
 	// 有车的车库图片(m_PicGarage)在下面，车库门(m_PicDoor)在上面
 	RECT rectDoor,rectGarage,rectSwitch;
-	m_PicDoor.GetWindowRect(&rectDoor);
+	// 返回指定窗口的边框矩形的尺寸。
+	// 1 窗口还没有初始化完成时：原点是整个窗口的左上角【OnInitDialog( )事件中】
+	// 2 初始化完成后，原点是设备屏幕左上角【OnShowWindow( )事件中】
+	m_PicDoor.GetWindowRect(&rectDoor); 
 	m_PicGarage.GetWindowRect(&rectGarage);
 	m_PicGarage.SetWindowPos(&wndTop,0,0,rectGarage.right-rectGarage.left,
 		rectGarage.bottom-rectGarage.top,SWP_SHOWWINDOW |  SWP_NOCOPYBITS);
@@ -142,23 +148,47 @@ BOOL CGarage_dialogDlg::OnInitDialog()
 		rectGarage.bottom-rectGarage.top,SWP_SHOWWINDOW |  SWP_NOCOPYBITS);
 
 	// 重新调整车库门的显示位置
-	m_PicDoor.GetWindowRect(&rectDoor); // 已经移动，重新获取
-	m_btnSwitch.GetWindowRect(&rectSwitch);
-	m_btnSwitch.SetWindowPos(&wndTop,rectDoor.right,rectSwitch.top,0,0,SWP_NOSIZE);
+	WINDOWPLACEMENT placement;
+	m_PicDoor.GetWindowPlacement(&placement); // 已经移动，重新获取
+	rectDoor = placement.rcNormalPosition;
+	m_btnSwitch.GetWindowPlacement(&placement);
+	rectSwitch = placement.rcNormalPosition;
+	m_btnSwitch.SetWindowPos(0,rectDoor.right + 20 ,rectSwitch.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
+	// 加载Cat按钮位图，并使大小与位图一致
+	CBitmap catmap;     // 加载位图对象
+	HBITMAP hcatmap;    // 保存位图对象的句柄
+	catmap.LoadBitmap(IDB_bmpCat);
+	hcatmap = (HBITMAP)catmap.GetSafeHandle();
+	m_BtnCat.SetBitmap(hcatmap); 
+	BITMAP catbmSize;
+	catmap.GetBitmap(&catbmSize);
+	m_BtnCat.SetWindowPos(&wndTop,0,0,catbmSize.bmWidth,catbmSize.bmHeight,SWP_NOMOVE);
+
+	// Cat按钮位置
+	RECT catRectOutDoor;
+	m_BtnCat.GetWindowPlacement(&placement); // 窗口显示前后均以父窗口客户区的左上角为原点
+	catRectOutDoor = placement.rcNormalPosition;
+	catOutDoor_top = catRectOutDoor.top;
+	catOutDoor_left = catRectOutDoor.left; 
+
+	catInDoor_top = catOutDoor_top;
+    catInDoor_left = rectDoor.right/2; // 大约在门的中间
+	
 	// 初始值
 	doorHeight = rectDoor.bottom-rectDoor.top;
 	currentDoorPosition = 0;
 	step = 10;
 	interval = 100;
-	samplingInterval = 100;
+	OpenInterval = 10000;
+	StartTimerClosing = false;
 	State = DoorClosed;
 
 	m_BtnStart.EnableWindow(true);
 	m_BtnEnd.EnableWindow(false);
 
-	// SWP_NOCOPYBITS：清除客户区的所有内容,SWP_NOMOVE：维持当前位置（忽略X和Y参数）
-	// SWP_DRAWFRAME：在窗口周围画一个边框（定义在窗口类描述中）,SWP_NOSIZE 保持当前的大小（忽略cx和cy参数）
+	m_BTN_OK.SetWindowText(L"点击开始");
+	m_BTN_OK.EnableWindow(false);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -215,30 +245,9 @@ HCURSOR CGarage_dialogDlg::OnQueryDragIcon()
 
 void CGarage_dialogDlg::OnBnClickedOk()
 {
-	m_BTN_OK.ModifyStyle(1,WS_BORDER,0);
-	//static int y = 0;
-	//static bool border = false;
-	//y -= 100;
-	//printf("OnBnClickedOk()\n");
-	//
-	//HWND hwnd = m_PicDoor.GetSafeHwnd();
-	//
-	//// SWP_NOCOPYBITS：清除客户区的所有内容,SWP_NOMOVE：维持当前位置（忽略X和Y参数）
-	//// SWP_DRAWFRAME：在窗口周围画一个边框（定义在窗口类描述中）,SWP_NOSIZE 保持当前的大小（忽略cx和cy参数）
-	////m_PicDoor.SetWindowPos(&wndTop,0,y,0,0,SWP_NOSIZE |  SWP_NOCOPYBITS);
-	//m_PicDoor.SetWindowPos(&wndTop,0,y,0,0,SWP_NOSIZE);
-	////m_PicDoor.SetWindowPos(&wndTop,0,y,0,0,SWP_NOSIZE | SWP_DRAWFRAME | SWP_NOCOPYBITS);
-	//
-	////if (border) m_PicDoor.ModifyStyle(1,WS_BORDER,0);
-	//border != border;
-	////::SetWindowPos(hwnd,HWND_TOP,0,y,0,0,SWP_NOSIZE);  // 等效m_PicDoor.SetWindowPos(&wndTop,0,y,0,0,SWP_NOSIZE);
-	//
-	////m_btnSwitch.SetWindowPos(&wndTop,0,0,100,200,SWP_NOMOVE);
-
-	////m_PicDoor.UpdateWindow(); // 无效
-	////UpdateWindow();
-	
-	
+	Lib_Running = !Lib_Running;
+	if(Lib_Running) m_BTN_OK.SetWindowText(L"运行...");
+	else m_BTN_OK.SetWindowText(L"暂停...");
 	//CDialogEx::OnOK();
 }
 
@@ -255,10 +264,13 @@ void CGarage_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 	switch(nIDEvent) 
 	{
 		case ID_Timer_DOOR: // 开关门动画
+			main_control(&State);
 			DoorUpDown(State);
 			break;
-		case ID_Timer_CLOCK: //仿真时钟
-			main_control(&State);
+		case ID_Timer_Closing: // 开门状态，特定时间内，无动作，自动关门
+			SetMotorPower(-1);
+			State = DoorClosing;
+			printf("开门状态，10秒后，无动作，自动关门...\n");
 			break;
 		defaule:
 			break;
@@ -267,10 +279,11 @@ void CGarage_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
-// 门开关锁动画,
+// 开关门动画,
 void CGarage_dialogDlg::DoorUpDown(int state)
 {
-	printf("state=%d\n",State);
+	printfState(state); 
+	if (!Lib_Running) return;
 	switch(state)
 	{
 	  case DoorClosed:
@@ -278,74 +291,110 @@ void CGarage_dialogDlg::DoorUpDown(int state)
 		  return;
 	  case DoorOpen:
 		  currentDoorPosition = doorHeight;
+		  if(!StartTimerClosing) {  // 启动自动关门定时器
+			  // 开门状态，特定时间内，无动作，自动关门 
+			  SetTimer(ID_Timer_Closing,OpenInterval,NULL);
+			  StartTimerClosing = true;
+		  }
 		  return;
 	  case DoorOpening:
 	  case DoorClosing:
 		  currentDoorPosition += Lib_Power*step;
+		  if(StartTimerClosing) { // 关闭自动关门定时器
+			  KillTimer(ID_Timer_Closing);
+			  StartTimerClosing = false;
+		  }
 		  break;
 	  default:
 		  printf("不存在的状态!!!\n");
 		  break;
 	}
-	printf("currentDoorPosition=%d\n",currentDoorPosition);
+	// printf("currentDoorPosition=%d\n",currentDoorPosition);
 	// 更新相对位置
 	Lib_CurrentDoorPosition = (Lib_DoorHeight/doorHeight)*currentDoorPosition;
 	// SWP_NOZORDER：忽略第一个参数；SWP_NOSIZE：忽略第3、4个参数
-	m_PicDoor.SetWindowPos(0,0,-currentDoorPosition,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	m_PicDoor.SetWindowPos(0,0,-currentDoorPosition,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOCOPYBITS);
 }
-// 门开关锁动画,
-//void CGarage_dialogDlg::DoorUpDown111()
-//{
-//	int step=20;
-//	if(uping && doorCurrentTop < -doorHeight) {
-//		KillTimer(ID_Timer_DOOR); // 开门动画结束，门到顶部
-//		doorCurrentTop = -doorHeight;
-//		m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE | SWP_NOZORDER);
-//	}
-//	if(!uping && doorCurrentTop > 0) {
-//		KillTimer(ID_Timer_DOOR); // 关门动画结束，门到底部
-//		doorCurrentTop = 0;
-//		m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE | SWP_NOZORDER);
-//	}
-//	if(uping) doorCurrentTop -= step;
-//	else doorCurrentTop += step;
-//	//m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE | SWP_NOCOPYBITS);
-//	//m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE);
-//	m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE | SWP_NOZORDER);
-//	//m_PicDoor.SetWindowPos(0,0,doorCurrentTop,0,0,SWP_NOSIZE | SWP_NOCOPYBITS);
-//}
-
 
 // 开始仿真
 void CGarage_dialogDlg::OnBnClickedBtnStart()
 {	
-	// 开始仿真
-	SetTimer(ID_Timer_CLOCK,samplingInterval,NULL);
 	// 开始开关门动画
 	SetTimer(ID_Timer_DOOR,interval,NULL);
 	m_BtnStart.EnableWindow(false);
 	m_BtnEnd.EnableWindow(true);
 
 	GarageStartup();
+	m_BTN_OK.SetWindowText(L"运行...");
+	m_BTN_OK.EnableWindow(true);
 }
 
 // 结束仿真
 void CGarage_dialogDlg::OnBnClickedBtnEnd()
 {
-	KillTimer(ID_Timer_CLOCK);
+	KillTimer(ID_Timer_Closing);
 	KillTimer(ID_Timer_DOOR);
 	m_BtnStart.EnableWindow(true);
 	m_BtnEnd.EnableWindow(false);
 
 	GarageShutdown();
+	m_BTN_OK.SetWindowText(L"结束...");
+	m_BTN_OK.EnableWindow(false);
 }
 
 // 关闭
 void CGarage_dialogDlg::OnBnClickedCancel()
 {
-	KillTimer(ID_Timer_CLOCK);
+	KillTimer(ID_Timer_Closing);
 	KillTimer(ID_Timer_DOOR);
 	GarageShutdown();
 
 	CDialogEx::OnCancel();
+}
+
+// Cat按钮
+void CGarage_dialogDlg::OnBnClickedBtnCat()
+{
+	RECT catRect;
+	WINDOWPLACEMENT placement;
+	m_BtnCat.GetWindowPlacement(&placement);
+	catRect = placement.rcNormalPosition;
+	if(catRect.left < catOutDoor_left) // 门内-->门外
+	{
+		Lib_BeamBroken = false;  // 门下部的红外线【未】探测到Cat
+		m_BtnCat.SetWindowPos(0,catOutDoor_left,catOutDoor_top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	}
+	else // 门外-->门内
+	{
+		Lib_BeamBroken = true;  // 门下部的红外线探测到Cat
+		m_BtnCat.SetWindowPos(0,catInDoor_left,catInDoor_top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	}
+}
+
+// 打印当前状态
+void CGarage_dialogDlg::printfState(int state)
+{
+	switch(state)
+	{
+	case DoorClosed:
+		printf("Current State is DoorClosed\n");
+		break;
+	case DoorOpen:
+		printf("Current State is DoorOpen\n");
+		break;
+	case DoorOpening:
+		printf("Current State is DoorOpening\n");
+		break;
+	case DoorClosing:
+		printf("Current State is DoorClosing\n");
+		break;
+	default:
+		printf("不存在的状态!!!\n");
+		break;
+	}
+}
+
+void CGarage_dialogDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialogEx::OnShowWindow(bShow, nStatus);
 }

@@ -37,6 +37,9 @@
     <None Include="res\images\switch.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\images\Cat.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Garage_dialog.h">

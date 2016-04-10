@@ -7,7 +7,6 @@ bool Lib_BeamBroken = false;     // 门下部的红外线探测到物体: true,停止关门动作;
 // 当前门的相对位置，门的下边沿距离地面的相对高度。
 // 门关闭时<=DoorTolerance, 打开时>=(DoorHeight-DoorTolerance)
 double Lib_CurrentDoorPosition = 0.0;  
-//int State = DoorClosed;      // 车库门的状态, 初始状态为DoorClosed(在garage.cpp中定义的宏)
 double Lib_Power;              // 直流电机功率，-1.0到1.0之间，设为1.0,车库门以最大速度上升;设为-1.0,车库门以最大速度下降。
 
 /** \brief Function to determine if the garage simulator is currently running. */
@@ -48,35 +47,6 @@ void GarageStartup()
 void GarageShutdown()
 {
 	Lib_Running = false;
-}
-
-
-/*
- * Button and beam management
- */
-
-/** \brief Set a function to be called when the door button is pressed.
- *
- * This function installs a handler function that will be called when the
- * door button in the garage or in a car is pressed.
- *
- * There is no default behavior for this button.
- * \param handler A C function that will be called when the button is pressed.
- * \par Example of how to set the handler in code:
- * \code
-     SetButtonHandler(OnButton);
- \endcode
- * \par Example handler function:
- * \code
-void OnButton()
-{
-    printf("Button pressed\n");
-}
-\endcode
- */
-void SetButtonHandler(void (*handler)())
-{
-
 }
 
 /** \brief Determines of the button has been pressed.
@@ -124,19 +94,6 @@ void SetMotorPower(double power)
 	Lib_Power = power;
 }
 
-/** \brief Set the maximum speed for the door.
- *
- * This function allows you to override the speed of the door
- * in the program. The default is 0.25 meters per second. Set a
- * larger number to make the door move faster, so avoid making this
- * number too large or the simulation may fail.
- * \param speed A speed in meters per second.
- */
-void SetDoorSpeed(double speed)
-{
-
-}
-
 
 /** \brief Get the position of the garage door in meters.
  *
@@ -154,31 +111,4 @@ void SetDoorSpeed(double speed)
 double GetDoorPosition()
 {
 	return Lib_CurrentDoorPosition;
-}
-
-/*
- * Timer
- */
-
-/** \brief Reset a timer available for program use.
- *
- * This function, when called, resets a timer to zero. It is equivalent to pressing
- * the reset button on a stopwatch. The stopwatch can then be read using the GetTimer
- * function. There is only one timer available to an application.
- */
-void ResetTimer()
-{
-
-}
-
-/** \brief Read the current value of the timer.
- *
- * This function read the current value of an available timer. The timer can be
- * reset using the ResetTimer call. The value read is in second and is a floating point
- * value.
- * \return Number of seconds since the last time ResetTimer was called.
- */
-double GetTimer()
-{
-	return 0.0;
 }

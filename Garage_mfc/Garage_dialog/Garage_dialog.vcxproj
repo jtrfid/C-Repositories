@@ -97,6 +97,7 @@
     <None Include="ReadMe.txt" />
     <None Include="res\Garage_dialog.ico" />
     <None Include="res\Garage_dialog.rc2" />
+    <None Include="res\images\Cat.bmp" />
     <None Include="res\images\Door.bmp" />
     <None Include="res\images\Door.png" />
     <None Include="res\images\Garage.bmp" />
