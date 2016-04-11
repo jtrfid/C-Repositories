@@ -1,4 +1,4 @@
-﻿# Windows image file caches
+# Windows image file caches
 Thumbs.db
 ehthumbs.db
 
@@ -56,3 +56,43 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .gitignore.bak
+
+################C++##################
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app 
+
+## Microsoft Visual Studio
+#.sdf文件和ipch目录一般占用空间比较大，几十兆甚至上百兆，与智能提示、错误提示、代码恢复和团队本地仓库等相关
+ipch/
+*.sdf
+
+*.suo
+*.opensdf
+*.vcxproj.user
+
