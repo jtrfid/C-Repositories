@@ -190,6 +190,9 @@ BOOL CGarage_dialogDlg::OnInitDialog()
 	m_BTN_OK.SetWindowText(L"点击开始");
 	m_BTN_OK.EnableWindow(false);
 
+	printf("点击【开始】按钮，开始仿真...\n");
+	printf("点击门开关，进行开关门。\n");
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
