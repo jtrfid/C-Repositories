@@ -7,7 +7,7 @@ bool Lib_BeamBroken = false;     // 门下部的红外线探测到物体: true,停止关门动作;
 // 当前门的相对位置，门的下边沿距离地面的相对高度。
 // 门关闭时<=DoorTolerance, 打开时>=(DoorHeight-DoorTolerance)
 double Lib_CurrentDoorPosition = 0.0;  
-double Lib_Power;              // 直流电机功率，-1.0到1.0之间，设为1.0,车库门以最大速度上升;设为-1.0,车库门以最大速度下降。
+double Lib_Power = 0.0;   // 直流电机功率，-1.0到1.0之间，设为1.0,车库门以最大速度上升;设为-1.0,车库门以最大速度下降。
 
 /** \brief Function to determine if the garage simulator is currently running. */
 /**
