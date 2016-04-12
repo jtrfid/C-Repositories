@@ -48,7 +48,7 @@ extern "C" {
 
 /** \brief Distance from floor to floor in meters.
  */
-#define FloorSpacing 3.28
+#define Lib_FloorSpacing 3.28
 
 /** \brief Tolerance for a safe door opening.
  *
@@ -56,18 +56,40 @@ extern "C" {
  * a floor, the door opening is considered safe. Farther away and
  * we have a safety issue.
  */
-#define FloorTolerance 0.16
+#define Lib_FloorTolerance 0.16
+
+// 楼层数
+#define Lib_FloorNum 3
+
+// 电梯箱体下边沿距离地面的最大相对高度，即到达最顶层时，电梯箱体下边沿距离地面的相对高度
+#define Lib_MaxCarPosition Lib_FloorNum*Lib_FloorSpacing
+
+
+/************************************************************************/
+/* 电梯箱体状态                                                          */
+/************************************************************************/
+#define Idle        1
+#define MovingUp    2
+#define MovingDown  3
+#define DoorOpen    4
+#define DoorClosing 5
 
 /*******************************************************************************/
 /* 说明在ElevatorLib.cpp中定义的全局变量，作为Lib与mfc之间的共享的变量，进行信息传递。 */
 /*******************************************************************************/
 extern bool Lib_Running;       // 正在运行仿真: true; 否则false
+// 电梯箱体下边沿距离地面的相对高度,初始值0
+extern double Lib_CurrentCarPosition;
+// 电梯箱体速度，Up>0,Down<0
+extern double Lib_CurrentCarVelocity;
+// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降。
+extern double Lib_Power;
 //extern bool Lib_OpenDoorLight; 
 
 /************************************************************************/
-/*  在elevator.cpp中定义，实现状态机代码                                    */
+/*  在elevator.cpp中定义，实现状态机代码                                  */
 /************************************************************************/
-extern void main_control();
+extern void main_control(int *state);
 
 /*
  * Management

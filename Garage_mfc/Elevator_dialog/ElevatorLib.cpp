@@ -4,6 +4,12 @@
 
 
 bool Lib_Running = false; // 正在运行仿真: true; 否则false
+// 电梯箱体下边沿距离地面的相对高度,初始值0
+double Lib_CurrentCarPosition = 0;
+// 电梯箱体速度，Up>0,Down<0
+double Lib_CurrentCarVelocity = 0;
+// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降。
+extern double Lib_Power = 0.0;
 
 /** \brief Function to determine if the elevator simulator is currently running. */
 /**
@@ -426,7 +432,7 @@ void SetBrake(bool b)
  */
 void SetMotorPower(double power)
 {
-
+	Lib_Power = power;
 }
 
 /** \brief Get the absolute position of the elevator in meters.

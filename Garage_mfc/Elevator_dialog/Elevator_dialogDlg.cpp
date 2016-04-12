@@ -62,6 +62,8 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PicElevatorBackground, m_PicElevatorBackground);
 	DDX_Control(pDX, IDC_PicCar, m_PicCar);
+	DDX_Control(pDX, IDOK, m_BtnOK);
+	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -69,6 +71,8 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDOK, &CElevator_dialogDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CElevator_dialogDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -110,20 +114,44 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	// 放置电梯箱体和背景
 	RECT back,car;
 	m_PicElevatorBackground.GetClientRect(&back); 
-	printf("elevatorBackground=%d,%d,%d,%d\n",back.top,back.left,back.bottom,back.right); // 0,0,664,429
+	//printf("elevatorBackground=%d,%d,%d,%d\n",back.top,back.left,back.bottom,back.right); // 0,0,664,429
 	m_PicCar.GetClientRect(&car); 
-	printf("Car=%d,%d,%d,%d\n",car.top,car.left,car.bottom,car.right); // Car=0,0,166,83
+	//printf("Car=%d,%d,%d,%d\n",car.top,car.left,car.bottom,car.right); // Car=0,0,166,83
 	m_PicElevatorBackground.SetWindowPos(0,0,0,0,0,SWP_NOSIZE | SWP_NOZORDER);
-	// m_Car_x = (back.right-car.right)/2;
 	m_Car_x = 178 - car.right/2;
 	m_Car_y = (back.bottom-car.bottom);
 	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+	// 放置ok，cancel
+	RECT rectOk;
+	int x,y;
+	m_BtnOK.GetClientRect(&rectOk);
+	x = back.right+10;
+	y = back.bottom-10-rectOk.bottom;
+	m_BtnCancel.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	y = y - 10 - rectOk.bottom;
+	m_BtnOK.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+	// 放置主窗口
+	int cx,cy; // 包含窗口边框的窗口大小
+	cx = 5 + back.right + 10 + rectOk.right + 10 + 5; // 左右边框各5个像素
+	cy = 40 + back.bottom + 10 + 5; // 标题40，下边框 5
+	this->SetWindowPos(0,100,100,cx,cy,SWP_SHOWWINDOW | SWP_NOZORDER);
 
 	// 启动仿真时钟
 	m_Interval = 100;
 	SetTimer(ID_ClOCK_TIMER,m_Interval,NULL);
 
+	// 初始值
 	m_step = 10;
+	m_state = Idle;
+	m_CurrentCarPosition = 0;
+	m_MaxCarPosition = back.bottom - car.bottom;
+
+	// 开始仿真
+	printf("Elevator Startup\n");
+	ElevatorStartup();
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -177,24 +205,82 @@ HCURSOR CElevator_dialogDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-
-//void CAboutDlg::OnTimer(UINT_PTR nIDEvent)
-//{
-//	// TODO: 在此添加消息处理程序代码和/或调用默认值
-//
-//	CDialogEx::OnTimer(nIDEvent);
-//}
-
-
 void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	static int y = m_Car_y;
-	
-	if(y<0) y = 0;
-	else y =  y - m_step;
-	//m_PicCar.SetWindowPos(0,m_Car_x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
-	printf("y=%d\n",y);
+	if(!IsElevatorRunning()) return;
 
+	main_control(&m_state); // 电梯状态机
+	elevatorState(m_state); // 电梯状态动画仿真
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+// 电梯状态动画仿真
+void CElevator_dialogDlg::elevatorState(int state)
+{
+	printfState(state);
+	switch(state)
+	{
+	case Idle:
+		break;
+	case MovingUp:
+		break;
+	case MovingDown:
+		break;
+	case DoorOpen:
+		return;
+	case DoorClosing:
+		break;
+	default:
+		printf("没有这种状态!!!\n");  
+	}
+	
+	int step = Lib_Power*m_step;
+	m_CurrentCarPosition += step;
+	Lib_CurrentCarPosition = (Lib_MaxCarPosition/m_MaxCarPosition)*m_CurrentCarPosition;
+	Lib_CurrentCarVelocity = step/m_Interval;
+	
+	if(step == 0) return;
+	m_Car_y -= step;
+	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+}
+
+// 打印当前状态
+void CElevator_dialogDlg::printfState(int state)
+{
+	switch(state)
+	{
+	case Idle:
+		printf("Current State is Idle\n");
+		break;
+	case MovingUp:
+		printf("Current State is MovingUp\n");
+		break;
+	case MovingDown:
+		printf("Current State is MovingDown\n");
+		break;
+	case DoorOpen:
+		printf("Current State is DoorOpen\n");
+		break;
+	case DoorClosing:
+		printf("Current State is DoorClosing\n");
+		break;
+	default:
+		printf("不存在的状态!!!\n");
+		break;
+	}
+}
+
+
+void CElevator_dialogDlg::OnBnClickedOk()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CDialogEx::OnOK();
+}
+
+
+void CElevator_dialogDlg::OnBnClickedCancel()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CDialogEx::OnCancel();
 }
