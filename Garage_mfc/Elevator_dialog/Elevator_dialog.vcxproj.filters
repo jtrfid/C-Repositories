@@ -28,6 +28,69 @@
     <None Include="res\images\Car83_166.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\images\up1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\up2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\up3.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\down1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\down2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\down3.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\11.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\12.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\13.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\21.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\22.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\23.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\31.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\32.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\33.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\close1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\close2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\close3.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\open1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\open2.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\open3.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Elevator_dialog.h">
@@ -48,6 +111,9 @@
     <ClInclude Include="ElevatorLib.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LightBitmapButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Elevator_dialog.cpp">
@@ -63,6 +129,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ElevatorLib.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LightBitmapButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

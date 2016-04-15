@@ -97,13 +97,35 @@
     <None Include="ReadMe.txt" />
     <None Include="res\Elevator_dialog.ico" />
     <None Include="res\Elevator_dialog.rc2" />
+    <None Include="res\images\11.bmp" />
+    <None Include="res\images\12.bmp" />
+    <None Include="res\images\13.bmp" />
+    <None Include="res\images\21.bmp" />
+    <None Include="res\images\22.bmp" />
+    <None Include="res\images\23.bmp" />
+    <None Include="res\images\31.bmp" />
+    <None Include="res\images\32.bmp" />
+    <None Include="res\images\33.bmp" />
     <None Include="res\images\Car83_166.bmp" />
+    <None Include="res\images\close1.bmp" />
+    <None Include="res\images\close2.bmp" />
+    <None Include="res\images\close3.bmp" />
+    <None Include="res\images\down1.bmp" />
+    <None Include="res\images\down2.bmp" />
+    <None Include="res\images\down3.bmp" />
     <None Include="res\images\ElevatorBackground429_664.bmp" />
+    <None Include="res\images\open1.bmp" />
+    <None Include="res\images\open2.bmp" />
+    <None Include="res\images\open3.bmp" />
+    <None Include="res\images\up1.bmp" />
+    <None Include="res\images\up2.bmp" />
+    <None Include="res\images\up3.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ElevatorLib.h" />
     <ClInclude Include="Elevator_dialog.h" />
     <ClInclude Include="Elevator_dialogDlg.h" />
+    <ClInclude Include="LightBitmapButton.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -113,6 +135,7 @@
     <ClCompile Include="ElevatorLib.cpp" />
     <ClCompile Include="Elevator_dialog.cpp" />
     <ClCompile Include="Elevator_dialogDlg.cpp" />
+    <ClCompile Include="LightBitmapButton.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

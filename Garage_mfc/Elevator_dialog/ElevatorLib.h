@@ -62,7 +62,7 @@ extern "C" {
 #define Lib_FloorNum 3
 
 // 电梯箱体下边沿距离地面的最大相对高度，即到达最顶层时，电梯箱体下边沿距离地面的相对高度
-#define Lib_MaxCarPosition Lib_FloorNum*Lib_FloorSpacing
+#define Lib_MaxCarPosition (Lib_FloorNum-1)*Lib_FloorSpacing
 
 
 /************************************************************************/

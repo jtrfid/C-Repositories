@@ -64,6 +64,7 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PicCar, m_PicCar);
 	DDX_Control(pDX, IDOK, m_BtnOK);
 	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
+	//  DDX_Control(pDX, IDC_BtnUp1, m_BtnUp1);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -73,6 +74,8 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDOK, &CElevator_dialogDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CElevator_dialogDlg::OnBnClickedCancel)
+//	ON_BN_CLICKED(IDC_BtnUp1, &CElevator_dialogDlg::OnBnClickedBtnup1)
+//ON_BN_CLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnBnClickedBtnnum3)
 END_MESSAGE_MAP()
 
 
@@ -138,6 +141,73 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	cy = 40 + back.bottom + 10 + 5; // 标题40，下边框 5
 	this->SetWindowPos(0,100,100,cx,cy,SWP_SHOWWINDOW | SWP_NOZORDER);
 
+	// 1、2、3楼向上/下按钮
+	m_UpLight[0].SubclassDlgItem(IDC_BtnUp1,this);
+	m_DownLight[0].SubclassDlgItem(IDC_BtnDown1,this);
+	m_UpLight[1].SubclassDlgItem(IDC_BtnUp2,this);
+	m_DownLight[1].SubclassDlgItem(IDC_BtnDown2,this);
+	m_UpLight[2].SubclassDlgItem(IDC_BtnUp3,this);
+	m_DownLight[2].SubclassDlgItem(IDC_BtnDown3,this);
+	for(int i = 0; i < Lib_FloorNum; i++) {
+		m_UpLight[i].LoadBitmaps(IDB_Up1,IDB_Up2,IDB_Up3);
+		m_UpLight[i].SizeToContent();
+		m_DownLight[i].LoadBitmaps(IDB_Down1,IDB_Down2,IDB_Down3);
+		m_DownLight[i].SizeToContent();
+	}
+
+	RECT rectLight; // 灯的大小
+	m_UpLight[0].GetClientRect(&rectLight);
+	// 3楼
+	x = back.right - rectLight.right/2 - 50;
+	y = (back.bottom/3 - (rectLight.bottom + 2 + rectLight.bottom))/2;
+    m_UpLight[2].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+    m_DownLight[2].SetWindowPos(0,x,y+rectLight.bottom+2,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	// 2楼
+	y += back.bottom/3;
+	m_UpLight[1].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	m_DownLight[1].SetWindowPos(0,x,y+rectLight.bottom+2,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	// 1楼
+	y += back.bottom/3;
+	m_UpLight[0].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	m_DownLight[0].SetWindowPos(0,x,y+rectLight.bottom+2,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+	// 电梯内,1,2,3数字按钮
+	m_FloorNum[0].SubclassDlgItem(IDC_BtnNum1,this);
+	m_FloorNum[0].LoadBitmaps(IDB_12,IDB_11,IDB_13);
+	m_FloorNum[0].SizeToContent();
+	m_FloorNum[1].SubclassDlgItem(IDC_BtnNum2,this);
+	m_FloorNum[1].LoadBitmaps(IDB_22,IDB_21,IDB_23);
+	m_FloorNum[1].SizeToContent();
+	m_FloorNum[2].SubclassDlgItem(IDC_BtnNum3,this);
+	m_FloorNum[2].LoadBitmaps(IDB_32,IDB_31,IDB_33);
+	m_FloorNum[2].SizeToContent();
+
+	RECT rectNum;
+	m_FloorNum[0].GetClientRect(&rectNum);
+	x = 40; // 数字1的基： 50
+	y = back.bottom - 200; // 数字1的基：back.bottom - 200
+	m_FloorNum[0].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	y -= rectNum.bottom - 2;
+	m_FloorNum[1].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	y -= rectNum.bottom - 2;
+	m_FloorNum[2].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+	// 开关门
+	m_Open.SubclassDlgItem(IDC_BtnOpen,this);
+	m_Open.LoadBitmaps(IDB_Open1,IDB_Open2,IDB_Open3);
+	m_Open.SizeToContent();
+	m_Close.SubclassDlgItem(IDC_BtnClose,this);
+	m_Close.LoadBitmaps(IDB_Close1,IDB_Close2,IDB_Close3);
+	m_Close.SizeToContent();
+	
+	RECT rectOpen;
+	m_Open.GetClientRect(&rectOpen);
+	x = 40 + rectNum.right/2 - (rectOpen.right + 10);  // 数字1的基： 40
+	y  = back.bottom - 200 + rectNum.bottom + 2; // 数字1的基：back.bottom - 200
+	m_Open.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	x = 40 + rectNum.right/2 + 10;
+	m_Close.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER); 
+	
 	// 启动仿真时钟
 	m_Interval = 100;
 	SetTimer(ID_ClOCK_TIMER,m_Interval,NULL);
@@ -156,6 +226,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
+CBitmapButton m_btnX1;
 void CElevator_dialogDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
@@ -275,7 +346,13 @@ void CElevator_dialogDlg::printfState(int state)
 void CElevator_dialogDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CDialogEx::OnOK();
+	static bool b = false;
+	m_UpLight[0].EnableWindow(b);
+	m_FloorNum[0].EnableWindow(b);
+	m_UpLight[0].setLight(b);
+	m_UpLight[0].setLight(b);
+	b = !b;
+	//CDialogEx::OnOK();
 }
 
 
@@ -284,3 +361,16 @@ void CElevator_dialogDlg::OnBnClickedCancel()
 	// TODO: 在此添加控件通知处理程序代码
 	CDialogEx::OnCancel();
 }
+
+
+//void CElevator_dialogDlg::OnBnClickedBtnup1()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//
+//}
+
+
+//void CElevator_dialogDlg::OnBnClickedBtnnum3()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//}

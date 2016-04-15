@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <math.h>
 
 #include "ElevatorLib.h"
 
@@ -453,7 +454,7 @@ void SetMotorPower(double power)
  */
 double GetPosition()
 {
-	return 0.0;
+	return Lib_CurrentCarPosition;
 }
 
 /** \brief Get the velocity of the elevator in meters per second.
@@ -473,7 +474,7 @@ double GetPosition()
  */
 double GetVelocity()
 {
-	return 0.0;
+	return Lib_CurrentCarVelocity;
 }
 
 /** \brief Get the current floor the elevator is on as a floating point value.
@@ -488,7 +489,7 @@ double GetVelocity()
  */
 double GetFloor()
 {
-	return 0.0;
+	return (GetPosition() / Lib_FloorSpacing + 1);
 }
 
 /** \brief Get the nearest integer floor to the elevator.
@@ -504,7 +505,8 @@ double GetFloor()
  */
 int GetNearestFloor()
 {
-	return 0;
+	//return ceil(GetFloor());  // MovingUp
+	return floor(GetFloor());   // MovingDown; 
 }
 
 /** \brief Change the current number of passengers on the elevator.

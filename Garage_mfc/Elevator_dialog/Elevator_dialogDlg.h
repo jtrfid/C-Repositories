@@ -6,6 +6,7 @@
 #include "afxwin.h"
 
 #include "ElevatorLib.h"
+#include "LightBitmapButton.h"
 
 
 // CElevator_dialogDlg 对话框
@@ -61,4 +62,13 @@ public:
 	// 取消按钮
 	CButton m_BtnCancel;
 	afx_msg void OnBnClickedCancel();
+    // 电梯外，1、2、3楼向上/下按钮,表示Call Light
+	CLightBitmapButton m_UpLight[Lib_FloorNum];
+	CLightBitmapButton m_DownLight[Lib_FloorNum];
+
+	// 电梯内,1,2,3数字按钮,开关门
+	CLightBitmapButton m_FloorNum[Lib_FloorNum];
+    CLightBitmapButton m_Open;
+	CLightBitmapButton m_Close;
+
 };
