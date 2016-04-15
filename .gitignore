@@ -91,7 +91,7 @@ Temporary Items
 #.sdf文件和ipch目录一般占用空间比较大，几十兆甚至上百兆，与智能提示、错误提示、代码恢复和团队本地仓库等相关
 ipch/
 *.sdf
-
+*.asp
 *.suo
 *.opensdf
 *.vcxproj.user
