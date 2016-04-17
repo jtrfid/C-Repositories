@@ -20,7 +20,7 @@ CLightBitmapButton::~CLightBitmapButton()
 
 BEGIN_MESSAGE_MAP(CLightBitmapButton, CBitmapButton)
 	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONDBLCLK()
+    ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 // CLightBitmapButton 消息处理程序
@@ -29,15 +29,23 @@ END_MESSAGE_MAP()
 void CLightBitmapButton::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// 消息执行顺序：控件的消息执行在前，对话框的按钮命令执行在后。OnLButtonDblClk 消息会额外引起一次OnLButtonDown及其对话框按钮单击命令的发生。
+	// (1) CLightBitmapButton::OnLButtonDown
+	// (2) 对话框点击按钮命令BN_CLICKED，如，CElevator_dialogDlg::OnBnClickedBtnup1()
 	if(!m_LightOn) m_LightOn = true;
 	Invalidate(FALSE);
 	CBitmapButton::OnLButtonDown(nFlags, point);
 }
 
-// 双击左键
+// 双击左键，Light is off
 void CLightBitmapButton::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// 消息执行顺序： 控件的消息执行在前，对话框的按钮命令执行在后。OnLButtonDblClk 消息会额外引起一次OnLButtonDown及其对话框按钮单击命令的发生。
+	// (1) CLightBitmapButton::OnLButtonDown
+	// (2) 对话框点击按钮命令，如，CElevator_dialogDlg::OnBnClickedBtnup1()
+	// (3) CLightBitmapButton::OnLButtonDblClk()
+	// (4) 对话框双击按钮命令BN_DOUBLECLICKED，如，CElevator_dialogDlg::OnDoubleclickedBtnup1()
 	m_LightOn = false;
 	// Invalidate( BOOL bErase = TRUE );
 	// Invalidates the entire client area of CWnd
