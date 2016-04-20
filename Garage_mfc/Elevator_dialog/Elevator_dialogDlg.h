@@ -33,8 +33,7 @@ private:
    // 电梯箱体下边沿距离地面的相对高度,初始值0
    int m_CurrentCarPosition;
    // 电梯箱体下边沿距离地面的最大相对高度，即到达最顶层时，电梯箱体下边沿距离地面的相对高度
-   int m_MaxCarPosition;
-   
+   int m_MaxCarPosition; 
 
    // 打印当前状态
    void printfState(int state);
@@ -86,4 +85,7 @@ public:
 
 	// 接收消息，更新状态文本
     afx_msg LRESULT OnViewStatusMessage(WPARAM wParam,LPARAM lParam);
+
+	// 接收消息，开关门
+	afx_msg LRESULT OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam);
 };

@@ -36,9 +36,9 @@ bool IsgoingUp() {
 // 将将要到的楼层
 int Lib_WillToFloor = -1;
 
-// 开关门开始
+// 开关门开始，在mfc中维护
 bool Lib_StartDoorTimer = false;
-// 开关门结束
+// 开关门结束，在mfc中维护
 bool Lib_EndDoorTimer = false;
 
 /** \brief Function to determine if the elevator simulator is currently running. */
@@ -294,8 +294,10 @@ void SetDoor(int floor, bool open)
 {
 	// 需要一个定时器，表示开门过程
 	// 硬件(这里是mfc仿真程序)保证在开门时，电梯不能动
-	Lib_StartDoorTimer = true;
-	Lib_EndDoorTimer = false;
+	
+	// Lib_StartDoorTimer = true;  // 在mfc中维护
+	// Lib_EndDoorTimer = false;
+	OpenCloseDoor(floor,open);
 }
 
 /** \brief Determines if the elevator door is open.
@@ -842,4 +844,12 @@ void ViewStatus(CString status)
 {
      CString *msg =new CString(status);
 	 ::PostMessage(MAIN_WIN,WM_Status_MESSAGE,0,(LPARAM)msg);
+}
+
+// 向mfc发送消息,打开/关闭电梯门
+// floor: 表示操作门的楼层
+// Open = true;开门，否则关门
+void OpenCloseDoor(int floor,bool Open)
+{
+	::PostMessage(MAIN_WIN,WM_Door_MESSAGE,(WPARAM) floor,(LPARAM)Open);
 }

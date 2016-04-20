@@ -92,6 +92,7 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_BN_DOUBLECLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
 	ON_MESSAGE(WM_LIGHT_MESSAGE,&CElevator_dialogDlg::OnLightMessage)
     ON_MESSAGE(WM_Status_MESSAGE,&CElevator_dialogDlg::OnViewStatusMessage)
+	ON_MESSAGE(WM_Door_MESSAGE,&CElevator_dialogDlg::OnOpenCloseDoorMessage)
 END_MESSAGE_MAP()
 
 
@@ -303,20 +304,20 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	if(!IsElevatorRunning()) return;
 
-	// 启动开关门定时器
-	if(Lib_StartDoorTimer) {
-		Lib_StartDoorTimer = false; 
-		Lib_EndDoorTimer = false;
-		SetTimer(ID_Door_TIMER,1000,NULL); // 1000ms,1s
-	}
-
 	switch(nIDEvent) {
 	case ID_ClOCK_TIMER: // 动画仿真时钟
 		main_control(&m_state); // 电梯状态机
 		elevatorState(m_state); // 电梯状态动画仿真
 		break;
 	case ID_Door_TIMER: // 开关门计时器
+		Lib_StartDoorTimer = false;
 		Lib_EndDoorTimer = true;
+		CString str;
+		if(m_state == DoorOpen)
+		   str.Format(_T("[%d]楼开门结束"),GetNearestFloor());
+		else if(m_state == DoorClosing)
+           str.Format(_T("[%d]楼关门结束"),GetNearestFloor());
+		m_TxtStatus.SetWindowText(str);
 		KillTimer(ID_Door_TIMER);
 		break;
 	}
@@ -328,15 +329,6 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 void CElevator_dialogDlg::elevatorState(int state)
 {
 	//printfState(state);
-
-	/****************** 不合适，要改造
-	// 更新电梯内外按钮状态
-	for(int floor = 1; floor <= Lib_FloorNum; floor++) {	
-		m_UpLight[floor-1].setLight(GetCallLight(floor,true));
-		m_DownLight[floor-1].setLight(GetCallLight(floor,false));
-		m_FloorNum[floor-1].setLight(GetPanelFloorLight(floor));
-	}
-	***********************/
 	switch(state)
 	{
 	case Idle:
@@ -405,7 +397,7 @@ void CElevator_dialogDlg::OnBnClickedOk()
 	else SetMotorPower(1);
 	b = !b;
 	***/
-
+	SetTimer(ID_Door_TIMER,100,NULL);
 	//CDialogEx::OnOK();
 }
 
@@ -415,11 +407,6 @@ void CElevator_dialogDlg::OnBnClickedCancel()
 	// TODO: 在此添加控件通知处理程序代码
 	CDialogEx::OnCancel();
 }
-
-//void CElevator_dialogDlg::OnBnClickedBtnnum3()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//}
 
 // 设置电梯外各楼层的Up/Down按钮灯的状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnup1()
@@ -493,5 +480,27 @@ LRESULT CElevator_dialogDlg::OnViewStatusMessage(WPARAM wParam,LPARAM lParam)
 	m_TxtStatus.SetWindowText(*msg);
 
 	delete msg;
+	return 0;
+}
+
+// 接收消息开关门
+LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
+{
+	int floor = (int)wParam;
+	bool open = (bool)lParam;
+	CString str;
+
+	if(open) { // 开门，定时器启动
+		str.Format(_T("[%d]楼，开门..."),floor);	
+	}
+	else { // 关门，定时器启动
+		str.Format(_T("[%d]楼，关门..."),floor);	
+	}
+
+	Lib_StartDoorTimer = true; 
+	Lib_EndDoorTimer = false;
+	SetTimer(ID_Door_TIMER,1000,NULL); // 1000ms,1s
+	m_TxtStatus.SetWindowText(str);
+
 	return 0;
 }

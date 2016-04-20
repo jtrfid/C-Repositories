@@ -48,13 +48,20 @@ void StateMovingUp(int *state)
 
 	printf("%d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 	if(fabs(GetFloor() - floor) < 0.01) {
+		CString status;
+		status.Format(_T("到[%d]楼啦！\n"),floor);
+		ViewStatus(status);
+
 		printf("到[%d]楼啦！\n",floor);
 		// 电梯外UP， Call Light Off
 		SetCallLight(floor,true,false);
 		// 电梯内楼层号Floor Light Off
 		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);
-		*state = Idle;
+		
+		// 开门
+		SetDoor(floor,true);
+		*state = DoorOpen;
 	}
 
 	/**
@@ -83,7 +90,10 @@ void StateMovingDown(int *state)
 		// 电梯内楼层号Floor Light Off
 		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);
-		*state = Idle;
+
+		// 开门
+		SetDoor(floor,true);
+		*state = DoorOpen;
 	}
 
 	/***
@@ -100,8 +110,14 @@ void StateMovingDown(int *state)
  **********************************************/
 void StateDoorOpen(int *state)
 {
-	// 启动定时器，自动关门
-	*state = DoorClosing;
+	int floor = GetNearestFloor();
+	// 如果开门结束，进入关门状态
+	if(IsDoorOpen(floor))
+	{
+		// 关门
+		SetDoor(floor,false);
+		*state = DoorClosing;
+	} 
 }
 
 /********************************************
@@ -109,7 +125,11 @@ void StateDoorOpen(int *state)
  ********************************************/
 void StateDoorClosing(int *state)
 {
-	*state = Idle;
+	// 如果关门结束，到空闲状态，判断下一步的走向
+	if(IsDoorClosed(GetNearestFloor()))
+	{
+		*state = Idle;
+	} 
 }
 
 /***********************************************

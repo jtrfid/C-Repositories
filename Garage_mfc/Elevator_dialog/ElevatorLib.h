@@ -81,6 +81,13 @@ extern void postToMfc(int type,int floor,bool LightOn,bool up);
 #define WM_Status_MESSAGE (WM_USER+200)
 extern void ViewStatus(CString status);
 
+// 向mfc发送消息,打开/关闭电梯门
+#define WM_Door_MESSAGE (WM_USER+300)
+
+// floor: 表示操作门的楼层
+// Open = true;开门，否则关门
+extern void OpenCloseDoor(int floor,bool Open);
+
 // 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
 extern HWND MAIN_WIN;
 
