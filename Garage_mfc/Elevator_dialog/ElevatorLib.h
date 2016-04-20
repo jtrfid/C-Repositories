@@ -64,6 +64,21 @@ extern "C" {
 // 电梯箱体下边沿距离地面的最大相对高度，即到达最顶层时，电梯箱体下边沿距离地面的相对高度
 #define Lib_MaxCarPosition (Lib_FloorNum-1)*Lib_FloorSpacing
 
+// 向mfc发送消息,更新电梯内外按钮灯的状态
+#define WM_LIGHT_MESSAGE (WM_USER+100)
+typedef struct  
+{
+	int type;  // 1: 表示电梯内楼层按钮灯(PanelFloorLight), 2: 表示电梯内开关门按钮灯, 3: 表示电梯外Up/Down按钮灯(Call Light)
+	int floor; // 楼层号
+	bool LightOn; // true: 按钮灯On， false: 按钮能Off
+	bool up;   // true: Up按钮灯，false: Down按钮灯; 电梯外Up/Down有此项
+}Light_Msg;
+
+// 向mfc发送消息,更新电梯内外按钮灯的状态
+extern void postToMfc(int type,int floor,bool LightOn,bool up);
+
+// 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
+extern HWND MAIN_WIN;
 
 /************************************************************************/
 /* 电梯箱体状态                                                          */
@@ -84,7 +99,32 @@ extern double Lib_CurrentCarPosition;
 extern double Lib_CurrentCarVelocity;
 // 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降。
 extern double Lib_Power;
-//extern bool Lib_OpenDoorLight; 
+// 门内: 开、关门按钮灯
+extern bool Lib_OpenDoorLight; 
+extern bool Lib_CloseDoorLight;
+// 门内: 楼层按钮灯,数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
+extern bool Lib_PanelFloorLight[Lib_FloorNum];
+// 门外: Up/Down按钮灯(CallLight),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
+extern bool Lib_CallLightUp[Lib_FloorNum];
+extern bool Lib_CallLightDown[Lib_FloorNum];
+
+// 电梯前一个运动状态是上升(true)还是下降(false)，
+// IsgongUp()函数中，如果在1楼，Lib_gongUp=true; 如果在最高楼，Lib_gongUp=false；
+// 在mfc仿真程序中维护该值，MovingUp/MovingDown中设置该值
+// 在elevator.cpp中读取该值，函数IsgoingUp()返回该值。
+extern bool Lib_goingUp;
+extern bool IsgoingUp();
+
+// 开关门开始
+extern bool Lib_StartDoorTimer;
+// 开关门结束
+extern bool Lib_EndDoorTimer;
+
+/////////////////// 待处理
+// 电梯正在运行的方向: true: Uping,上升; false: Down,下降 
+extern bool Lib_Uping;
+// 电梯经过的楼层或正在停留的楼层
+extern int Lib_FloorArrived;
 
 /************************************************************************/
 /*  在elevator.cpp中定义，实现状态机代码                                  */
@@ -588,7 +628,23 @@ extern double GetTimer();
  * in the up direction, then down. If no floors are selected, the function returns
  * a value of -1. Return values for floors are 1, 2, or 3.
  */
-extern int WhatFloorToGoTo(bool up);
+//extern int WhatFloorToGoTo(bool up);
+/************************************************************************
+ *  电梯处于空闲状态, 确定下一步的运动方向和所到楼层
+ *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
+ *  返回要到的楼层，否则返回-1
+ ************************************************************************/
+extern int WhatFloorToGoTo(bool *up);
+
+/************************************************************************
+ * 上行要到的楼层，否则返回-1
+ ***********************************************************************/
+extern int GoingUpToFloor();
+
+/************************************************************************
+ * 下行要到的楼层，否则返回-1
+ ***********************************************************************/
+extern int GoingDownToFloor();
 
 /** \brief Determine what floor the elevator should be going to when traveling
  * in a certain direction.
@@ -615,7 +671,8 @@ extern int WhatFloorToGoTo(bool up);
  * in the up direction. If no floors are selected, the function returns
  * a value of -1. Return values for floors are 1, 2, or 3.
  */
-extern int WhatFloorToGoToInThisDirection(bool up);
+//extern int WhatFloorToGoToInThisDirection(bool up);
+extern int WhatFloorToGoToInThisDirection();
 
 #ifdef __cplusplus
 }

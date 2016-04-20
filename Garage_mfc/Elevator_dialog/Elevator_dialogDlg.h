@@ -8,7 +8,6 @@
 #include "ElevatorLib.h"
 #include "LightBitmapButton.h"
 
-
 // CElevator_dialogDlg 对话框
 class CElevator_dialogDlg : public CDialogEx
 {
@@ -35,6 +34,7 @@ private:
    int m_CurrentCarPosition;
    // 电梯箱体下边沿距离地面的最大相对高度，即到达最顶层时，电梯箱体下边沿距离地面的相对高度
    int m_MaxCarPosition;
+   
 
    // 打印当前状态
    void printfState(int state);
@@ -48,6 +48,7 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	// 电梯背景
@@ -62,6 +63,7 @@ public:
 	// 取消按钮
 	CButton m_BtnCancel;
 	afx_msg void OnBnClickedCancel();
+
     // 电梯外，1、2、3楼向上/下按钮,表示Call Light
 	CLightBitmapButton m_UpLight[Lib_FloorNum];
 	CLightBitmapButton m_DownLight[Lib_FloorNum];
@@ -70,5 +72,13 @@ public:
 	CLightBitmapButton m_FloorNum[Lib_FloorNum];
     CLightBitmapButton m_Open;
 	CLightBitmapButton m_Close;
+	afx_msg void OnDoubleclickedBtnnum1();
 
+	// 设置电梯外各楼层的Up/Down按钮灯的状态
+	afx_msg void OnBnClickedBtnup1();
+	afx_msg void OnDoubleclickedBtnup1();
+	afx_msg void OnClickedBtnnum1();
+	
+	// 更新电梯内外按钮灯状态
+	//afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
 };

@@ -6,6 +6,7 @@
 #include "Elevator_dialog.h"
 #include "Elevator_dialogDlg.h"
 #include "afxdialogex.h"
+#include <math.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,9 +49,6 @@ END_MESSAGE_MAP()
 
 // CElevator_dialogDlg 对话框
 
-
-
-
 CElevator_dialogDlg::CElevator_dialogDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CElevator_dialogDlg::IDD, pParent)
 {
@@ -64,7 +62,6 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PicCar, m_PicCar);
 	DDX_Control(pDX, IDOK, m_BtnOK);
 	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
-	//  DDX_Control(pDX, IDC_BtnUp1, m_BtnUp1);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -74,8 +71,25 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDOK, &CElevator_dialogDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CElevator_dialogDlg::OnBnClickedCancel)
-//	ON_BN_CLICKED(IDC_BtnUp1, &CElevator_dialogDlg::OnBnClickedBtnup1)
-//ON_BN_CLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnBnClickedBtnnum3)
+    ON_BN_CLICKED(IDC_BtnUp1, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnUp2, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnUp3, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnDown1, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnDown2, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnDown3, &CElevator_dialogDlg::OnBnClickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnUp1, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnUp2, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnUp3, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnDown1, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnDown2, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_DOUBLECLICKED(IDC_BtnDown3, &CElevator_dialogDlg::OnDoubleclickedBtnup1)
+	ON_BN_CLICKED(IDC_BtnNum1, &CElevator_dialogDlg::OnClickedBtnnum1)
+	ON_BN_CLICKED(IDC_BtnNum2, &CElevator_dialogDlg::OnClickedBtnnum1)
+	ON_BN_CLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnClickedBtnnum1)
+	ON_BN_DOUBLECLICKED(IDC_BtnNum1, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
+	ON_BN_DOUBLECLICKED(IDC_BtnNum2, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
+	ON_BN_DOUBLECLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
+	ON_MESSAGE(WM_LIGHT_MESSAGE,&CElevator_dialogDlg::OnLightMessage)
 END_MESSAGE_MAP()
 
 
@@ -184,7 +198,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	RECT rectNum;
 	m_FloorNum[0].GetClientRect(&rectNum);
-	x = 40; // 数字1的基： 50
+	x = 40; // 数字1的基： 40
 	y = back.bottom - 200; // 数字1的基：back.bottom - 200
 	m_FloorNum[0].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	y -= rectNum.bottom - 2;
@@ -218,6 +232,10 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_CurrentCarPosition = 0;
 	m_MaxCarPosition = back.bottom - car.bottom;
 
+	// 本窗口句柄，在Elevator.h被定义
+	MAIN_WIN = this->GetSafeHwnd();
+
+	
 	// 开始仿真
 	printf("Elevator Startup\n");
 	ElevatorStartup();
@@ -280,23 +298,50 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	if(!IsElevatorRunning()) return;
 
-	main_control(&m_state); // 电梯状态机
-	elevatorState(m_state); // 电梯状态动画仿真
+	// 启动开关门定时器
+	if(Lib_StartDoorTimer) {
+		Lib_StartDoorTimer = false; 
+		Lib_EndDoorTimer = false;
+		SetTimer(ID_Door_TIMER,1000,NULL); // 1000ms,1s
+	}
+
+	switch(nIDEvent) {
+	case ID_ClOCK_TIMER: // 动画仿真时钟
+		main_control(&m_state); // 电梯状态机
+		elevatorState(m_state); // 电梯状态动画仿真
+		break;
+	case ID_Door_TIMER: // 开关门计时器
+		Lib_EndDoorTimer = true;
+		KillTimer(ID_Door_TIMER);
+		break;
+	}
+	
 	CDialogEx::OnTimer(nIDEvent);
 }
 
 // 电梯状态动画仿真
 void CElevator_dialogDlg::elevatorState(int state)
 {
-	printfState(state);
+	//printfState(state);
+
+	/****************** 不合适，要改造
+	// 更新电梯内外按钮状态
+	for(int floor = 1; floor <= Lib_FloorNum; floor++) {	
+		m_UpLight[floor-1].setLight(GetCallLight(floor,true));
+		m_DownLight[floor-1].setLight(GetCallLight(floor,false));
+		m_FloorNum[floor-1].setLight(GetPanelFloorLight(floor));
+	}
+	***********************/
 	switch(state)
 	{
 	case Idle:
 		break;
 	case MovingUp:
+		Lib_goingUp = true;
 		break;
 	case MovingDown:
 		break;
+		Lib_goingUp = false;
 	case DoorOpen:
 		return;
 	case DoorClosing:
@@ -308,8 +353,11 @@ void CElevator_dialogDlg::elevatorState(int state)
 	int step = Lib_Power*m_step;
 	m_CurrentCarPosition += step;
 	Lib_CurrentCarPosition = (Lib_MaxCarPosition/m_MaxCarPosition)*m_CurrentCarPosition;
-	Lib_CurrentCarVelocity = step/m_Interval;
-	
+	Lib_CurrentCarVelocity = (Lib_MaxCarPosition/m_MaxCarPosition)*step/(m_Interval*1000);
+
+	//printf("Velocity=%f\n",Lib_CurrentCarVelocity);
+	//printf("%f,%d\n",GetFloor(),GetNearestFloor());
+
 	if(step == 0) return;
 	m_Car_y -= step;
 	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
@@ -346,12 +394,13 @@ void CElevator_dialogDlg::printfState(int state)
 void CElevator_dialogDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	/**
 	static bool b = false;
-	m_UpLight[0].EnableWindow(b);
-	m_FloorNum[0].EnableWindow(b);
-	m_UpLight[0].setLight(b);
-	m_UpLight[0].setLight(b);
+	if (!b) SetMotorPower(0);
+	else SetMotorPower(1);
 	b = !b;
+	***/
+
 	//CDialogEx::OnOK();
 }
 
@@ -362,15 +411,71 @@ void CElevator_dialogDlg::OnBnClickedCancel()
 	CDialogEx::OnCancel();
 }
 
-
-//void CElevator_dialogDlg::OnBnClickedBtnup1()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//
-//}
-
-
 //void CElevator_dialogDlg::OnBnClickedBtnnum3()
 //{
 //	// TODO: 在此添加控件通知处理程序代码
 //}
+
+// 设置电梯外各楼层的Up/Down按钮灯的状态，如果当前Light is Off, 置为on;否则保持现状。
+void CElevator_dialogDlg::OnBnClickedBtnup1()
+{
+	// 消息执行顺序：
+	// (1) CLightBitmapButton::OnLButtonDown
+	// (2) 对话框点击按钮命令，如，CElevator_dialogDlg::OnBnClickedBtnup1()
+	for(int floor = 1; floor <= Lib_FloorNum; floor++){
+		SetCallLight(floor,true,m_UpLight[floor-1].getLight());
+		SetCallLight(floor,false,m_DownLight[floor-1].getLight());
+	}
+}
+
+// 设置电梯外各楼层的Up/Down按钮灯的状态, Light Off
+void CElevator_dialogDlg::OnDoubleclickedBtnup1()
+{
+	// 消息执行顺序：
+	// (1) CLightBitmapButton::OnLButtonDown
+	// (2) 对话框点击按钮命令，如，CElevator_dialogDlg::OnBnClickedBtnup1()
+	// (3) CLightBitmapButton::OnLButtonDblClk()
+	// (4) 对话框双击按钮命令BN_DOUBLECLICKED，如，CElevator_dialogDlg::OnDoubleclickedBtnup1()
+	for(int floor = 1; floor <= Lib_FloorNum; floor++){
+		SetCallLight(floor,true,m_UpLight[floor-1].getLight());
+		SetCallLight(floor,false,m_DownLight[floor-1].getLight());
+	}
+}
+
+// 设置门内楼层按钮的状态，如果当前Light is Off, 置为on;否则保持现状。
+void CElevator_dialogDlg::OnClickedBtnnum1()
+{
+	for(int floor = 1; floor <= Lib_FloorNum; floor++){
+		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());
+	}
+}
+
+// 设置门内楼层按钮的状态，, Light Off
+void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
+{
+	for(int floor = 1; floor <= Lib_FloorNum; floor++){
+		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());
+	}
+}
+
+// 更新电梯内外按钮灯状态
+LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
+{
+	Light_Msg *msg = (Light_Msg*)lParam;
+	printf("msg:%d,%d,%d,%d\n",msg->type,msg->floor,msg->up,msg->LightOn);
+
+	if(msg->type == 1) // 电梯内按钮灯
+	{
+		m_FloorNum[msg->floor-1].setLight(msg->LightOn);
+	}
+	if(msg->type == 3) // 表示电梯外Up/Down按钮灯
+	{
+		if(msg->up)
+			m_UpLight[msg->floor-1].setLight(msg->LightOn);
+		else
+			m_DownLight[msg->floor-1].setLight(msg->LightOn);
+	}
+
+	delete msg;
+	return 0;
+}

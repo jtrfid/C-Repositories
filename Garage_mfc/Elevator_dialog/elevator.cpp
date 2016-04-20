@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "ElevatorLib.h"
 
@@ -20,15 +21,47 @@
  **********************************************/
 void StateIdle(int *state)
 {
-	SetMotorPower(1);
-	*state = MovingUp;
+	int floor;
+	bool up;
+	
+	floor = WhatFloorToGoTo(&up);
+	if(floor > 0)
+	   printf("到楼层:%d,方向:%s\n",floor,up?"向上":"向下");
+
+	if (floor > 0) {
+		if (up) {
+			SetMotorPower(1);
+			*state = MovingUp;
+		}
+		else {
+			SetMotorPower(-1);
+			*state = MovingDown;
+		}
+	} 
+	
 }
 
 void StateMovingUp(int *state)
 {
-	if(Lib_CurrentCarPosition >= Lib_MaxCarPosition - Lib_FloorTolerance) {
+	static int floor = -1;
+	if (floor == -1) floor = GoingUpToFloor();
+	double distance = GetFloor();
+
+	printf("%d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
+	if(GetFloor() > floor) {
+		printf("到[%d]楼啦！\n",floor);
+		// 电梯外Call Light Off
+		SetCallLight(floor,true,false);
+		// 电梯内楼层号Floor Light Off
+		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);
 		*state = Idle;
+	}
+
+	if(Lib_CurrentCarPosition >= Lib_MaxCarPosition - Lib_FloorTolerance) {
+		printf("到3楼啦，往下走吧！\n");
+		SetMotorPower(-1);
+		*state = MovingDown;
 	}
 }
 

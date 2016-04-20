@@ -3,6 +3,8 @@
 
 #include "ElevatorLib.h"
 
+// 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
+HWND MAIN_WIN;
 
 bool Lib_Running = false; // 正在运行仿真: true; 否则false
 // 电梯箱体下边沿距离地面的相对高度,初始值0
@@ -10,7 +12,31 @@ double Lib_CurrentCarPosition = 0;
 // 电梯箱体速度，Up>0,Down<0
 double Lib_CurrentCarVelocity = 0;
 // 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降。
-extern double Lib_Power = 0.0;
+double Lib_Power = 0.0;
+// 门内: 开、关门按钮灯
+bool Lib_OpenDoorLight = false; 
+bool Lib_CloseDoorLight = false;
+// 门内: 楼层按钮灯,数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
+bool Lib_PanelFloorLight[Lib_FloorNum] = {false,false,false};
+// 门外: Up/Down按钮灯(CallLight),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
+bool Lib_CallLightUp[Lib_FloorNum] = {false,false,false};
+bool Lib_CallLightDown[Lib_FloorNum] = {false,false,false};
+
+// 电梯前一个运动状态是上升(true)还是下降(false)，
+// IsgongUp()函数中，如果在1楼，Lib_gongUp=true; 如果在最高楼，Lib_gongUp=false；
+// 在mfc仿真程序中维护该值，MovingUp/MovingDown中设置该值
+// 在elevator.cpp中读取该值，函数IsgoingUp()返回该值。
+bool Lib_goingUp = true;
+bool IsgoingUp() {
+	if(GetNearestFloor() == 1) Lib_goingUp = true;
+	else if (GetNearestFloor() == Lib_FloorNum) Lib_goingUp = false; 
+	return Lib_goingUp;
+}
+
+// 开关门开始
+bool Lib_StartDoorTimer = false;
+// 开关门结束
+extern bool Lib_EndDoorTimer = false;
 
 /** \brief Function to determine if the elevator simulator is currently running. */
 /**
@@ -70,7 +96,7 @@ void ElevatorShutdown()
  */
 void SetCloseDoorLight(bool s)
 {
-
+	Lib_CloseDoorLight = s;
 }
 
 /** \brief Get the status of the close door light on the panel in the elevator car.
@@ -88,7 +114,7 @@ void SetCloseDoorLight(bool s)
  */
 bool GetCloseDoorLight()
 {
-   return false;
+   return Lib_CloseDoorLight;
 }
 
 /** \brief Set the status of the open door light on the panel in the elevator car.
@@ -102,7 +128,7 @@ bool GetCloseDoorLight()
  */
 void SetOpenDoorLight(bool s)
 {
-
+	Lib_OpenDoorLight = s;
 }
 
 /** \brief Get the status of the open door light on the panel in the elevator car.
@@ -120,7 +146,7 @@ void SetOpenDoorLight(bool s)
  */
 bool GetOpenDoorLight()
 {
-	return false;
+	return Lib_OpenDoorLight;
 }
 
 
@@ -136,7 +162,9 @@ bool GetOpenDoorLight()
  */
 void SetPanelFloorLight(int floor, bool s)
 {
-	//Lib_OpenDoorLight
+	Lib_PanelFloorLight[floor-1] = s;
+	// 向mfc发送消息，更新电梯内外按钮灯状态
+	postToMfc(1,floor,s,0);
 }
 
 /** \brief Get the status of the floor select light on the panel in the elevator car.
@@ -155,7 +183,7 @@ void SetPanelFloorLight(int floor, bool s)
  */
 bool GetPanelFloorLight(int floor)
 {
-	return 0;
+	return Lib_PanelFloorLight[floor-1];
 }
 
 /** \brief Set the status of a call button light for a floor.
@@ -172,7 +200,10 @@ bool GetPanelFloorLight(int floor)
  */
 void SetCallLight(int floor, bool up, bool s)
 {
-
+	if(up) Lib_CallLightUp[floor-1] = s;
+	else Lib_CallLightDown[floor-1] = s;
+	// 向mfc发送消息，更新电梯内外按钮灯状态
+	postToMfc(3,floor,s,up);
 }
 
 /** \brief Get the status of a call button light for a floor.
@@ -193,7 +224,8 @@ void SetCallLight(int floor, bool up, bool s)
  */
 bool GetCallLight(int floor, bool up)
 {
-	return 0;
+	if(up) return Lib_CallLightUp[floor-1];
+	else return Lib_CallLightDown[floor-1];
 }
 
 /** \brief Set the status of a door indicator for a floor.
@@ -257,7 +289,10 @@ bool GetDoorIndicator(int floor, bool up)
  */
 void SetDoor(int floor, bool open)
 {
-
+	// 需要一个定时器，表示开门过程
+	// 硬件(这里是mfc仿真程序)保证在开门时，电梯不能动
+	Lib_StartDoorTimer = true;
+	Lib_EndDoorTimer = false;
 }
 
 /** \brief Determines if the elevator door is open.
@@ -270,7 +305,8 @@ void SetDoor(int floor, bool open)
  */
 bool IsDoorOpen(int floor)
 {
-	return 0;
+	// 表示开门过程结束，门是开的
+	return Lib_EndDoorTimer;
 }
 
 /** \brief Determines if the elevator door is closed.
@@ -283,7 +319,7 @@ bool IsDoorOpen(int floor)
  */
 bool IsDoorClosed(int floor)
 {
-	return 0;
+	return Lib_EndDoorTimer;
 }
 
 /*
@@ -505,8 +541,10 @@ double GetFloor()
  */
 int GetNearestFloor()
 {
-	//return ceil(GetFloor());  // MovingUp
-	return floor(GetFloor());   // MovingDown; 
+	//printf("%f,%f,%f,%f\n",floor(1.2),ceil(1.2),floor(1.5),ceil(1.5));     // 1,2,1,2
+	//printf("%f,%f,%f,%f\n",floor(-1.2),ceil(-1.2),floor(-1.5),ceil(-1.5)); // -2,-1,-2,-1
+	//return (int)floor(GetFloor()+0.5); // 四舍五入
+	return (int)GetFloor();
 }
 
 /** \brief Change the current number of passengers on the elevator.
@@ -594,9 +632,106 @@ double GetTimer()
  * in the up direction, then down. If no floors are selected, the function returns
  * a value of -1. Return values for floors are 1, 2, or 3.
  */
-int WhatFloorToGoTo(bool up)
+// int WhatFloorToGoTo(bool up)
+/************************************************************************
+ *  电梯处于空闲状态, 确定下一步的运动方向和所到楼层
+ *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
+ *  返回要到的楼层，否则返回-1
+ ************************************************************************/
+int WhatFloorToGoTo(bool *up)
 {
-	return 0;
+	int ret;
+	bool goingUp = IsgoingUp();
+
+	*up = goingUp;
+	if(goingUp) {  // 向上
+		ret = GoingUpToFloor();
+		if(ret < 0) { // 只能改变方向转而向下
+			ret = GoingDownToFloor(); 
+			*up = !goingUp;
+		}
+	}
+	else {  //向下
+		ret = GoingDownToFloor();
+		if(ret < 0) { // 只能改变方向转而向上
+			ret = GoingUpToFloor(); 
+			*up = !goingUp;
+		}
+	}
+
+	return ret;
+}
+
+/************************************************************************
+ * 上行要到的楼层，否则返回-1
+ ***********************************************************************/
+int GoingUpToFloor()
+{
+	int floor,ret1, ret2,ret;
+
+	// 已经是最高楼了, 不用再上了
+	if (GetNearestFloor() == Lib_FloorNum)
+	{
+		return -1;
+	}
+
+	ret1 = -1, ret2 = -1,ret = -1;
+	// 检查门内楼层按钮，当前楼层以【上】是否有要到的楼层
+	for(floor = GetNearestFloor() + 1; floor <= Lib_FloorNum; floor++) {
+		if(GetPanelFloorLight(floor)) { ret1 = floor; break; }
+	}
+	// 检查门外Up按钮（Call Light）,当前楼层以【上】是否有请求
+	for(floor = GetNearestFloor() + 1; floor <= Lib_FloorNum; floor++) {
+		if(GetCallLight(floor,true)) { ret2 = floor; break; }
+	}
+	// 如果以上满足，取最近者（小者）
+	if (ret1 > 0 && ret2 > 0) ret = ret1 < ret2 ? ret1 : ret2;
+	else if(ret1 > 0 && ret2 < 0) ret = ret1;
+	else if(ret1 < 0 && ret2 > 0) ret = ret2;
+	else ret = -1; // 都不满足
+	if(ret > 0) return ret;
+
+	// 检查门外Down按钮（Call Light）,当前楼层以【上】是否有请求
+	for(floor = GetNearestFloor() + 1; floor <= Lib_FloorNum; floor++) {
+		if(GetCallLight(floor,false)) { ret = floor; break; }
+	}
+
+	return ret;
+}
+
+/************************************************************************
+ * 下行要到的楼层，否则返回-1
+ ***********************************************************************/
+int GoingDownToFloor()
+{
+	int floor,ret1, ret2, ret;
+
+	// 已经是最高楼了, 不用再下了
+	if (GetNearestFloor() == 1)
+	{
+		return -1;
+	}
+
+	ret1 = -1, ret2 = -1; ret = -1;
+	// 检查门内按钮，当前楼层以【下】是否有要到的楼层
+	for(floor = GetNearestFloor() - 1; floor >= 1; floor--) {
+		if(GetPanelFloorLight(floor)) { ret1 = floor; break; }
+	}
+	// 检查门外Down按钮（Call Light）,当前楼层以【下】是否有请求
+	for(floor = GetNearestFloor() - 1; floor >= 1; floor--) {
+		if(GetCallLight(floor,false)) { ret2 = floor; break; }
+	}
+	
+	// 如果以上满足，取最近者(大者)
+	if (ret1 < 0 && ret2 < 0) ret = -1;
+	else return (ret1 > ret2 ? ret1 : ret2);
+
+	// 检查门外Up按钮（Call Light）,当前楼层以【下】是否有请求
+	for(floor = GetNearestFloor() - 1; floor >= 1; floor--) {
+		if(GetCallLight(floor,true)) { ret = floor; break; }
+	}
+
+	return ret;
 }
 
 /** \brief Determine what floor the elevator should be going to when traveling
@@ -627,4 +762,21 @@ int WhatFloorToGoTo(bool up)
 int WhatFloorToGoToInThisDirection(bool up)
 {
 	return 0;
+}
+
+/**
+ * 向mfc发送消息,更新电梯内外按钮灯的状态
+ * int type;  // 1: 表示电梯内楼层按钮灯, 2: 表示电梯内开关门按钮灯, 3: 表示电梯外Up/Down按钮灯
+ * int floor; // 楼层号
+ * bool LightOn; // true: 按钮灯On， false: 按钮能Off
+ * bool up;   // true: Up按钮灯，false: Down按钮灯; 电梯外Up/Down有此项                                                                 
+ */
+void postToMfc(int type,int floor,bool LightOn,bool up) 
+{
+	Light_Msg *msg = new Light_Msg();
+	msg->type = type;
+	msg->floor = floor;
+	msg->up = up;
+	msg->LightOn = LightOn;
+	::PostMessage(MAIN_WIN,WM_LIGHT_MESSAGE,0,(LPARAM)msg);
 }
