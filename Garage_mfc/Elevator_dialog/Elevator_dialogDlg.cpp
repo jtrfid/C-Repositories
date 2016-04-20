@@ -62,6 +62,7 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PicCar, m_PicCar);
 	DDX_Control(pDX, IDOK, m_BtnOK);
 	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
+	DDX_Control(pDX, IDC_TxtStatus, m_TxtStatus);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -90,6 +91,7 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_BN_DOUBLECLICKED(IDC_BtnNum2, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
 	ON_BN_DOUBLECLICKED(IDC_BtnNum3, &CElevator_dialogDlg::OnDoubleclickedBtnnum1)
 	ON_MESSAGE(WM_LIGHT_MESSAGE,&CElevator_dialogDlg::OnLightMessage)
+    ON_MESSAGE(WM_Status_MESSAGE,&CElevator_dialogDlg::OnViewStatusMessage)
 END_MESSAGE_MAP()
 
 
@@ -149,6 +151,9 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	y = y - 10 - rectOk.bottom;
 	m_BtnOK.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
+	// 状态文本
+	m_TxtStatus.SetWindowPos(0,x,5,rectOk.right,rectOk.bottom*2,SWP_SHOWWINDOW | SWP_NOZORDER);
+
 	// 放置主窗口
 	int cx,cy; // 包含窗口边框的窗口大小
 	cx = 5 + back.right + 10 + rectOk.right + 10 + 5; // 左右边框各5个像素
@@ -206,7 +211,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	y -= rectNum.bottom - 2;
 	m_FloorNum[2].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
-	// 开关门
+	// 开关门按钮
 	m_Open.SubclassDlgItem(IDC_BtnOpen,this);
 	m_Open.LoadBitmaps(IDB_Open1,IDB_Open2,IDB_Open3);
 	m_Open.SizeToContent();
@@ -458,7 +463,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 	}
 }
 
-// 更新电梯内外按钮灯状态
+// 接收消息，更新电梯内外按钮灯状态
 LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 {
 	Light_Msg *msg = (Light_Msg*)lParam;
@@ -475,6 +480,17 @@ LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 		else
 			m_DownLight[msg->floor-1].setLight(msg->LightOn);
 	}
+
+	delete msg;
+	return 0;
+}
+
+
+// 接收消息，更新状态文本
+LRESULT CElevator_dialogDlg::OnViewStatusMessage(WPARAM wParam,LPARAM lParam)
+{
+	CString *msg = (CString *)lParam;
+	m_TxtStatus.SetWindowText(*msg);
 
 	delete msg;
 	return 0;

@@ -48,7 +48,6 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	// 电梯背景
@@ -79,6 +78,12 @@ public:
 	afx_msg void OnDoubleclickedBtnup1();
 	afx_msg void OnClickedBtnnum1();
 	
-	// 更新电梯内外按钮灯状态
-	//afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
+	// 接收消息，更新电梯内外按钮灯状态
+	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
+
+	// 状态文本
+	CStatic m_TxtStatus;
+
+	// 接收消息，更新状态文本
+    afx_msg LRESULT OnViewStatusMessage(WPARAM wParam,LPARAM lParam);
 };

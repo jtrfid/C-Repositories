@@ -24,7 +24,7 @@ void StateIdle(int *state)
 	int floor;
 	bool up;
 	
-	floor = WhatFloorToGoTo(&up);
+	floor = IdleWhatFloorToGoTo(&up);
 	if(floor > 0)
 	   printf("到楼层:%d,方向:%s\n",floor,up?"向上":"向下");
 
@@ -43,14 +43,13 @@ void StateIdle(int *state)
 
 void StateMovingUp(int *state)
 {
-	static int floor = -1;
-	if (floor == -1) floor = GoingUpToFloor();
+	int floor = GoingUpToFloor(); // 检查是否上一楼层是要到的楼层
 	double distance = GetFloor();
 
 	printf("%d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
-	if(GetFloor() > floor) {
+	if(fabs(GetFloor() - floor) < 0.01) {
 		printf("到[%d]楼啦！\n",floor);
-		// 电梯外Call Light Off
+		// 电梯外UP， Call Light Off
 		SetCallLight(floor,true,false);
 		// 电梯内楼层号Floor Light Off
 		SetPanelFloorLight(floor,false);
@@ -58,19 +57,42 @@ void StateMovingUp(int *state)
 		*state = Idle;
 	}
 
+	/**
 	if(Lib_CurrentCarPosition >= Lib_MaxCarPosition - Lib_FloorTolerance) {
+		ASSERT(FALSE); // 不可能到此
+
 		printf("到3楼啦，往下走吧！\n");
-		SetMotorPower(-1);
-		*state = MovingDown;
+		SetMotorPower(0);
+		*state = Idle;
 	}
+	**/
 }
 
 void StateMovingDown(int *state)
 {
-	if(Lib_CurrentCarPosition <= Lib_FloorTolerance) {
+	int floor = GoingUpToFloor(); // 检查是否下一楼层是要到的楼层
+
+	if(fabs(GetFloor() - floor) < 0.01) {
+		CString status;
+		status.Format(_T("到[%d]楼啦！\n"),floor);
+		ViewStatus(status);
+
+		printf("到[%d]楼啦！\n",floor);
+		// 电梯外Down，Call Light Off
+		SetCallLight(floor,false,false);
+		// 电梯内楼层号Floor Light Off
+		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);
 		*state = Idle;
 	}
+
+	/***
+	if(Lib_CurrentCarPosition <= Lib_FloorTolerance) {
+		ASSERT(FALSE); // 不可能到此
+		SetMotorPower(0);
+		*state = Idle;
+	}
+	***/
 }
 
 /**********************************************

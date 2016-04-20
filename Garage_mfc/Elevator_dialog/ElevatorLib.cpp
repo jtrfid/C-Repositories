@@ -33,10 +33,13 @@ bool IsgoingUp() {
 	return Lib_goingUp;
 }
 
+// 将将要到的楼层
+int Lib_WillToFloor = -1;
+
 // 开关门开始
 bool Lib_StartDoorTimer = false;
 // 开关门结束
-extern bool Lib_EndDoorTimer = false;
+bool Lib_EndDoorTimer = false;
 
 /** \brief Function to determine if the elevator simulator is currently running. */
 /**
@@ -638,34 +641,35 @@ double GetTimer()
  *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
  *  返回要到的楼层，否则返回-1
  ************************************************************************/
-int WhatFloorToGoTo(bool *up)
+int IdleWhatFloorToGoTo(bool *up)
 {
 	int ret;
 	bool goingUp = IsgoingUp();
 
 	*up = goingUp;
 	if(goingUp) {  // 向上
-		ret = GoingUpToFloor();
+		ret = IdleGoingUpToFloor();
 		if(ret < 0) { // 只能改变方向转而向下
-			ret = GoingDownToFloor(); 
+			ret = IdleGoingDownToFloor(); 
 			*up = !goingUp;
 		}
 	}
 	else {  //向下
-		ret = GoingDownToFloor();
+		ret = IdleGoingDownToFloor();
 		if(ret < 0) { // 只能改变方向转而向上
-			ret = GoingUpToFloor(); 
+			ret = IdleGoingUpToFloor(); 
 			*up = !goingUp;
 		}
 	}
 
+	Lib_WillToFloor = ret;
 	return ret;
 }
 
 /************************************************************************
- * 上行要到的楼层，否则返回-1
+ * 电梯处于空闲状态,检查：上行要到的楼层，否则返回-1
  ***********************************************************************/
-int GoingUpToFloor()
+int IdleGoingUpToFloor()
 {
 	int floor,ret1, ret2,ret;
 
@@ -700,9 +704,9 @@ int GoingUpToFloor()
 }
 
 /************************************************************************
- * 下行要到的楼层，否则返回-1
+ * 电梯处于空闲状态,检查：下行要到的楼层，否则返回-1
  ***********************************************************************/
-int GoingDownToFloor()
+int IdleGoingDownToFloor()
 {
 	int floor,ret1, ret2, ret;
 
@@ -733,6 +737,58 @@ int GoingDownToFloor()
 
 	return ret;
 }
+
+/************************************************************************
+ * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
+ * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+ * 这里的当前楼层指，刚刚上行经过的楼层，即GetNearestFloor()返回的楼层
+ ***********************************************************************/
+int GoingUpToFloor()
+{
+    int floor =  GetNearestFloor(); // 当前楼层，即刚刚经过的楼层
+
+	// 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+	if(GetFloor() - floor > 0.5) return Lib_WillToFloor;
+
+	// 检查门内楼层按钮，当前楼层的上一层是否是要到的楼层
+	floor++; 
+	if(GetPanelFloorLight(floor))  { Lib_WillToFloor = floor; return Lib_WillToFloor; }
+	// 检查门外Up按钮（Call Light）,当前楼层的上一层是否有请求
+	if(GetCallLight(floor,true)) { Lib_WillToFloor = floor; return Lib_WillToFloor; }
+
+	// 当前楼层以上没有要到的楼层，只能检查当前楼层的上一层的down按钮
+	// 检查门外Down按钮（Call Light）,当前楼层的上一层是否有请求
+	if(Lib_WillToFloor < floor && GetCallLight(floor,false)) { Lib_WillToFloor = floor; }
+
+	// 如果没有改变，返回原来存储的值。
+	return Lib_WillToFloor;
+}
+
+/************************************************************************
+ * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
+ * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+ * 这里的当前楼层指，刚刚下行经过的楼层，即GetNearestFloor()返回的楼层 + 1
+ ***********************************************************************/
+int GoingDownToFloor()
+{
+    int floor =  GetNearestFloor(); // 当前楼层的下一层，即刚刚经过的楼层是floor+1
+
+	// 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+	if(GetFloor() - floor < 0.5) return Lib_WillToFloor;
+
+	// 检查门内楼层按钮，当前楼层的下一层是否是要到的楼层
+	if(GetPanelFloorLight(floor))  { Lib_WillToFloor = floor; return Lib_WillToFloor; }
+	// 检查门外Down按钮（Call Light）,当前楼层的下一层是否有请求
+	if(GetCallLight(floor,false)) { Lib_WillToFloor = floor; return Lib_WillToFloor; }
+
+	// 当前楼层以下没有要到的楼层，只能检查当前楼层的下一层的up按钮
+	// 检查门外up按钮（Call Light）,当前楼层的下一层是否有请求
+	if(Lib_WillToFloor >= floor && GetCallLight(floor,true)) { Lib_WillToFloor = floor; }
+
+	// 如果没有改变，返回原来存储的值。
+	return Lib_WillToFloor;
+}
+
 
 /** \brief Determine what floor the elevator should be going to when traveling
  * in a certain direction.
@@ -779,4 +835,11 @@ void postToMfc(int type,int floor,bool LightOn,bool up)
 	msg->up = up;
 	msg->LightOn = LightOn;
 	::PostMessage(MAIN_WIN,WM_LIGHT_MESSAGE,0,(LPARAM)msg);
+}
+
+// 向mfc发送消息,显示当前状态
+void ViewStatus(CString status)
+{
+     CString *msg =new CString(status);
+	 ::PostMessage(MAIN_WIN,WM_Status_MESSAGE,0,(LPARAM)msg);
 }
