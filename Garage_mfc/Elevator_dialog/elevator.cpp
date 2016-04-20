@@ -44,9 +44,10 @@ void StateIdle(int *state)
 void StateMovingUp(int *state)
 {
 	int floor = GoingUpToFloor(); // 检查是否上一楼层是要到的楼层
-	double distance = GetFloor();
 
+	double distance = GetFloor();
 	printf("%d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
+
 	if(fabs(GetFloor() - floor) < 0.01) {
 		CString status;
 		status.Format(_T("到[%d]楼啦！\n"),floor);
@@ -79,6 +80,9 @@ void StateMovingDown(int *state)
 {
 	int floor = GoingUpToFloor(); // 检查是否下一楼层是要到的楼层
 
+	double distance = GetFloor();
+	printf("%d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
+
 	if(fabs(GetFloor() - floor) < 0.01) {
 		CString status;
 		status.Format(_T("到[%d]楼啦！\n"),floor);
@@ -86,7 +90,7 @@ void StateMovingDown(int *state)
 
 		printf("到[%d]楼啦！\n",floor);
 		// 电梯外Down，Call Light Off
-		SetCallLight(floor,false,false);
+		SetCallLight(floor,false,false);  // 待处理，如果是因为是up而到此层的，应该置up为light off
 		// 电梯内楼层号Floor Light Off
 		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);

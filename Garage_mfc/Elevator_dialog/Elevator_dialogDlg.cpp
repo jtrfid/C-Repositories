@@ -391,13 +391,13 @@ void CElevator_dialogDlg::printfState(int state)
 void CElevator_dialogDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	/**
+
 	static bool b = false;
 	if (!b) SetMotorPower(0);
 	else SetMotorPower(1);
 	b = !b;
-	***/
-	SetTimer(ID_Door_TIMER,100,NULL);
+	
+	
 	//CDialogEx::OnOK();
 }
 

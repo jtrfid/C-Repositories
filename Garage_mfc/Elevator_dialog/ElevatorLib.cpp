@@ -712,7 +712,7 @@ int IdleGoingDownToFloor()
 {
 	int floor,ret1, ret2, ret;
 
-	// 已经是最高楼了, 不用再下了
+	// 已经是1楼了, 不用再下了
 	if (GetNearestFloor() == 1)
 	{
 		return -1;
@@ -733,7 +733,7 @@ int IdleGoingDownToFloor()
 	else return (ret1 > ret2 ? ret1 : ret2);
 
 	// 检查门外Up按钮（Call Light）,当前楼层以【下】是否有请求
-	for(floor = GetNearestFloor() - 1; floor >= 1; floor--) {
+	for(floor = GetNearestFloor() -1; floor >= 1; floor--) {
 		if(GetCallLight(floor,true)) { ret = floor; break; }
 	}
 
