@@ -68,10 +68,10 @@ extern "C" {
 #define WM_LIGHT_MESSAGE (WM_USER+100)
 typedef struct  
 {
-	int type;  // 1: 表示电梯内楼层按钮灯(PanelFloorLight), 2: 表示电梯内开关门按钮灯, 3: 表示电梯外Up/Down按钮灯(Call Light)
-	int floor; // 楼层号
+	int type;     // 1: 表示电梯内楼层按钮灯(Panel Floor Light), 2: 表示电梯内开关门按钮灯, 3: 表示电梯外Up/Down按钮灯(Call Light)
+	int floor;    // 楼层号, type=2时,floor无意义，
 	bool LightOn; // true: 按钮灯On， false: 按钮能Off
-	bool up;   // true: Up按钮灯，false: Down按钮灯; 电梯外Up/Down有此项
+	bool up;      // true: Up按钮灯，false: Down按钮灯; 电梯外Up/Down有此项，type=1,2时,此项无意义
 }Light_Msg;
 
 // 向mfc发送消息,更新电梯内外按钮灯的状态
@@ -115,7 +115,7 @@ extern bool Lib_OpenDoorLight;
 extern bool Lib_CloseDoorLight;
 // 门内: 楼层按钮灯,数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
 extern bool Lib_PanelFloorLight[Lib_FloorNum];
-// 门外: Up/Down按钮灯(CallLight),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
+// 门外: Up/Down按钮灯(Call Light),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
 extern bool Lib_CallLightUp[Lib_FloorNum];
 extern bool Lib_CallLightDown[Lib_FloorNum];
 
@@ -137,8 +137,6 @@ extern bool Lib_DoorOpened;
 extern bool Lib_DoorClosed;
 
 /////////////////// 待处理
-// 电梯正在运行的方向: true: Uping,上升; false: Down,下降 
-extern bool Lib_Uping;   // 实际上是Lib_goingup
 // 电梯经过的楼层或正在停留的楼层
 extern int Lib_FloorArrived;
 

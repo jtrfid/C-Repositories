@@ -322,10 +322,12 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 		if(m_state == DoorOpen) {
 		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
 		   Lib_DoorOpened = true;
+		   printf("[%d]楼开门结束\n",GetNearestFloor());
 		}
 		else if(m_state == DoorClosing) {
            str.Format(_T("[%d]楼\n关门结束"),GetNearestFloor());
 		   Lib_DoorClosed = true;
+		   printf("[%d]楼关门结束\n",GetNearestFloor());
 		}
 		m_TxtStatus.SetWindowText(str);
 		KillTimer(ID_Door_TIMER);
@@ -461,7 +463,8 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 // 设置电梯内开关门按钮状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	SetOpenDoorLight(m_Open.getLight());
+	SetCloseDoorLight(m_Close.getLight());
 }
 
 
@@ -471,17 +474,24 @@ LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 	Light_Msg *msg = (Light_Msg*)lParam;
 	// printf("msg:%d,%d,%d,%d\n",msg->type,msg->floor,msg->up,msg->LightOn);
 
-	if(msg->type == 1) // 电梯内按钮灯
+	if(msg->type == 1) // 电梯内楼层数字按钮灯
 	{
 		m_FloorNum[msg->floor-1].setLight(msg->LightOn);
 	}
-	if(msg->type == 3) // 表示电梯外Up/Down按钮灯
+	else if(msg->type == 2) // 电梯内开关门按钮灯
+	{
+		m_Open.setLight(msg->LightOn);
+		m_Close.setLight(msg->LightOn);
+	}
+	else if(msg->type == 3) // 表示电梯外Up/Down按钮灯
 	{
 		if(msg->up)
 			m_UpLight[msg->floor-1].setLight(msg->LightOn);
 		else
 			m_DownLight[msg->floor-1].setLight(msg->LightOn);
 	}
+	else
+		ASSERT(FALSE); // 不可能到此
 
 	delete msg;
 	return 0;
@@ -501,8 +511,8 @@ LRESULT CElevator_dialogDlg::OnViewStatusMessage(WPARAM wParam,LPARAM lParam)
 // 接收消息开关门
 LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 {
-	int floor = (int)wParam;
-	bool open = (bool)lParam;
+	int floor = (int)wParam;  // 楼层
+	bool open = (bool)lParam; // 开关门
 	CString str;
 
 	ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
@@ -522,6 +532,13 @@ LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 	}
 	SetTimer(ID_Door_TIMER,2000,NULL); // 2000ms,2s
 	m_TxtStatus.SetWindowText(str);
+
+	if(open) { // 开门，定时器启动	
+		printf("[%d]楼开门...\n",floor);	
+	}
+	else { // 关门，定时器启动		
+		printf("[%d]楼关门...\n",floor);	
+	}
 
 	return 0;
 }

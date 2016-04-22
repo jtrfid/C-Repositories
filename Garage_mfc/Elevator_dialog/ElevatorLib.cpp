@@ -17,7 +17,7 @@ bool Lib_OpenDoorLight = false;
 bool Lib_CloseDoorLight = false;
 // 门内: 楼层按钮灯,数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
 bool Lib_PanelFloorLight[Lib_FloorNum] = {false,false,false};
-// 门外: Up/Down按钮灯(CallLight),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
+// 门外: Up/Down按钮灯(Call Light),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
 bool Lib_CallLightUp[Lib_FloorNum] = {false,false,false};
 bool Lib_CallLightDown[Lib_FloorNum] = {false,false,false};
 
@@ -101,6 +101,8 @@ SetCloseDoorLight(true);
 void SetCloseDoorLight(bool s)
 {
 	Lib_CloseDoorLight = s;
+	// 向mfc发送消息，更新电梯内外按钮灯状态，参数 2: 表示电梯内开关门按钮灯
+	postToMfc(2,0,s,0);
 }
 
 /** \brief Get the status of the close door light on the panel in the elevator car.
@@ -133,6 +135,8 @@ SetOpenDoorLight(true);
 void SetOpenDoorLight(bool s)
 {
 	Lib_OpenDoorLight = s;
+	// 向mfc发送消息，更新电梯内外按钮灯状态，参数 2: 表示电梯内开关门按钮灯
+	postToMfc(2,0,s,0);
 }
 
 /** \brief Get the status of the open door light on the panel in the elevator car.
@@ -167,7 +171,7 @@ SetPanelFloorLight(1, true);
 void SetPanelFloorLight(int floor, bool s)
 {
 	Lib_PanelFloorLight[floor-1] = s;
-	// 向mfc发送消息，更新电梯内外按钮灯状态
+	// 向mfc发送消息，更新电梯内外按钮灯状态，参数 1: 表示电梯内楼层按钮灯(Panel Floor Light)
 	postToMfc(1,floor,s,0);
 }
 
@@ -206,7 +210,7 @@ void SetCallLight(int floor, bool up, bool s)
 {
 	if(up) Lib_CallLightUp[floor-1] = s;
 	else Lib_CallLightDown[floor-1] = s;
-	// 向mfc发送消息，更新电梯内外按钮灯状态
+	// 向mfc发送消息，更新电梯内外按钮灯状态，参数 2: 表示电梯外Up/Down按钮灯
 	postToMfc(3,floor,s,up);
 }
 

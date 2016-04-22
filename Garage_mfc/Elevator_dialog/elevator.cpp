@@ -33,13 +33,28 @@ void StateIdle(int *state)
 	
 	if(!openUpOnes && GetCallLight(CurrentFooor,true)) {  // 向上
 		openUpOnes = true;
+		SetDoor(CurrentFooor,true);
 		*state = DoorOpen;
+		return;
 	}
 	if(!openDownOnes && GetCallLight(CurrentFooor,false)) { // 向下
 		openDownOnes = true;
+		SetDoor(CurrentFooor,true);
 		*state = DoorOpen;
+		return;
 	}
 
+	// 监测电梯内开关门按钮
+	if(GetOpenDoorLight()) { // 开门
+		SetDoor(CurrentFooor,true);
+		*state = DoorOpen;
+		return;
+	}
+	else if(GetCloseDoorLight()) {  // 关门
+		SetDoor(CurrentFooor,false);
+		*state = DoorClosing;
+		return;
+	}
 
 	// 将要到那一层
 	floor = IdleWhatFloorToGoTo(&up);
@@ -122,6 +137,10 @@ void StateMovingDown(int *state)
 void StateDoorOpen(int *state)
 {
 	int floor = GetNearestFloor();
+
+	// 如果是门内开门按钮引起的开门，关掉此按钮的灯。避免Idle状态监测到灯还在亮引起重复开门；同时保证用户还可以按此按钮重新开门（即使上一次的开门动作还未结束）
+	if(GetOpenDoorLight()) SetOpenDoorLight(false);
+
 	// 如果开门结束，进入关门状态
 	if(IsDoorOpen(floor))
 	{
@@ -129,10 +148,6 @@ void StateDoorOpen(int *state)
 		SetDoor(floor,false);
 		*state = DoorClosing;
 	} 
-	else // 开门
-	{
-		SetDoor(floor,true);
-	}
 }
 
 /********************************************
@@ -140,6 +155,9 @@ void StateDoorOpen(int *state)
  ********************************************/
 void StateDoorClosing(int *state)
 {
+	// 如果是门内关门按钮引起的关门，关掉此按钮的灯。避免Idle状态监测到灯还在亮引起重复关门门；同时保证用户还可以按此按钮重新关门（即使上一次的关门动作还未结束）
+	if(GetCloseDoorLight()) SetCloseDoorLight(false);
+
 	// 如果关门结束，到空闲状态，判断下一步的走向
 	if(IsDoorClosed(GetNearestFloor()))
 	{
