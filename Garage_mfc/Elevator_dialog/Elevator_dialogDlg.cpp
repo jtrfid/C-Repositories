@@ -95,6 +95,8 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_MESSAGE(WM_LIGHT_MESSAGE,&CElevator_dialogDlg::OnLightMessage)
     ON_MESSAGE(WM_Status_MESSAGE,&CElevator_dialogDlg::OnViewStatusMessage)
 	ON_MESSAGE(WM_Door_MESSAGE,&CElevator_dialogDlg::OnOpenCloseDoorMessage)
+	ON_BN_CLICKED(IDC_BtnOpen, &CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor)
+	ON_BN_CLICKED(IDC_BtnClose, &CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor)
 END_MESSAGE_MAP()
 
 
@@ -455,6 +457,13 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());
 	}
 }
+
+// 设置电梯内开关门按钮状态，如果当前Light is Off, 置为on;否则保持现状。
+void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
 
 // 接收消息，更新电梯内外按钮灯状态
 LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)

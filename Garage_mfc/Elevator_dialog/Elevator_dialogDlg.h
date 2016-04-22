@@ -78,6 +78,8 @@ public:
 	// 电梯内开关门
 	CLightBitmapButton m_Open;
 	CLightBitmapButton m_Close;
+	// 设置状态，如果当前Light is Off, 置为on;否则保持现状。
+	afx_msg void OnBnClickedBtnOpenCloseDoor();
 	
 	// 接收消息，更新电梯内外按钮灯状态
 	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
@@ -93,4 +95,5 @@ public:
 
 	// 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
 	static HWND MAIN_WIN;
+	
 };
