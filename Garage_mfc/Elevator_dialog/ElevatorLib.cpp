@@ -297,7 +297,7 @@ bool GetDoorIndicator(int floor, bool up)
 */
 void SetDoor(int floor, bool open)
 {
-	if(!Lib_DoorTimerStarted)
+	if(!Lib_DoorTimerStarted)  // 防止开关门未结束，再次执行
 	{
 		// 发送开关门消息，mfc开启开关门定时器
 		OpenCloseDoor(floor,open);
