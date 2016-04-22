@@ -200,13 +200,13 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	// 电梯内,1,2,3数字按钮
 	m_FloorNum[0].SubclassDlgItem(IDC_BtnNum1,this);
-	m_FloorNum[0].LoadBitmaps(IDB_12,IDB_11,IDB_13);
+	m_FloorNum[0].LoadBitmaps(IDB_13,IDB_11,IDB_12);
 	m_FloorNum[0].SizeToContent();
 	m_FloorNum[1].SubclassDlgItem(IDC_BtnNum2,this);
-	m_FloorNum[1].LoadBitmaps(IDB_22,IDB_21,IDB_23);
+	m_FloorNum[1].LoadBitmaps(IDB_23,IDB_21,IDB_22);
 	m_FloorNum[1].SizeToContent();
 	m_FloorNum[2].SubclassDlgItem(IDC_BtnNum3,this);
-	m_FloorNum[2].LoadBitmaps(IDB_32,IDB_31,IDB_33);
+	m_FloorNum[2].LoadBitmaps(IDB_33,IDB_31,IDB_32);
 	m_FloorNum[2].SizeToContent();
 
 	RECT rectNum;
@@ -221,10 +221,10 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	// 电梯内，开关门按钮
 	m_Open.SubclassDlgItem(IDC_BtnOpen,this);
-	m_Open.LoadBitmaps(IDB_Open1,IDB_Open2,IDB_Open3);
+	m_Open.LoadBitmaps(IDB_Open2,IDB_Open1,IDB_Open3);
 	m_Open.SizeToContent();
 	m_Close.SubclassDlgItem(IDC_BtnClose,this);
-	m_Close.LoadBitmaps(IDB_Close1,IDB_Close2,IDB_Close3);
+	m_Close.LoadBitmaps(IDB_Close2,IDB_Close1,IDB_Close3);
 	m_Close.SizeToContent();
 	
 	RECT rectOpen;
