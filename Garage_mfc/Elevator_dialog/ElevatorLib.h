@@ -119,9 +119,9 @@ extern bool Lib_PanelFloorLight[Lib_FloorNum];
 extern bool Lib_CallLightUp[Lib_FloorNum];
 extern bool Lib_CallLightDown[Lib_FloorNum];
 
-// 电梯前一个运动状态是上升(true)还是下降(false)，
+// 电梯当前运动状态是上升(true)还是下降(false)，
 // IsgongUp()函数中，如果在1楼，Lib_gongUp=true; 如果在最高楼，Lib_gongUp=false；
-// 在mfc仿真程序中维护该值，MovingUp/MovingDown中设置该值
+// IdleWhatFloorToGoTo()中维护该值
 // 在elevator.cpp中读取该值，函数IsgoingUp()返回该值。
 extern bool Lib_goingUp;
 extern bool IsgoingUp();
@@ -129,14 +129,16 @@ extern bool IsgoingUp();
 // 将将要到的楼层
 extern int Lib_WillToFloor;
 
-// 开关门开始
-extern bool Lib_StartDoorTimer;
-// 开关门结束
-extern bool Lib_EndDoorTimer;
+// 开关门定时器已经启动，表示正在开关门SetDoor()读取，mfc维护
+extern bool Lib_DoorTimerStarted;
+// 开门结束,在mfc中维护
+extern bool Lib_DoorOpened;
+// 关门结束,在mfc中维护
+extern bool Lib_DoorClosed;
 
 /////////////////// 待处理
 // 电梯正在运行的方向: true: Uping,上升; false: Down,下降 
-extern bool Lib_Uping;
+extern bool Lib_Uping;   // 实际上是Lib_goingup
 // 电梯经过的楼层或正在停留的楼层
 extern int Lib_FloorArrived;
 
@@ -644,26 +646,46 @@ extern double GetTimer();
  */
 //extern int WhatFloorToGoTo(bool up);
 /************************************************************************
- *  电梯处于空闲状态, 确定下一步的运动方向和所到楼层
+ * 静态监测
+ * 电梯处于空闲状态, 确定下一步的运动方向和所到楼层
  *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
  *  返回要到的楼层，否则返回-1
  ************************************************************************/
 extern int IdleWhatFloorToGoTo(bool *up);
 
 /************************************************************************
+ * 静态检测
  * 电梯处于空闲状态,检查：上行要到的楼层，否则返回-1
  ***********************************************************************/
 extern int IdleGoingUpToFloor();
 
 /************************************************************************
+ * 静态监测
  * 电梯处于空闲状态,检查：下行要到的楼层，否则返回-1
  ***********************************************************************/
 extern int IdleGoingDownToFloor();
 
 /************************************************************************
- * 电梯正在上行,检查：上行要到的楼层，否则返回-1
+ * 动态监测
+ * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
+ * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+ * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
+ * ------- 3Floor
+ * --- GetFloor()
+ * ------- 2Floor, (int)GetFloor()  当前层
  ***********************************************************************/
 extern int GoingUpToFloor();
+
+/************************************************************************
+ * 动态监测
+ * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
+ * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
+ * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1
+ * ------- 3Floor 当前层
+ * --- GetFloor()
+ * ------- 2Floor, (int)GetFloor()
+ ***********************************************************************/
+extern int GoingDownToFloor();
 
 /** \brief Determine what floor the elevator should be going to when traveling
  * in a certain direction.

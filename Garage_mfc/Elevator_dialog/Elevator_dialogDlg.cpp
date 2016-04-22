@@ -49,6 +49,8 @@ END_MESSAGE_MAP()
 
 // CElevator_dialogDlg 对话框
 
+HWND CElevator_dialogDlg::MAIN_WIN = NULL; // 静态变量这样初始化
+
 CElevator_dialogDlg::CElevator_dialogDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CElevator_dialogDlg::IDD, pParent)
 {
@@ -174,6 +176,9 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 		m_DownLight[i].LoadBitmaps(IDB_Down1,IDB_Down2,IDB_Down3);
 		m_DownLight[i].SizeToContent();
 	}
+	// 1楼向下按钮失效，3楼向上按钮失效
+	m_DownLight[0].EnableWindow(FALSE);
+	m_UpLight[2].EnableWindow(FALSE);
 
 	RECT rectLight; // 灯的大小
 	m_UpLight[0].GetClientRect(&rectLight);
@@ -310,13 +315,16 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 		elevatorState(m_state); // 电梯状态动画仿真
 		break;
 	case ID_Door_TIMER: // 开关门计时器
-		Lib_StartDoorTimer = false;
-		Lib_EndDoorTimer = true;
+		Lib_DoorTimerStarted = false;
 		CString str;
-		if(m_state == DoorOpen)
-		   str.Format(_T("[%d]楼开门结束"),GetNearestFloor());
-		else if(m_state == DoorClosing)
-           str.Format(_T("[%d]楼关门结束"),GetNearestFloor());
+		if(m_state == DoorOpen) {
+		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
+		   Lib_DoorOpened = true;
+		}
+		else if(m_state == DoorClosing) {
+           str.Format(_T("[%d]楼\n关门结束"),GetNearestFloor());
+		   Lib_DoorClosed = true;
+		}
 		m_TxtStatus.SetWindowText(str);
 		KillTimer(ID_Door_TIMER);
 		break;
@@ -334,11 +342,9 @@ void CElevator_dialogDlg::elevatorState(int state)
 	case Idle:
 		break;
 	case MovingUp:
-		Lib_goingUp = true;
 		break;
 	case MovingDown:
 		break;
-		Lib_goingUp = false;
 	case DoorOpen:
 		return;
 	case DoorClosing:
@@ -454,7 +460,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 {
 	Light_Msg *msg = (Light_Msg*)lParam;
-	printf("msg:%d,%d,%d,%d\n",msg->type,msg->floor,msg->up,msg->LightOn);
+	// printf("msg:%d,%d,%d,%d\n",msg->type,msg->floor,msg->up,msg->LightOn);
 
 	if(msg->type == 1) // 电梯内按钮灯
 	{
@@ -490,16 +496,22 @@ LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 	bool open = (bool)lParam;
 	CString str;
 
-	if(open) { // 开门，定时器启动
-		str.Format(_T("[%d]楼，开门..."),floor);	
-	}
-	else { // 关门，定时器启动
-		str.Format(_T("[%d]楼，关门..."),floor);	
-	}
+	ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
 
-	Lib_StartDoorTimer = true; 
-	Lib_EndDoorTimer = false;
-	SetTimer(ID_Door_TIMER,1000,NULL); // 1000ms,1s
+	// 表示正在开关门，不能在此期间再启动
+	Lib_DoorTimerStarted = true;
+
+	// 只要开启定时器，表示正在开门或关门，因此以下表示开关门结束的变量均置为false
+	Lib_DoorOpened = false; 
+	Lib_DoorClosed = false;
+
+	if(open) { // 开门，定时器启动	
+		str.Format(_T("[%d]楼\n开门..."),floor);	
+	}
+	else { // 关门，定时器启动		
+		str.Format(_T("[%d]楼\n关门..."),floor);	
+	}
+	SetTimer(ID_Door_TIMER,2000,NULL); // 2000ms,2s
 	m_TxtStatus.SetWindowText(str);
 
 	return 0;

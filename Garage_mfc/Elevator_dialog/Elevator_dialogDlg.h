@@ -88,4 +88,7 @@ public:
 
 	// 接收消息，开关门
 	afx_msg LRESULT OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam);
+
+	// 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
+	static HWND MAIN_WIN;
 };
