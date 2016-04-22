@@ -217,7 +217,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	y -= rectNum.bottom - 2;
 	m_FloorNum[2].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
-	// 开关门按钮
+	// 电梯内，开关门按钮
 	m_Open.SubclassDlgItem(IDC_BtnOpen,this);
 	m_Open.LoadBitmaps(IDB_Open1,IDB_Open2,IDB_Open3);
 	m_Open.SizeToContent();
@@ -414,7 +414,7 @@ void CElevator_dialogDlg::OnBnClickedCancel()
 	CDialogEx::OnCancel();
 }
 
-// 设置电梯外各楼层的Up/Down按钮灯的状态，如果当前Light is Off, 置为on;否则保持现状。
+// 设置电梯外，1、2、3楼Up/Down按钮（Call Light）的状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnup1()
 {
 	// 消息执行顺序：
@@ -426,7 +426,7 @@ void CElevator_dialogDlg::OnBnClickedBtnup1()
 	}
 }
 
-// 设置电梯外各楼层的Up/Down按钮灯的状态, Light Off
+// 设置电梯外，1、2、3楼Up/Down按钮（Call Light）的状态, Light Off
 void CElevator_dialogDlg::OnDoubleclickedBtnup1()
 {
 	// 消息执行顺序：
@@ -440,7 +440,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnup1()
 	}
 }
 
-// 设置门内楼层按钮的状态，如果当前Light is Off, 置为on;否则保持现状。
+// 设置电梯内,1,2,3数字按钮（PanelFloorLight）的状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnClickedBtnnum1()
 {
 	for(int floor = 1; floor <= Lib_FloorNum; floor++){
@@ -448,7 +448,7 @@ void CElevator_dialogDlg::OnClickedBtnnum1()
 	}
 }
 
-// 设置门内楼层按钮的状态，, Light Off
+// 设置电梯内,1,2,3数字按钮（PanelFloorLight）的状态, Light Off
 void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 {
 	for(int floor = 1; floor <= Lib_FloorNum; floor++){

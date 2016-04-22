@@ -25,7 +25,7 @@ void StateIdle(int *state)
 	bool up;
 	int CurrentFooor = GetNearestFloor();
 
-	// Call Light开关门
+	// 监测电梯外上下按钮灯(Call Light)，开关门
 	// 本层的电梯外上下按钮灯(Call Light)被按亮，静态变量保证开门一次,电梯走动后,恢复此值
 	// 上下按钮各有一次开门机会
 	static bool openUpOnes = false;
@@ -39,6 +39,7 @@ void StateIdle(int *state)
 		openDownOnes = true;
 		*state = DoorOpen;
 	}
+
 
 	// 将要到那一层
 	floor = IdleWhatFloorToGoTo(&up);

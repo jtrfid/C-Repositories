@@ -62,20 +62,22 @@ public:
 	CButton m_BtnCancel;
 	afx_msg void OnBnClickedCancel();
 
-    // 电梯外，1、2、3楼向上/下按钮,表示Call Light
+    // 电梯外，1、2、3楼Up/Down按钮（Call Light）
 	CLightBitmapButton m_UpLight[Lib_FloorNum];
 	CLightBitmapButton m_DownLight[Lib_FloorNum];
+	// 设置状态,如果当前Light is Off, 置为on;否则保持现状。
+	afx_msg void OnBnClickedBtnup1();  
+	afx_msg void OnDoubleclickedBtnup1();
 
-	// 电梯内,1,2,3数字按钮,开关门
+	// 电梯内,1,2,3数字按钮（PanelFloorLight）
 	CLightBitmapButton m_FloorNum[Lib_FloorNum];
-    CLightBitmapButton m_Open;
-	CLightBitmapButton m_Close;
+	// 设置状态,如果当前Light is Off, 置为on;否则保持现状。
+	afx_msg void OnClickedBtnnum1();
 	afx_msg void OnDoubleclickedBtnnum1();
 
-	// 设置电梯外各楼层的Up/Down按钮灯的状态
-	afx_msg void OnBnClickedBtnup1();
-	afx_msg void OnDoubleclickedBtnup1();
-	afx_msg void OnClickedBtnnum1();
+	// 电梯内开关门
+	CLightBitmapButton m_Open;
+	CLightBitmapButton m_Close;
 	
 	// 接收消息，更新电梯内外按钮灯状态
 	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
