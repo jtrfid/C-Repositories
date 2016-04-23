@@ -455,6 +455,12 @@ void CElevator_dialogDlg::OnDoubleclickedBtnup1()
 // 设置电梯内,1,2,3数字按钮（PanelFloorLight）的状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnClickedBtnnum1()
 {
+	// 有效性检查，非运动状态，按电梯内本楼层按钮无效
+	if(m_state != MovingUp && m_state != MovingDown) {
+		int CurrentFloor = GetNearestFloor();
+		if(m_FloorNum[CurrentFloor-1].getLight()) m_FloorNum[CurrentFloor-1].setLight(false);
+		printf("已经在[%d]楼，按此楼层按钮无效。\n",CurrentFloor);
+	}
 	for(int floor = 1; floor <= Lib_FloorNum; floor++){
 		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());
 	}
@@ -471,7 +477,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 // 设置电梯内开关门按钮状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 {
-	// 安全设置，只有Idle状态，才能开关门
+	// 安全设置，运动状态，开关门失效
 	if(m_state == MovingUp || m_state == MovingDown) {
 		printf("运动状态，开关门失效!!!\n");
 		// 恢复原值
