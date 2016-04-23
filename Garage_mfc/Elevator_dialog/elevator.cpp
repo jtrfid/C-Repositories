@@ -176,18 +176,26 @@ void main_control(int *state)
 		switch(*state)
 		{
 		case Idle:
+			// 一定时间无动作，自动到一楼
+			if(GetNearestFloor() !=1 ) {
+				AutoTo1Floor();
+			}
 			StateIdle(state);
 			break;
 		case MovingUp:
+			CancelTo1Floor();
 			StateMovingUp(state);
 			break;
 		case MovingDown:
+			CancelTo1Floor();
 			StateMovingDown(state);
 			break;
 		case DoorOpen:
+			CancelTo1Floor();
 			StateDoorOpen(state);
 			break;
 		case DoorClosing:
+			CancelTo1Floor();
 			StateDoorClosing(state);
 			break;
 		default:

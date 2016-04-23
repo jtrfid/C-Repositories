@@ -310,6 +310,7 @@ HCURSOR CElevator_dialogDlg::OnQueryDragIcon()
 void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	if(!IsElevatorRunning()) return;
+	CString str("");
 
 	switch(nIDEvent) {
 	case ID_ClOCK_TIMER: // 动画仿真时钟
@@ -318,7 +319,7 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 		break;
 	case ID_Door_TIMER: // 开关门计时器
 		Lib_DoorTimerStarted = false;
-		CString str;
+		//CString str("");
 		if(m_state == DoorOpen) {
 		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
 		   Lib_DoorOpened = true;
@@ -331,7 +332,14 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		m_TxtStatus.SetWindowText(str);
 		KillTimer(ID_Door_TIMER);
+		break; 
+	case ID_AUTO_TIMER: // 一定时间后，自动到一楼
+		Lib_AutoTimerStarted = false;
+		To1Floor(&m_state); // 自动下降到1楼
+		KillTimer(ID_AUTO_TIMER);
 		break;
+	default:
+		ASSERT(FALSE); // 不可能到此
 	}
 	
 	CDialogEx::OnTimer(nIDEvent);

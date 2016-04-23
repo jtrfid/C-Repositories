@@ -136,6 +136,15 @@ extern bool Lib_DoorOpened;
 // 关门结束,在mfc中维护
 extern bool Lib_DoorClosed;
 
+// 一定时间无动作，自动到一楼,该变量确定定时器是否启动
+extern bool Lib_AutoTimerStarted;
+// 一定时间无动作，自动到1楼
+extern void AutoTo1Floor();
+// 取消自动到1楼
+extern void CancelTo1Floor();
+// 10s时间到，自动执行到1楼的动作
+extern void To1Floor(int *state);
+
 /////////////////// 待处理
 // 电梯经过的楼层或正在停留的楼层
 extern int Lib_FloorArrived;
@@ -664,7 +673,7 @@ extern int IdleGoingUpToFloor();
 extern int IdleGoingDownToFloor();
 
 /************************************************************************
- * 动态监测
+ * 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层
  * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
@@ -675,7 +684,8 @@ extern int IdleGoingDownToFloor();
 extern int GoingUpToFloor();
 
 /************************************************************************
- * 动态监测
+ * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层
+ * 10s后无动作，自动下降到一楼，此时返回1.
  * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1

@@ -42,6 +42,42 @@ bool Lib_DoorOpened = false;
 // 关门结束,在mfc中维护
 bool Lib_DoorClosed = false;
 
+// 一定时间无动作，自动到1楼,该变量确定定时器是否启动
+bool Lib_AutoTimerStarted = false;
+// 一定时间无动作，自动到1楼
+extern void AutoTo1Floor() 
+{
+	if (!Lib_AutoTimerStarted)
+	{
+		SetTimer(CElevator_dialogDlg::MAIN_WIN,ID_AUTO_TIMER,10000,NULL);//10s,10000ms
+		Lib_AutoTimerStarted = true;
+	}
+}
+// 取消自动到1楼
+extern void CancelTo1Floor() 
+{
+	if (Lib_AutoTimerStarted)
+	{
+		KillTimer(CElevator_dialogDlg::MAIN_WIN,ID_AUTO_TIMER);
+		Lib_AutoTimerStarted = false;
+	}
+}
+// 10s时间到，自动执行到1楼的动作，在mfc定时器回调函数中被调用
+extern void To1Floor(int *state) 
+{
+	printf("10s时间到，自动下降到1楼...\n");
+	// 此时可能有电梯外的Up/Down Call Light按钮灯是亮的，索性关闭所有的；
+	// 电梯内的楼层按钮也有可能是亮的，关闭之。
+	for(int floor = 1; floor <= Lib_FloorNum; floor++) 
+	{
+		SetCallLight(floor,true,false);
+		SetCallLight(floor,false,false);
+		SetPanelFloorLight(floor,false);
+	}
+	SetMotorPower(-1);
+	*state = MovingDown;
+}
+
 /** \brief Function to determine if the elevator simulator is currently running. */
 /**
 * This function should be called in a loop that exists when the elevator is
@@ -756,7 +792,7 @@ int IdleGoingDownToFloor()
 }
 
 /************************************************************************
-* 动态监测
+* 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层
 * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
 * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
 * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
@@ -802,7 +838,8 @@ int GoingUpToFloor()
 }
 
 /************************************************************************
-* 动态监测
+* 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层
+* 适用于10s后无动作，自动下降到一楼的情况.
 * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
 * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
 * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1
@@ -820,6 +857,8 @@ int GoingDownToFloor()
 		CString status;
 		status.Format(_T("向下,[%d]楼"),floor);
 		ViewStatus(status);
+		// 如果到1啦，立即返回1. 适用于10s后无动作，自动下降到一楼的情况
+		if(floor == 1) { Lib_WillToFloor = floor; return floor; }
 	}
 
 	// 如果floor就是要到的楼层,就不用判断了。
