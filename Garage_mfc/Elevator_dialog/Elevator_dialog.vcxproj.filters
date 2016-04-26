@@ -91,6 +91,15 @@
     <None Include="res\images\open3.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\images\DoorLeft.bmp">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\DoorRight.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\images\DoorRight.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Elevator_dialog.h">

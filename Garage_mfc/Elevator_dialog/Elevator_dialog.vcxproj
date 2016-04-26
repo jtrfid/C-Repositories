@@ -110,6 +110,9 @@
     <None Include="res\images\close1.bmp" />
     <None Include="res\images\close2.bmp" />
     <None Include="res\images\close3.bmp" />
+    <None Include="res\images\DoorLeft.bmp" />
+    <None Include="res\images\DoorRight.bmp" />
+    <None Include="res\images\DoorRight.png" />
     <None Include="res\images\down1.bmp" />
     <None Include="res\images\down2.bmp" />
     <None Include="res\images\down3.bmp" />

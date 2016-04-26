@@ -65,6 +65,8 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDOK, m_BtnOK);
 	DDX_Control(pDX, IDCANCEL, m_BtnCancel);
 	DDX_Control(pDX, IDC_TxtStatus, m_TxtStatus);
+	DDX_Control(pDX, IDC_DoorLeft, m_PicDoorLeft);
+	DDX_Control(pDX, IDC_DoorRight, m_PicDoorRight);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -145,6 +147,18 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_Car_x = 178 - car.right/2;
 	m_Car_y = (back.bottom-car.bottom);
 	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	// SWP_NOCOPYBITS：清除客户区的所有内容。如果未设置该标志，客户区的有效内容被保存并且在窗口尺寸更新和重定位后拷贝回客户区。
+	// 设置此项使电梯箱体门可以随着电梯箱体一起随动。
+	// m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOCOPYBITS);
+
+	// 电梯箱体左右门
+	m_PicDoorLeft.GetClientRect(&m_DoorRect); // 0,0,40,166
+	m_DoorLeft_x = m_Car_x + 1;
+	m_DoorLeft_y = m_Car_y;
+	m_DoorRight_x = m_DoorLeft_x + 1 + m_DoorRect.right;
+	m_DoorRight_y = m_DoorLeft_y;
+	m_PicDoorLeft.SetWindowPos(0,m_DoorLeft_x,m_DoorLeft_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	m_PicDoorRight.SetWindowPos(0,m_DoorRight_x,m_DoorRight_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
 	// 放置ok，cancel
 	RECT rectOk;
@@ -247,6 +261,12 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_state = Idle;
 	m_CurrentCarPosition = 0;
 	m_MaxCarPosition = back.bottom - car.bottom;
+	// 电梯箱体门开关门时长(ms,默认2000ms,2s)
+	m_DoorInterval = 2000;
+	// 电梯箱体门开关门动画步长，(门宽度/m_DoorInterval)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
+	m_DoorStep = (m_DoorRect.right*m_Interval)/m_DoorInterval + 1; 
+	// 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
+	m_DoorCx = m_DoorRect.right;
 
 	// 本窗口句柄，在Elevator.h被定义
 	MAIN_WIN = this->GetSafeHwnd();
@@ -319,16 +339,19 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 	case ID_ClOCK_TIMER: // 动画仿真时钟
 		main_control(&m_state); // 电梯状态机
 		elevatorState(m_state); // 电梯状态动画仿真
+		elevatorDoor(m_state); // 电梯门动画仿真
 		break;
 	case ID_Door_TIMER: // 开关门计时器
 		Lib_DoorTimerStarted = false;
 		//CString str("");
 		if(m_state == DoorOpen) {
+		   m_DoorCx = 0;
 		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
 		   Lib_DoorOpened = true;
 		   printf("[%d]楼开门结束\n",GetNearestFloor());
 		}
 		else if(m_state == DoorClosing) {
+		   m_DoorCx = m_DoorRect.right;
            str.Format(_T("[%d]楼\n关门结束"),GetNearestFloor());
 		   Lib_DoorClosed = true;
 		   printf("[%d]楼关门结束\n",GetNearestFloor());
@@ -355,14 +378,11 @@ void CElevator_dialogDlg::elevatorState(int state)
 	switch(state)
 	{
 	case Idle:
-		break;
-	case MovingUp:
-		break;
-	case MovingDown:
-		break;
 	case DoorOpen:
-		return;
 	case DoorClosing:
+		return;
+	case MovingUp:   // 上升运动状态
+	case MovingDown: // 下降运动状态
 		break;
 	default:
 		printf("没有这种状态!!!\n");  
@@ -377,9 +397,50 @@ void CElevator_dialogDlg::elevatorState(int state)
 	//printf("%f,%d\n",GetFloor(),GetNearestFloor());
 
 	if(step == 0) return;
-	m_Car_y -= step;
-	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
+	// 电梯箱体
+	m_Car_y -= step;  
+	m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOCOPYBITS);  // 清除客户区
+	//m_PicCar.SetWindowPos(0,m_Car_x,m_Car_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	// 电梯箱体左右门
+	m_DoorLeft_y -= step;
+	m_DoorRight_y = m_DoorLeft_y;
+	//m_PicDoorLeft.SetWindowPos(0,m_DoorLeft_x,m_DoorLeft_y,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOCOPYBITS);    // 清除客户区
+	//m_PicDoorRight.SetWindowPos(0,m_DoorRight_x,m_DoorRight_y,0,0,SWP_NOSIZE | SWP_NOZORDER | SWP_NOCOPYBITS); // 清除客户区
+	m_PicDoorLeft.SetWindowPos(0,m_DoorLeft_x,m_DoorLeft_y,0,0,SWP_NOSIZE | SWP_NOZORDER);  
+	m_PicDoorRight.SetWindowPos(0,m_DoorRight_x,m_DoorRight_y,0,0,SWP_NOSIZE | SWP_NOZORDER); 
+}
+
+// 电梯箱体门开关门动画仿真
+void CElevator_dialogDlg::elevatorDoor(int state)
+{
+	switch(state)
+	{
+	case Idle:
+	case MovingUp:
+	case MovingDown:
+		return;
+	case DoorOpen:
+	case DoorClosing:
+		break;
+	default:
+		printf("没有这种状态!!!\n");  
+	}
+
+	printf("m_DoorCx=%d\n",m_DoorCx);
+
+	// 电梯箱体左右门
+	m_PicDoorLeft.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER | SWP_NOCOPYBITS);  
+	int rightX = m_DoorRight_x + (m_DoorRect.right - m_DoorCx);
+	m_PicDoorRight.SetWindowPos(0,rightX,m_DoorRight_y,m_DoorCx,m_DoorRect.bottom,SWP_SHOWWINDOW | SWP_NOZORDER | SWP_NOCOPYBITS);
+	//m_PicDoorLeft.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER);  
+	//m_PicDoorRight.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER);
+
+	if(state == DoorOpen) m_DoorCx -= m_DoorStep; // 开门
+	else m_DoorCx += m_DoorStep;  // 关门	
+
+	if(m_DoorCx < 0) m_DoorCx = 0;
+	else if(m_DoorCx > m_DoorRect.right) m_DoorCx = m_DoorRect.right;
 }
 
 // 打印当前状态
@@ -549,10 +610,13 @@ LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 	Lib_DoorOpened = false; 
 	Lib_DoorClosed = false;
 
-	if(open) { // 开门，定时器启动	
+	if(open) { // 开门，定时器启动
+		m_DoorCx = m_DoorRect.right;  // 初始化门的宽度
 		str.Format(_T("[%d]楼\n开门..."),floor);	
 	}
 	else { // 关门，定时器启动		
+	    m_DoorCx = 0;  // 初始化门的宽度
+		//m_DoorCx = m_DoorStep;  // 初始化门的宽度
 		str.Format(_T("[%d]楼\n关门..."),floor);	
 	}
 	SetTimer(ID_Door_TIMER,2000,NULL); // 2000ms,2s
