@@ -262,7 +262,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_CurrentCarPosition = 0;
 	m_MaxCarPosition = back.bottom - car.bottom;
 	// 电梯箱体门开关门时长(ms,默认2000ms,2s)
-	m_DoorInterval = 2000;
+	m_DoorInterval = 4000;
 	// 电梯箱体门开关门动画步长，(门宽度/m_DoorInterval)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
 	m_DoorStep = (m_DoorRect.right*m_Interval)/m_DoorInterval + 1; 
 	// 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
@@ -427,7 +427,7 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 		printf("没有这种状态!!!\n");  
 	}
 
-	printf("m_DoorCx=%d\n",m_DoorCx);
+	//printf("m_DoorCx=%d\n",m_DoorCx);
 
 	// 电梯箱体左右门
 	m_PicDoorLeft.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER | SWP_NOCOPYBITS);  
@@ -619,7 +619,7 @@ LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 		//m_DoorCx = m_DoorStep;  // 初始化门的宽度
 		str.Format(_T("[%d]楼\n关门..."),floor);	
 	}
-	SetTimer(ID_Door_TIMER,2000,NULL); // 2000ms,2s
+	SetTimer(ID_Door_TIMER,m_DoorInterval,NULL); // 2000ms,2s
 	m_TxtStatus.SetWindowText(str);
 
 	if(open) { // 开门，定时器启动	
