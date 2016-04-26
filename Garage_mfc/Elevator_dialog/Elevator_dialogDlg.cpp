@@ -234,6 +234,9 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_Open.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	x = 40 + rectNum.right/2 + 10;
 	m_Close.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER); 
+
+	// 对话框窗体位置
+	this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	
 	// 启动仿真时钟
 	m_Interval = 100;
