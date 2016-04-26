@@ -163,7 +163,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	int cx,cy; // 包含窗口边框的窗口大小
 	cx = 5 + back.right + 10 + rectOk.right + 10 + 5; // 左右边框各5个像素
 	cy = 40 + back.bottom + 10 + 5; // 标题40，下边框 5
-	this->SetWindowPos(0,100,100,cx,cy,SWP_SHOWWINDOW | SWP_NOZORDER);
+	this->SetWindowPos(0,100,10,cx,cy,SWP_SHOWWINDOW | SWP_NOZORDER);
 
 	// 1、2、3楼向上/下按钮
 	m_UpLight[0].SubclassDlgItem(IDC_BtnUp1,this);
@@ -235,8 +235,8 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	x = 40 + rectNum.right/2 + 10;
 	m_Close.SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER); 
 
-	// 对话框窗体位置
-	this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
+	// 对话框窗体位置,合并在前面的语句
+	// this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	
 	// 启动仿真时钟
 	m_Interval = 100;
