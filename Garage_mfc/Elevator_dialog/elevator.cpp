@@ -166,8 +166,7 @@ void StateDoorClosing(int *state)
 }
 
 /***********************************************
- * This loop runs until we shut the elevator system down
- * by closing the window it runs in.
+ * 状态机，每隔一定时间(如，100ms)被调用一次，采集系统的运行状态
  ***********************************************/
 void main_control(int *state)
 {  
