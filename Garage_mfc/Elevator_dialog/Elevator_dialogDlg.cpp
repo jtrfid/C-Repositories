@@ -268,14 +268,15 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	// 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
 	m_DoorCx = m_DoorRect.right;
 
-	// 本窗口句柄，在Elevator.h被定义
+	// 本窗口句柄，本类静态变量
 	MAIN_WIN = this->GetSafeHwnd();
 
 	
 	// 开始仿真
 	printf("Elevator Startup\n");
 	ElevatorStartup();
-
+	m_BtnOK.SetWindowText(L"运行...");
+	m_BtnCancel.SetWindowText(L"关闭");
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -473,21 +474,22 @@ void CElevator_dialogDlg::printfState(int state)
 
 void CElevator_dialogDlg::OnBnClickedOk()
 {
-	// TODO: 在此添加控件通知处理程序代码
-
+	/*** 测试
 	static bool b = false;
 	if (!b) SetMotorPower(0);
 	else SetMotorPower(1);
 	b = !b;
-	
-	
+	****/
+	Lib_Running = !Lib_Running;
+	if(Lib_Running) m_BtnOK.SetWindowText(L"运行...");
+	else m_BtnOK.SetWindowText(L"暂停...");
 	//CDialogEx::OnOK();
 }
 
 
 void CElevator_dialogDlg::OnBnClickedCancel()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	ElevatorShutdown();
 	CDialogEx::OnCancel();
 }
 
