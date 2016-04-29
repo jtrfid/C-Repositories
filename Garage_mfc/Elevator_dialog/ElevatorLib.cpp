@@ -15,7 +15,7 @@ double Lib_Power = 0.0;
 // 门内: 开、关门按钮灯
 bool Lib_OpenDoorLight = false; 
 bool Lib_CloseDoorLight = false;
-// 门内: 楼层按钮灯,数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
+// 门内: 楼层按钮灯(PanelFloorLight),数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
 bool Lib_PanelFloorLight[Lib_FloorNum] = {false,false,false};
 // 门外: Up/Down按钮灯(Call Light),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
 bool Lib_CallLightUp[Lib_FloorNum] = {false,false,false};
@@ -32,7 +32,7 @@ bool IsgoingUp() {
 	return Lib_goingUp;
 }
 
-// 将要到的楼层
+// 目标楼层，即下一步将要到的楼层，初始值-1
 int Lib_WillToFloor = -1;
 
 // 开关门定时器已经启动，表示正在开关门SetDoor()读取，mfc维护
@@ -42,14 +42,15 @@ bool Lib_DoorOpened = false;
 // 关门结束,在mfc中维护
 bool Lib_DoorClosed = false;
 
-// 一定时间无动作，自动到1楼,该变量确定定时器是否启动
+// 一定时间（AutoTimerDuration）无动作，自动到1楼,该变量确定定时器是否启动
 bool Lib_AutoTimerStarted = false;
+int AutoTimerDuration = 10000;  // ms，时长，缺省10000ms,即10s
 // 一定时间无动作，自动到1楼
 extern void AutoTo1Floor() 
 {
 	if (!Lib_AutoTimerStarted)
 	{
-		SetTimer(CElevator_dialogDlg::MAIN_WIN,ID_AUTO_TIMER,10000,NULL);//10s,10000ms
+		SetTimer(CElevator_dialogDlg::MAIN_WIN,ID_AUTO_TIMER,AutoTimerDuration,NULL);//10s,10000ms
 		Lib_AutoTimerStarted = true;
 	}
 }
@@ -62,7 +63,7 @@ extern void CancelTo1Floor()
 		Lib_AutoTimerStarted = false;
 	}
 }
-// 10s时间到，自动执行到1楼的动作，在mfc定时器回调函数中被调用
+// AutoTimerDuration时间到，自动执行到1楼的动作，在mfc定时器回调函数中被调用
 extern void To1Floor(int *state) 
 {
 	printf("10s时间到，自动下降到1楼...\n");
@@ -78,43 +79,25 @@ extern void To1Floor(int *state)
 	*state = MovingDown;
 }
 
-/** \brief Function to determine if the elevator simulator is currently running. */
-/**
-* This function should be called in a loop that exists when the elevator is
-* no longer running. If the elevator window is closed by the user, the calls
-* are not longer valid and should not be used (other than ElevatorShutdown).
-* \return true if the elevator simulation is currently running.
-* \code
-while(IsElevatorRunning())
-{
-ElevatorButtonProcessing();
-
-usleep(1000);
-}
-\endcode
-*/
+/** 
+ * 仿真是否在运行，返回true，运行，否则没有运行
+ */
 bool IsElevatorRunning()
 {
 	return Lib_Running;
 }
 
-/** \brief Start the Elevator Simulation.
-*
-* This function must be called before any other call can be made
-* to any Elevator Simulator functions. It starts the elevator simulator
-* in a new window.
-*/
+/** 
+ * 启动仿真，在初始化时启动
+ */
 void ElevatorStartup()
 {
 	Lib_Running = true;
 }
 
-/** \brief Shut down the Elevator Simulation.
-*
-* This function should be called last in the program. If the simulator is
-* currently running, it shuts down the simulator and closes the window. Then
-* it releases any resources allocated to this program.
-*/
+/** 
+ * 结束仿真
+ */
 void ElevatorShutdown()
 {
 	Lib_Running = false;
@@ -881,37 +864,6 @@ int GoingDownToFloor()
 
 	// 如果没有改变，返回原来存储的值。
 	return Lib_WillToFloor;
-}
-
-
-/** \brief Determine what floor the elevator should be going to when traveling
-* in a certain direction.
-*
-* This function will check the elevator buttons and determine what
-* floor the elevator should be going to. When going up, it will look for
-* floors above the current floor that have an up call button or
-* elevator panel button pressed.
-* If so, it will return the nearest one. Otherwise, it will check for floors
-* above the current floor with a down button pressed. If it finds one, it
-* will return the farthest of these. If it finds no floors in the up direction,
-* it returns a value of -1.
-*
-* The process when going down is similar, mirroring the up and down states.
-*
-* This function can be continuously called while the elevator is moving to
-* determine what floor it should stop on. The function will not return a
-* floor that the elevator does not have time to safely stop for. For example, if
-* the elevator is going up and is just below the second floor when the call button
-* for the second floor is pressed, the function will not return the second
-* floor because the elevator could not stop quickly enough to arrive at that floor.
-
-* \param up If true, call buttons and the elevator buttons are checked
-* in the up direction. If no floors are selected, the function returns
-* a value of -1. Return values for floors are 1, 2, or 3.
-*/
-int WhatFloorToGoToInThisDirection(bool up)
-{
-	return 0;
 }
 
 /**
