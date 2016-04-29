@@ -335,6 +335,8 @@ void SetDoor(int floor, bool open)
 {
 	if(!Lib_DoorTimerStarted)  // 防止开关门未结束，再次执行
 	{
+		// 如果门是打开的，就不用再打开了; 如果门是关闭的，就不用再关闭了
+		if((IsDoorOpen(floor) && open) || (IsDoorClosed(floor) && !open)) return;
 		// 发送开关门消息，mfc开启开关门定时器
 		OpenCloseDoor(floor,open);
 	}
@@ -792,7 +794,7 @@ int IdleGoingDownToFloor()
 }
 
 /************************************************************************
-* 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层
+* 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层（目标楼层）
 * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
 * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
 * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
@@ -802,11 +804,11 @@ int IdleGoingDownToFloor()
 ***********************************************************************/
 int GoingUpToFloor()
 {
-	// int floor =  GetNearestFloor(); // 判断复杂，使用四舍五入形式的GetNearestFloor()
+	// int floor =  GetNearestFloor(); // 使用四舍五入形式的GetNearestFloor()，判断复杂
 	int floor =  (int)GetFloor(); // 当前楼层，即刚刚经过的楼层
 
 	// 显示上行经过的楼层
-	if(fabs(GetFloor() - floor) < 0.01) {
+	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
 		CString status;
 		status.Format(_T("向上,[%d]楼"),floor);
 		ViewStatus(status);
@@ -838,7 +840,7 @@ int GoingUpToFloor()
 }
 
 /************************************************************************
-* 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层
+* 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层（目标楼层）
 * 适用于10s后无动作，自动下降到一楼的情况.
 * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
 * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
@@ -849,15 +851,15 @@ int GoingUpToFloor()
 ***********************************************************************/
 int GoingDownToFloor()
 {
-	//int floor =  GetNearestFloor(); // 判断复杂，使用四舍五入形式的GetNearestFloor()
+	//int floor =  GetNearestFloor(); // 使用四舍五入形式的GetNearestFloor()，判断复杂
 	int floor =  (int)GetFloor(); // 当前楼层的下一层，即刚刚经过的楼层是floor+1
 
 	// 显示下行经过的楼层
-	if(fabs(GetFloor() - floor) < 0.01) {
+	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
 		CString status;
 		status.Format(_T("向下,[%d]楼"),floor);
 		ViewStatus(status);
-		// 如果到1啦，立即返回1. 适用于10s后无动作，自动下降到一楼的情况
+		// 如果到1楼，立即返回1. 适用于10s后无动作，自动下降到一楼的情况
 		if(floor == 1) { Lib_WillToFloor = floor; return floor; }
 	}
 
@@ -937,7 +939,7 @@ void ViewStatus(CString status)
 }
 
 // 向mfc发送消息,打开/关闭电梯门
-// floor: 表示操作门的楼层
+// floor: 表示所在楼层
 // Open = true;开门，否则关门
 void OpenCloseDoor(int floor,bool Open)
 {

@@ -280,7 +280,6 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-CBitmapButton m_btnX1;
 void CElevator_dialogDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
@@ -332,7 +331,9 @@ HCURSOR CElevator_dialogDlg::OnQueryDragIcon()
 
 void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
+	// 如果仿真，退出
 	if(!IsElevatorRunning()) return;
+	
 	CString str("");
 
 	switch(nIDEvent) {
@@ -549,10 +550,10 @@ void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 		m_Close.setLight(GetCloseDoorLight());
 		return;
 	}
+	// 设置电梯内开关门按钮状态
 	SetOpenDoorLight(m_Open.getLight());
 	SetCloseDoorLight(m_Close.getLight());
 }
-
 
 // 接收消息，更新电梯内外按钮灯状态
 LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
@@ -560,7 +561,7 @@ LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 	Light_Msg *msg = (Light_Msg*)lParam;
 	// printf("msg:%d,%d,%d,%d\n",msg->type,msg->floor,msg->up,msg->LightOn);
 
-	if(msg->type == 1) // 电梯内楼层数字按钮灯
+	if(msg->type == 1) // 电梯内楼层数字按钮灯（Panel Floor Light）
 	{
 		m_FloorNum[msg->floor-1].setLight(msg->LightOn);
 	}
@@ -569,7 +570,7 @@ LRESULT CElevator_dialogDlg::OnLightMessage(WPARAM wParam,LPARAM lParam)
 		m_Open.setLight(msg->LightOn);
 		m_Close.setLight(msg->LightOn);
 	}
-	else if(msg->type == 3) // 表示电梯外Up/Down按钮灯
+	else if(msg->type == 3) // 表示电梯外Up/Down按钮灯（Call Light）
 	{
 		if(msg->up)
 			m_UpLight[msg->floor-1].setLight(msg->LightOn);

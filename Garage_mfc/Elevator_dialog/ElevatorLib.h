@@ -1,62 +1,38 @@
-/*
- * Name:     ElevatorLib.h
- *
- *
- * Class:    ElevatorLib
- * Created : Mar 5, 2011
- * Author :  Charles B. Owen
- */
-
-/** \file
- * \brief Elevator Simulator library include file.
- *
- * This file is included to utilize the Elevator Simulator.
- */
-
+/*****************************************************************
+ * Elevator Simulator 电梯状态机仿真程序
+ * 以MFC为工具，图形展示三层电梯仿真运行, 提供电机控制，位置感知，按钮点击功能
+ * 本文件是电梯状态机仿真程序头文件
+ * (1) 定义状态机状态常量
+ * (2) 库函数说明
+ ******************************************************************/
 #pragma once
 #ifndef ELEVATORLIB_H_
 #define ELEVATORLIB_H_
 
-//#include <stdbool.h>
-//#include <unistd.h>
-
-/**
- *  \mainpage Elevator Simulator
- *
- * This is the documentation for the CSE 251 Elevator Simulator.
- * This describes the function calls necessary to utilize the
- * simulator. The Elevator Simulator is a graphical representation
- * of an elevator in a three story building. Support is provided for
- * motor control, position sensing, button support, and indicators.
- *
- * See the documentation for the ElevatorLib.h file for all of the
- * function documentation. Applications include this file to gain
- * access to the functions and link to the file libElevatorLib.a.
- * A makefile is provided with the project.
- *
- * This documentation is generated from sources using Doxygen.
- */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*
- * Constants
+ * 常量(Constants)
  */
 
 
-/** \brief Distance from floor to floor in meters.
+/**
+ * 楼间距(m)，即楼层间的高度
  */
 #define Lib_FloorSpacing 3.28
 
-/** \brief Tolerance for a safe door opening.
- *
- * If the car is within 16cm of
- * a floor, the door opening is considered safe. Farther away and
- * we have a safety issue.
+/** 
+ * 判断是否到目标楼层的容许误差
+ * 判断是否下降到目标楼层：
+ * fabs(GetFloor() - GoingDownToFloor() < Lib_FloorTolerance
+ * 判断是否上升到目标楼层：
+ * fabs(GetFloor() - GoingUpToFloor() < Lib_FloorTolerance
  */
-#define Lib_FloorTolerance 0.16
+//#define Lib_FloorTolerance 0.16
+#define Lib_FloorTolerance 0.01
 
 // 楼层数
 #define Lib_FloorNum 3
@@ -84,7 +60,7 @@ extern void ViewStatus(CString status);
 // 向mfc发送消息,打开/关闭电梯门
 #define WM_Door_MESSAGE (WM_USER+300)
 
-// floor: 表示操作门的楼层
+// floor: 表示所在楼层
 // Open = true;开门，否则关门
 extern void OpenCloseDoor(int floor,bool Open);
 

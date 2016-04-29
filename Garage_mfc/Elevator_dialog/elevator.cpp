@@ -81,12 +81,12 @@ void StateIdle(int *state)
 
 void StateMovingUp(int *state)
 {
-	int floor = GoingUpToFloor(); // 检查是否上一楼层是要到的楼层
+	int floor = GoingUpToFloor(); // 获得目标楼层
 
 	double distance = GetFloor();
 	//printf("StateMovingUp %d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 
-	if(fabs(GetFloor() - floor) < 0.01) {
+	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
 		CString status;
 		status.Format(_T("Up\n[%d]楼"),floor);
 		ViewStatus(status);
@@ -107,12 +107,12 @@ void StateMovingUp(int *state)
 
 void StateMovingDown(int *state)
 {
-	int floor = GoingDownToFloor(); // 检查是否下一楼层是要到的楼层
+	int floor = GoingDownToFloor(); // 获得目标楼层
 
 	double distance = GetFloor();
 	//printf("StateMovingDown %d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 
-	if(fabs(GetFloor() - floor) < 0.01) {
+	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
 		CString status;
 		status.Format(_T("Down\n[%d]楼"),floor);
 		ViewStatus(status);
