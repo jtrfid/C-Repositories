@@ -1,6 +1,6 @@
 /*****************************************************************
  * Elevator Simulator 电梯状态机仿真程序
- * 以MFC为工具，图形展示三层电梯仿真运行, 提供电机控制，位置感知，按钮点击功能
+ * 以MFC为工具，图形动画展示三层电梯仿真运行, 提供电机控制，位置感知，按钮点击功能
  * 本文件是电梯状态机仿真程序头文件
  * (1) 定义状态机状态常量
  * (2) 库函数说明
@@ -44,7 +44,7 @@ extern "C" {
 typedef struct  
 {
 	int type;     // 1: 表示电梯内楼层按钮灯(Panel Floor Light), 2: 表示电梯内开关门按钮灯, 3: 表示电梯外Up/Down按钮灯(Call Light)
-	int floor;    // 楼层号, type=2时,floor无意义，
+	int floor;    // 楼层号, type=2时,floor无意义
 	bool LightOn; // true: 按钮灯On， false: 按钮能Off
 	bool up;      // true: Up按钮灯，false: Down按钮灯; 电梯外Up/Down有此项，type=1,2时,此项无意义
 }Light_Msg;
@@ -72,27 +72,27 @@ extern void OpenCloseDoor(int floor,bool Open);
 #define DoorOpen    4
 #define DoorClosing 5
 
-/*******************************************************************************/
-/* 说明在ElevatorLib.cpp中定义的全局变量，作为Lib与mfc之间的共享的变量，进行信息传递。 */
-/*******************************************************************************/
+/*******************************************************************************
+ * 说明在ElevatorLib.cpp中定义的全局变量，作为Lib与mfc之间的共享的变量，进行信息传递。
+ *******************************************************************************/
 extern bool Lib_Running;       // 正在运行仿真: true; 否则false
 // 电梯箱体下边沿距离地面的相对高度,初始值0
 extern double Lib_CurrentCarPosition;
 // 电梯箱体速度，Up>0,Down<0
 extern double Lib_CurrentCarVelocity;
-// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降。
+// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降;初始值0.0。
 extern double Lib_Power;
 // 门内: 开、关门按钮灯
 extern bool Lib_OpenDoorLight; 
 extern bool Lib_CloseDoorLight;
-// 门内: 楼层按钮灯(PanelFloorLight),数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
+// 门内: 楼层按钮灯(Panel Floor Light),数组元素对应门内楼层数字按钮的状态,注意下标0 -- Lib_FloorNum-1
 extern bool Lib_PanelFloorLight[Lib_FloorNum];
 // 门外: Up/Down按钮灯(Call Light),数组元素对应各楼层门外Up/Down按钮的状态,注意下标0 -- Lib_FloorNum-1
 extern bool Lib_CallLightUp[Lib_FloorNum];
 extern bool Lib_CallLightDown[Lib_FloorNum];
 
-// 电梯当前运动状态是上升(true)还是下降(false)，
-// IsgongUp()函数中，如果在1楼，Lib_gongUp=true; 如果在最高楼，Lib_gongUp=false；
+// 空闲状态，此时电梯是静止的，电梯当前运动趋势是上升(true)还是下降(false)
+// IsgongUp()函数中，如果在1楼，Lib_gongUp=true; 如果在最高楼(Lib_FloorNum)，Lib_gongUp=false；
 // IdleWhatFloorToGoTo()中维护该值
 // 在elevator.cpp中读取该值，函数IsgoingUp()返回该值。
 extern bool Lib_goingUp;
@@ -101,14 +101,14 @@ extern bool IsgoingUp();
 // 目标楼层，即下一步将要到的楼层，初始值-1
 extern int Lib_WillToFloor;
 
-// 开关门定时器已经启动，表示正在开关门SetDoor()读取，mfc维护
+// 开关门定时器已经启动，表示正在开关门,SetDoor()读取，mfc维护
 extern bool Lib_DoorTimerStarted;
 // 开门结束,在mfc中维护
 extern bool Lib_DoorOpened;
 // 关门结束,在mfc中维护
 extern bool Lib_DoorClosed;
 
-// 一定时间（AutoTimerDuration）无动作，自动到一楼,该变量确定定时器是否启动
+// 一定时间（AutoTimerDuration）无动作，自动下降到1楼,该变量确定定时器是否启动
 extern bool Lib_AutoTimerStarted;
 extern int AutoTimerDuration;  // ms，时长，缺省10000ms,即10s
 // 一定时间无动作，自动到1楼
@@ -118,12 +118,8 @@ extern void CancelTo1Floor();
 // AutoTimerDuration时间到，自动执行到1楼的动作
 extern void To1Floor(int *state);
 
-/////////////////// 待处理
-// 电梯经过的楼层或正在停留的楼层
-extern int Lib_FloorArrived;
-
 /************************************************************************
- * 在elevator.cpp中定义，实现状态机代码
+ * 在elevator.cpp中定义，实现状态机代码。mfc中调用此函数。
  * 状态机，每隔一定时间(如，100ms)被调用一次，采集系统的运行状态
  ************************************************************************/
 extern void main_control(int *state);
@@ -143,12 +139,11 @@ extern void ElevatorStartup();
  */
 extern void ElevatorShutdown();
 
-
 /******************************************************************
  * 按钮灯(Lights): 
- * （1）门内开关门按钮灯；（2）门内楼层按钮灯（Panel Floor Light）；（3）门外Up/Down按钮（Call Light）
+ * （1）门内开关门按钮灯；（2）门内楼层按钮灯（Panel Floor Light）；
+ * （3）门外Up/Down按钮（Call Light）
  ******************************************************************/
-
 
 /** 
  * 设置门内关门按钮灯的状态
@@ -173,7 +168,6 @@ extern void SetOpenDoorLight(bool s);
  * true,按钮灯亮，false，按钮灯灭
  */
 extern bool GetOpenDoorLight();
-
 
 /** 
  * 设置门内楼层按钮灯（Panel Floor Light）的状态
@@ -205,25 +199,14 @@ extern void SetCallLight(int floor, bool up, bool s);
  */
 extern bool GetCallLight(int floor, bool up);
 
-
 /********************************************
  * 电梯箱体门(Doors)
  ********************************************/
 
-/** \brief Set the opening/closing status of the elevator doors.
- *
- * The elevator doors have automatic control hardware that opens
- * and closes then based on this call. If you call this function with
- * open set true, the door will begin to open. That opening takes
- * a finite amount of time, so it is not immediately open. If the door
- * is closing and this call requests an open, it will reverse and
- * begin opening again. The same is true if opening.
- *
- * \par It is the control system's responsibility to only open doors
- * when the elevator is at the floor and not to move the elevator
- * while the doors are open.
- * \param floor The floor number. 1, 2, or 3.
- * \param open true tells the doors to open on that floor.
+/**
+ * 开启/关闭电梯箱体门
+ * 参数: floor, 表示所在楼层
+ *       open, true：表示开门，false：表示关门
  */
 extern void SetDoor(int floor, bool open);
 
@@ -256,9 +239,12 @@ extern void SetBrake(bool b);
 extern void SetMotorPower(double power);
 
 /** 
- * 获取电梯位置(m),即电梯下边沿距离一层地面的距离。
+ * 获取电梯位置(m),即电梯下边沿距离地面的距离。
  * 电梯停留在一层，返回0;
- * 电梯停留在二层，返回1*Lib_FloorSpacing;  
+ * 电梯上升/下降在1、2楼中间,返回0.5;
+ * 电梯停留在二层，返回1*Lib_FloorSpacing;
+ * 电梯上升/下降在2、3楼中间,返回1.5*Lib_FloorSpacing;
+ * 电梯停留在三层，返回2*Lib_FloorSpacing; 
  * 电梯停留在三层，返回2*Lib_FloorSpacing; 
  * 调用举例：
  if(GetPosition() > FloorSpacing) {
@@ -274,6 +260,7 @@ extern double GetVelocity();
 
 /**
  * 返回当前电梯所在层数，是浮点数，因此可以表示楼层之间。
+ * 例如，1.5，表示电梯箱体处在1层到2层的中间
  * 等效于: GetPosition() / FloorSpacing + 1
  */
 extern double GetFloor();
@@ -283,51 +270,44 @@ extern double GetFloor();
  */
 extern int GetNearestFloor();
 
-/** \brief Change the current number of passengers on the elevator.
- *
- * This function will cause the number of passengers on the elevator to change
- * to a new random number. This happens automatically when the door opens on any
- * floor, but can also be used to test elevator control code by selecting random
- * loadings.
+/**
+ * 改变乘客(passenger)数量
+ * 当每次开门后，是改变乘客数量的机会。测试时，产生一个随机数，代表乘客数量。
+ * 暂时没用
  */
 extern void ChangeLoading();
 
-/** \brief Set the passenger load for the elevator car.
- *
- * This function sets the passengers in the elevator car. The passengers are
- * represented by a bitwise or of 1 for Noel, 2 for Neil, and 4 for Sparty. To
- * turn on all passengers, use a value of 1 | 2 | 4 = 7.
- * \param r Binary or of passenger values.
- * This code example enables all passengers.
- * \code
-     SetLoading(7);
- \endcode
+/** 
+ * 设置乘客数量，暂时没用
  *
  */
 extern void SetLoading(int r);
 
 /************************************************************************
  * 静态监测
- * 电梯处于空闲状态, 确定下一步的运动方向和所到楼层
+ * 电梯处于空闲状态, 确定下一步的运动方向和所到楼层(目标楼层)
  *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
- *  返回要到的楼层，否则返回-1
+ *  返回目标楼层，否则返回-1
+ * 调用举例:
+ * int floor; bool up;
+ * floor = IdleWhatFloorToGoTo(&up);
  ************************************************************************/
 extern int IdleWhatFloorToGoTo(bool *up);
 
 /************************************************************************
  * 静态检测
- * 电梯处于空闲状态,检查：上行要到的楼层，否则返回-1
+ * 电梯处于空闲状态,检查：上行要到的楼层(目标楼层)，否则返回-1
  ***********************************************************************/
 extern int IdleGoingUpToFloor();
 
 /************************************************************************
  * 静态监测
- * 电梯处于空闲状态,检查：下行要到的楼层，否则返回-1
+ * 电梯处于空闲状态,检查：下行要到的楼层(目标楼层)，否则返回-1
  ***********************************************************************/
 extern int IdleGoingDownToFloor();
 
 /************************************************************************
- * 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层
+ * 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层(目标楼层)
  * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
@@ -338,8 +318,8 @@ extern int IdleGoingDownToFloor();
 extern int GoingUpToFloor();
 
 /************************************************************************
- * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层
- * 10s后无动作，自动下降到一楼，此时返回1.
+ * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层(目标楼层)
+ * AutoTimerDuration(10s)后无动作，自动下降到一楼，此时返回1.
  * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1

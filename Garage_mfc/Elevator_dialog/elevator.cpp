@@ -5,19 +5,8 @@
 
 #include "ElevatorLib.h"
 
-/*
- * Name :        <insert name here>
- * Description : Project 2 - The elevator controller
- */
-
-/*
- * Name :        main()
- * Description : Program entry point.
- */
-
-
 /**********************************************
- * 空闲状态，判断是否有按键，将要进入何种状态
+ * 空闲状态，判断是否有按键，判断将要进入何种状态
  **********************************************/
 void StateIdle(int *state)
 {
@@ -56,13 +45,13 @@ void StateIdle(int *state)
 		return;
 	}
 
-	// 将要到那一层
+	// 静态检测，下一步将要到那一层（目标层）
 	floor = IdleWhatFloorToGoTo(&up);
 	if(floor > 0)
 	   printf("空闲状态，将要到的楼层:%d,方向:%s\n",floor,up?"向上":"向下");
 
 	if (floor > 0) {
-		openUpOnes = false;   // 开关门复位
+		openUpOnes = false;   // 开关门灯复位
 		openDownOnes = false;
 		if (up) {
 			// 本层的up call light off
@@ -132,7 +121,7 @@ void StateMovingDown(int *state)
 }
 
 /**********************************************
- * 开门，一定时间后自动进入关门
+ * 开门，开门结束后自动进入关门
  **********************************************/
 void StateDoorOpen(int *state)
 {
