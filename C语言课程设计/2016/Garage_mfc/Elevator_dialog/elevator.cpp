@@ -72,7 +72,7 @@ void StateMovingUp(int *state)
 {
 	int floor = GoingUpToFloor(); // 获得目标楼层
 
-	double distance = GetFloor();
+	//double distance = GetFloor();
 	//printf("StateMovingUp %d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 
 	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
@@ -98,7 +98,7 @@ void StateMovingDown(int *state)
 {
 	int floor = GoingDownToFloor(); // 获得目标楼层
 
-	double distance = GetFloor();
+	//double distance = GetFloor();
 	//printf("StateMovingDown %d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 
 	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
@@ -108,7 +108,7 @@ void StateMovingDown(int *state)
 
 		printf("Down 到[%d]楼啦！\n",floor);
 		// 电梯外Down，Call Light Off
-		SetCallLight(floor,false,false);  // 待处理，如果是因为是up而到此层的，应该置up为light off
+		SetCallLight(floor,false,false);  
 		// 电梯内楼层号Floor Light Off
 		SetPanelFloorLight(floor,false);
 		SetMotorPower(0);

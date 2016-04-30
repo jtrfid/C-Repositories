@@ -255,7 +255,7 @@ void SetBrake(bool b)
 
 /**
  * 设置电机功率
- * 参数power在-1和1之间。-1：最大速度下降，1：最大速度上升
+ * 参数power在-1和1之间。-1：最大速度下降; 1：最大速度上升; 0： 停止
  */
 void SetMotorPower(double power)
 {
@@ -499,7 +499,6 @@ int GoingUpToFloor()
  * --- GetFloor()
  * ------- 2Floor, (int)GetFloor()
  ***********************************************************************/
-***********************************************************************/
 int GoingDownToFloor()
 {
 	//int floor =  GetNearestFloor(); // 使用四舍五入形式的GetNearestFloor()，判断复杂

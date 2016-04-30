@@ -80,7 +80,7 @@ extern bool Lib_Running;       // 正在运行仿真: true; 否则false
 extern double Lib_CurrentCarPosition;
 // 电梯箱体速度，Up>0,Down<0
 extern double Lib_CurrentCarVelocity;
-// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降;初始值0.0。
+// 电机功率，-1.0到1.0之间，设为1.0,电梯箱体以最大速度上升;设为-1.0,电梯箱体以最大速度下降;初始值0.0，表示停止。
 extern double Lib_Power;
 // 门内: 开、关门按钮灯
 extern bool Lib_OpenDoorLight; 
@@ -115,7 +115,7 @@ extern int AutoTimerDuration;  // ms，时长，缺省10000ms,即10s
 extern void AutoTo1Floor();
 // 取消自动到1楼
 extern void CancelTo1Floor();
-// AutoTimerDuration时间到，自动执行到1楼的动作
+// AutoTimerDuration时间到，自动执行到1楼的动作，在mfc定时器回调函数中被调用
 extern void To1Floor(int *state);
 
 /************************************************************************
@@ -234,7 +234,7 @@ extern void SetBrake(bool b);
 
 /**
  * 设置电机功率
- * 参数power在-1和1之间。-1：最大速度下降，1：最大速度上升
+ * 参数power在-1和1之间。-1：最大速度下降; 1：最大速度上升; 0： 停止
  */
 extern void SetMotorPower(double power);
 
