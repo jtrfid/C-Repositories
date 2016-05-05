@@ -390,7 +390,7 @@ void CElevator_dialogDlg::elevatorState(int state)
 		printf("没有这种状态!!!\n");  
 	}
 	
-	int step = Lib_Power*m_step;
+	int step = (int) (Lib_Power*m_step);
 	m_CurrentCarPosition += step;
 	Lib_CurrentCarPosition = (Lib_MaxCarPosition/m_MaxCarPosition)*m_CurrentCarPosition;
 	Lib_CurrentCarVelocity = (Lib_MaxCarPosition/m_MaxCarPosition)*step/(m_Interval*1000);

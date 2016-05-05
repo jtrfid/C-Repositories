@@ -130,6 +130,9 @@ void StateDoorOpen(int *state)
 	// 如果是门内开门按钮引起的开门，关掉此按钮的灯。避免Idle状态监测到灯还在亮引起重复开门。
 	if(GetOpenDoorLight()) SetOpenDoorLight(false);
 
+	// 关闭同方向门外Up/Down按钮灯(Call Light)
+	SetCallLight(floor, IsgoingUp(),false);
+
 	// 如果开门结束，进入关门状态
 	if(IsDoorOpen(floor))
 	{
