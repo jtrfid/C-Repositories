@@ -525,8 +525,10 @@ void CElevator_dialogDlg::OnClickedBtnnum1()
 	// 有效性检查，非运动状态，按电梯内本楼层按钮无效
 	if(m_state != MovingUp && m_state != MovingDown) {
 		int CurrentFloor = GetNearestFloor();
-		if(m_FloorNum[CurrentFloor-1].getLight()) m_FloorNum[CurrentFloor-1].setLight(false);
-		printf("已经在[%d]楼，按此楼层按钮无效。\n",CurrentFloor);
+		if (m_FloorNum[CurrentFloor - 1].getLight()) {
+			m_FloorNum[CurrentFloor - 1].setLight(false);
+			printf("已经在[%d]楼，按此楼层按钮无效。\n", CurrentFloor);
+		}
 	}
 	for(int floor = 1; floor <= Lib_FloorNum; floor++){
 		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());

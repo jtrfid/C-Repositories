@@ -346,16 +346,20 @@ int IdleWhatFloorToGoTo(bool *up)
 		ret = IdleGoingUpToFloor();
 		if(ret < 0) { // 只能改变方向转而向下
 			ret = IdleGoingDownToFloor(); 
-			*up = !goingUp;
-			Lib_goingUp = *up;
+			if (ret > 0){
+				*up = !goingUp;
+				Lib_goingUp = *up;
+			}
 		}
 	}
 	else {  //向下
 		ret = IdleGoingDownToFloor();
 		if(ret < 0) { // 只能改变方向转而向上
 			ret = IdleGoingUpToFloor(); 
-			*up = !goingUp;
-			Lib_goingUp = *up;
+			if (ret > 0) {
+				*up = !goingUp;
+				Lib_goingUp = *up;
+			}
 		}
 	}
 
