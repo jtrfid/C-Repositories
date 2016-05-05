@@ -96,3 +96,6 @@ ipch/
 *.opensdf
 *.vcxproj.user
 
+## office临时文件
+~$*.*
+
