@@ -155,7 +155,8 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_PicDoorLeft.GetClientRect(&m_DoorRect); // 0,0,40,166
 	m_DoorLeft_x = m_Car_x + 1;
 	m_DoorLeft_y = m_Car_y;
-	m_DoorRight_x = m_DoorLeft_x + 1 + m_DoorRect.right;
+	//m_DoorRight_x = m_DoorLeft_x + 1 + m_DoorRect.right;  // 左右门中间留1个像素的空隙
+	m_DoorRight_x = m_DoorLeft_x + m_DoorRect.right;  // 左右门紧贴，没有留空隙
 	m_DoorRight_y = m_DoorLeft_y;
 	m_PicDoorLeft.SetWindowPos(0,m_DoorLeft_x,m_DoorLeft_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	m_PicDoorRight.SetWindowPos(0,m_DoorRight_x,m_DoorRight_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
@@ -419,7 +420,27 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 		printf("没有这种状态!!!\n");  
 	}
 
-	//printf("m_DoorCx=%d\n",m_DoorCx);
+	// 开门结束,延时开始，开门后有一个延时，模拟给乘客预留上下电梯时间
+	if (m_DoorCx < 0) {
+		m_DoorCx = 0;
+		if (!Lib_DoorTimerStarted) {
+			Lib_DoorTimerStarted = true;
+			SetTimer(ID_Door_TIMER, m_DoorInterval, NULL); // 2000ms,2s
+			printf("开门延时,预留乘客上下电梯时间[%ds]...\n", m_DoorInterval / 1000);
+		}
+	}
+	else if (m_DoorCx > m_DoorRect.right) { // 关门结束
+		//printf("m_DoorCx=%d,m_DoorRect.right=%d,m_DoorStep=%d\n", m_DoorCx, m_DoorRect.right, m_DoorStep);
+		m_DoorCx = m_DoorRect.right;
+		// ASSERT(m_state == DoorClosing);  // 断言一定是DoorClosing, 不一定呀!!!
+		if (m_state == DoorClosing) {
+			Lib_DoorClosed = true;
+			CString str("");
+			str.Format(_T("[%d]楼\n关门结束"), GetNearestFloor());
+			printf("[%d]楼关门结束\n", GetNearestFloor());
+			m_TxtStatus.SetWindowText(str);
+	    }
+	}
 
 	// 电梯箱体左右门
 	m_PicDoorLeft.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER | SWP_NOCOPYBITS);  
@@ -431,26 +452,6 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 	if(state == DoorOpen) m_DoorCx -= m_DoorStep; // 开门
 	else m_DoorCx += m_DoorStep;  // 关门	
 
-	// 开门结束,延时开始，开门后有一个延时，模拟给乘客预留上下电梯时间
-	if (m_DoorCx < 0) {
-		m_DoorCx = 0;
-		if (!Lib_DoorTimerStarted) {
-			Lib_DoorTimerStarted = true;
-			SetTimer(ID_Door_TIMER, m_DoorInterval, NULL); // 2000ms,2s
-			printf("开门延时,预留乘客上下电梯时间[%ds]...\n", m_DoorInterval / 1000);
-		}
-	}
-	else if (m_DoorCx > m_DoorRect.right) { // 关门结束
-		// printf("m_DoorCx=%d,m_DoorRect.right=%d\n", m_DoorCx, m_DoorRect.right);
-		m_DoorCx = m_DoorRect.right;
-		Lib_DoorClosed = true;
-		ASSERT(m_state == DoorClosing);  // 断言一定是DoorClosing
-
-		CString str("");
-		str.Format(_T("[%d]楼\n关门结束"), GetNearestFloor());
-		printf("[%d]楼关门结束\n", GetNearestFloor());
-	    m_TxtStatus.SetWindowText(str);
-	}
 }
 
 // 打印当前状态

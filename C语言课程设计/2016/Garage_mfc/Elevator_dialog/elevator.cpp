@@ -52,7 +52,7 @@ void StateIdle(int *state)
 		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
 		SetDoor(CurrentFooor,false);
 		*state = DoorClosing;
-		printf("Transition:  from Idle to DoorOpen.\n");
+		printf("Transition:  from Idle to DoorClosing.\n");
 		return;
 	}
 
