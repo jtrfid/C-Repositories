@@ -261,10 +261,10 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_state = Idle;
 	m_CurrentCarPosition = 0;
 	m_MaxCarPosition = back.bottom - car.bottom;
-	// 电梯箱体门开关门时长(ms,默认2000ms,2s)
-	m_DoorInterval = 4000;
-	// 电梯箱体门开关门动画步长，2s开关门，(门宽度/20000)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
-	m_DoorStep = (m_DoorRect.right*m_Interval)/20000 + 1; 
+	// 开门后有一个延时，模拟给乘客预留上下电梯时间(ms,默认2000ms,2s)
+	m_DoorInterval = 2000;
+	// 电梯箱体门开关门动画步长，2s开关门，(门宽度/2000)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
+	m_DoorStep = (m_DoorRect.right*m_Interval)/2000 + 1; 
 	// 门的宽度，用于动画，开门: m_DoorRect.right-->0，步长：m_DoorStep; 关门反之.
 	m_DoorCx = m_DoorRect.right;
 
@@ -437,6 +437,7 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 		if (!Lib_DoorTimerStarted) {
 			Lib_DoorTimerStarted = true;
 			SetTimer(ID_Door_TIMER, m_DoorInterval, NULL); // 2000ms,2s
+			printf("开门延时,预留乘客上下电梯时间[%ds]...\n", m_DoorInterval / 1000);
 		}
 	}
 	else if (m_DoorCx > m_DoorRect.right) { // 关门结束
