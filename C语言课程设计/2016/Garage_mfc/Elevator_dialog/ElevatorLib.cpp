@@ -209,20 +209,9 @@ bool GetCallLight(int floor, bool up)
  * 参数: floor, 表示所在楼层
  *       open, true：表示开门，false：表示关门
  */
-void SetDoor11111(int floor, bool open)
-{
-	if(!Lib_DoorTimerStarted)  // 防止开关门未结束，再次执行
-	{
-		// 如果门是打开的，就不用再打开了; 如果门是关闭的，就不用再关闭了
-		if((IsDoorOpen(floor) && open) || (IsDoorClosed(floor) && !open)) return;
-		// 发送开关门消息，mfc开启开关门定时器
-		OpenCloseDoor(floor,open);
-	}
-}
-
 void SetDoor(int floor, bool open)
 {
-	// 不应再此判断，应该在状态函数中判断
+	// 不应在此判断，应该在状态函数中判断
 	// 如果门是打开的，就不用再打开了; 如果门是关闭的，就不用再关闭了
     //if ((IsDoorOpen(floor) && open) || (IsDoorClosed(floor) && !open)) return;
 
