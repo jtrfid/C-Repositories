@@ -263,9 +263,9 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_MaxCarPosition = back.bottom - car.bottom;
 	// 电梯箱体门开关门时长(ms,默认2000ms,2s)
 	m_DoorInterval = 4000;
-	// 电梯箱体门开关门动画步长，(门宽度/m_DoorInterval)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
-	m_DoorStep = (m_DoorRect.right*m_Interval)/m_DoorInterval + 1; 
-	// 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
+	// 电梯箱体门开关门动画步长，2s开关门，(门宽度/20000)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
+	m_DoorStep = (m_DoorRect.right*m_Interval)/20000 + 1; 
+	// 门的宽度，用于动画，开门: m_DoorRect.right-->0，步长：m_DoorStep; 关门反之.
 	m_DoorCx = m_DoorRect.right;
 
 	// 本窗口句柄，本类静态变量
@@ -334,32 +334,22 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// 如果仿真，退出
 	if(!IsElevatorRunning()) return;
-	
-	CString str("");
 
+	CString str("");
 	switch(nIDEvent) {
 	case ID_ClOCK_TIMER: // 动画仿真时钟
 		main_control(&m_state); // 电梯状态机
 		elevatorState(m_state); // 电梯状态动画仿真
 		elevatorDoor(m_state); // 电梯门动画仿真
 		break;
-	case ID_Door_TIMER: // 开关门计时器
+	case ID_Door_TIMER: // 开关门计时器, 开门后有一个延时，模拟给乘客预留上下电梯时间
 		Lib_DoorTimerStarted = false;
-		//CString str("");
-		if(m_state == DoorOpen) {
-		   m_DoorCx = 0;
-		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
-		   Lib_DoorOpened = true;
-		   printf("[%d]楼开门结束\n",GetNearestFloor());
-		}
-		else if(m_state == DoorClosing) {
-		   m_DoorCx = m_DoorRect.right;
-           str.Format(_T("[%d]楼\n关门结束"),GetNearestFloor());
-		   Lib_DoorClosed = true;
-		   printf("[%d]楼关门结束\n",GetNearestFloor());
-		}
-		m_TxtStatus.SetWindowText(str);
+		Lib_DoorOpened = true;
 		KillTimer(ID_Door_TIMER);
+
+		ASSERT(m_state == DoorOpen);  // 断言一定是DoorOpen
+		str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
+		printf("[%d]楼开门结束\n",GetNearestFloor());
 		break; 
 	case ID_AUTO_TIMER: // 一定时间后，自动到一楼
 		Lib_AutoTimerStarted = false;
@@ -441,8 +431,25 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 	if(state == DoorOpen) m_DoorCx -= m_DoorStep; // 开门
 	else m_DoorCx += m_DoorStep;  // 关门	
 
-	if(m_DoorCx < 0) m_DoorCx = 0;
-	else if(m_DoorCx > m_DoorRect.right) m_DoorCx = m_DoorRect.right;
+	// 开门结束,延时开始，开门后有一个延时，模拟给乘客预留上下电梯时间
+	if (m_DoorCx < 0) {
+		m_DoorCx = 0;
+		if (!Lib_DoorTimerStarted) {
+			Lib_DoorTimerStarted = true;
+			SetTimer(ID_Door_TIMER, m_DoorInterval, NULL); // 2000ms,2s
+		}
+	}
+	else if (m_DoorCx > m_DoorRect.right) { // 关门结束
+		// printf("m_DoorCx=%d,m_DoorRect.right=%d\n", m_DoorCx, m_DoorRect.right);
+		m_DoorCx = m_DoorRect.right;
+		Lib_DoorClosed = true;
+		ASSERT(m_state == DoorClosing);  // 断言一定是DoorClosing
+
+		CString str("");
+		str.Format(_T("[%d]楼\n关门结束"), GetNearestFloor());
+		printf("[%d]楼关门结束\n", GetNearestFloor());
+	    m_TxtStatus.SetWindowText(str);
+	}
 }
 
 // 打印当前状态
@@ -481,8 +488,14 @@ void CElevator_dialogDlg::OnBnClickedOk()
 	b = !b;
 	****/
 	Lib_Running = !Lib_Running;
-	if(Lib_Running) m_BtnOK.SetWindowText(L"运行...");
-	else m_BtnOK.SetWindowText(L"暂停...");
+	if (Lib_Running) {
+		m_BtnOK.SetWindowText(L"运行...");  
+		printf("系统正在运行...\n");
+	}
+	else {
+		m_BtnOK.SetWindowText(L"暂停...");
+		printf("系统暂停...\n");
+	}
 	//CDialogEx::OnOK();
 }
 
@@ -599,39 +612,32 @@ LRESULT CElevator_dialogDlg::OnViewStatusMessage(WPARAM wParam,LPARAM lParam)
 	return 0;
 }
 
-// 接收消息开关门
+// 接收消息开关门，开门后有一个延时，模拟给乘客预留上下电梯时间
 LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 {
 	int floor = (int)wParam;  // 楼层
 	bool open = (bool)lParam; // 开关门
 	CString str;
 
-	ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
+	// ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
 
-	// 表示正在开关门，不能在此期间再启动
-	Lib_DoorTimerStarted = true;
-
-	// 只要开启定时器，表示正在开门或关门，因此以下表示开关门结束的变量均置为false
-	Lib_DoorOpened = false; 
-	Lib_DoorClosed = false;
-
-	if(open) { // 开门，定时器启动
-		m_DoorCx = m_DoorRect.right;  // 初始化门的宽度
+	if(open) { // 开门
 		str.Format(_T("[%d]楼\n开门..."),floor);	
+		printf("[%d]楼开门...\n", floor);
+		Lib_DoorOpened = false;
 	}
-	else { // 关门，定时器启动		
-	    m_DoorCx = 0;  // 初始化门的宽度
-		//m_DoorCx = m_DoorStep;  // 初始化门的宽度
+	else { // 关门		
 		str.Format(_T("[%d]楼\n关门..."),floor);	
+		printf("[%d]楼关门...\n", floor);
+		Lib_DoorClosed = false;
 	}
-	SetTimer(ID_Door_TIMER,m_DoorInterval,NULL); // 2000ms,2s
-	m_TxtStatus.SetWindowText(str);
 
-	if(open) { // 开门，定时器启动	
-		printf("[%d]楼开门...\n",floor);	
-	}
-	else { // 关门，定时器启动		
-		printf("[%d]楼关门...\n",floor);	
+	m_TxtStatus.SetWindowText(str);
+	
+	// 如果开启,关闭开门后的延时
+	if (Lib_DoorTimerStarted) {
+		KillTimer(ID_Door_TIMER);
+		Lib_DoorTimerStarted = false;
 	}
 
 	return 0;

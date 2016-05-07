@@ -26,6 +26,7 @@ void StateIdle(int *state)
 		// 开门
 		SetDoor(CurrentFooor, true);
 		*state = DoorOpen;
+		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
 
@@ -35,20 +36,23 @@ void StateIdle(int *state)
 		// 开门
 		SetDoor(CurrentFooor, true);
 		*state = DoorOpen;
+		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
 
 	// 监测电梯内开关门按钮
 	if(GetOpenDoorLight()) { // 开门
-		SetOpenDoorLight(false); // turn off 
+		SetOpenDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
 		SetDoor(CurrentFooor,true);
 		*state = DoorOpen;
+		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
 	else if(GetCloseDoorLight()) {  // 关门
-		SetCloseDoorLight(false); // turn off 
+		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
 		SetDoor(CurrentFooor,false);
 		*state = DoorClosing;
+		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
 
@@ -58,12 +62,14 @@ void StateIdle(int *state)
 			SetCallLight(CurrentFooor,true,false);
 			SetMotorPower(1);
 			*state = MovingUp;
+			printf("Transition:  from Idle to MovingUp.\n");
 		}
 		else {
 			// 本层的down call light off
 			SetCallLight(CurrentFooor,false,false);
 			SetMotorPower(-1);
 			*state = MovingDown;
+			printf("Transition:  from Idle to MovingDown.\n");
 		}
 	} 	
 }
@@ -97,6 +103,7 @@ void StateMovingUp(int *state)
 		// 开门
 		SetDoor(floor,true);
 		*state = DoorOpen;
+		printf("Transition:  from MovingUp to DoorOpen.\n");
 	}
 
 }
@@ -129,6 +136,7 @@ void StateMovingDown(int *state)
 		// 开门
 		SetDoor(floor,true);
 		*state = DoorOpen;
+		printf("Transition:  from MovingDown to DoorOpen.\n");
 	}
 
 }
@@ -140,11 +148,21 @@ void StateDoorOpen(int *state)
 {
 	int floor = GetNearestFloor();
 
-	// 如果是门内开门按钮引起的开门，关掉此按钮的灯。避免Idle状态监测到灯还在亮引起重复开门。
-	// if(GetOpenDoorLight()) SetOpenDoorLight(false);
+	// 如果正在开门时，按了关门灯，转而关门
+	if (GetCloseDoorLight()) {
+		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
+		SetDoor(floor, false);
+		*state = DoorClosing;
+		printf("Transition:  from DoorOpen to DoorClosing.\n");
+		return;
+	}
 
-	// 关闭同方向门外Up/Down按钮灯(Call Light)
-	// SetCallLight(floor, IsgoingUp(),false);
+	// 如果正在开门，按了开门灯，关灯返回
+	if (GetOpenDoorLight()) {
+		SetOpenDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复
+		printf("已经在开门！\n");
+		return;
+	}
 
 	// 如果开门结束，进入关门状态
 	if(IsDoorOpen(floor))
@@ -152,6 +170,7 @@ void StateDoorOpen(int *state)
 		// 关门
 		SetDoor(floor,false);
 		*state = DoorClosing;
+		printf("Transition:  from DoorOpen to DoorCloing.\n");
 	} 
 }
 
@@ -160,13 +179,29 @@ void StateDoorOpen(int *state)
  ********************************************/
 void StateDoorClosing(int *state)
 {
-	// 如果是门内关门按钮引起的关门，关掉此按钮的灯。避免Idle状态监测到灯还在亮引起重复关门门。
-	// if(GetCloseDoorLight()) SetCloseDoorLight(false);
+	int floor = GetNearestFloor();
+
+	// 如果正在关门时，按了开门灯，转而开门
+	if (GetOpenDoorLight()) { 
+		SetOpenDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
+		SetDoor(floor, true);
+		*state = DoorOpen;
+		printf("Transition:  from DoorClosing to DoorOpen.\n");
+		return;
+	}
+
+	// 如果正在关门，按了关门灯，关灯返回
+	if (GetCloseDoorLight()) {
+		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复
+		printf("已经在关门！\n");
+		return;
+	}
 
 	// 如果关门结束，到空闲状态，判断下一步的走向
-	if(IsDoorClosed(GetNearestFloor()))
+	if(IsDoorClosed(floor))
 	{
 		*state = Idle;
+		printf("Transition:  from DoorClosing to Idle.\n");
 	} 
 }
 
