@@ -12,7 +12,7 @@ void StateIdle(int *state)
 {
 	int floor;  // 目标楼层
 	bool up;    // 上升/下降
-	int CurrentFooor = GetNearestFloor();  // 当前楼层
+	int CurrentFloor = GetNearestFloor();  // 当前楼层
 
 	// 静态检测，下一步将要到那一层（目标层）
 	floor = IdleWhatFloorToGoTo(&up);
@@ -20,21 +20,21 @@ void StateIdle(int *state)
 		printf("空闲状态，将要到的楼层【目标楼层】:%d,方向:%s\n", floor, up ? "向上" : "向下");
 
 	// 监测电梯外上下按钮灯(Call Light)，开门请求
-	if (up && GetCallLight(CurrentFooor, true)) {  // 向上
+	if (up && GetCallLight(CurrentFloor, true)) {  // 向上
 		// 电梯外Up，Call Light Off
-		SetCallLight(CurrentFooor, true, false);
+		SetCallLight(CurrentFloor, true, false);
 		// 开门
-		SetDoor(CurrentFooor, true);
+		SetDoor(CurrentFloor, true);
 		*state = DoorOpen;
 		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
 
-	if (!up && GetCallLight(CurrentFooor, false)) { // 向下
+	if (!up && GetCallLight(CurrentFloor, false)) { // 向下
 		// 电梯外Down，Call Light Off
-		SetCallLight(CurrentFooor, false, false);
+		SetCallLight(CurrentFloor, false, false);
 		// 开门
-		SetDoor(CurrentFooor, true);
+		SetDoor(CurrentFloor, true);
 		*state = DoorOpen;
 		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
@@ -43,30 +43,37 @@ void StateIdle(int *state)
 	// 监测电梯内开关门按钮
 	if(GetOpenDoorLight()) { // 开门
 		SetOpenDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
-		SetDoor(CurrentFooor,true);
+		SetDoor(CurrentFloor,true);
 		*state = DoorOpen;
 		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
+	// 断言在Idle状态，门一定是关闭的, 因此应该不执行从Idle到DoorClosing的装换
+	// 仅读取关门灯，并关闭关门灯，即消费按键行为。
 	else if(GetCloseDoorLight()) {  // 关门
-		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复 
-		SetDoor(CurrentFooor,false);
+		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复
+
+		ASSERT(IsDoorClosed(CurrentFloor));  // 断言门一定是关闭的
+		return;
+		/********
+		SetDoor(CurrentFloor,false);
 		*state = DoorClosing;
 		printf("Transition:  from Idle to DoorClosing.\n");
 		return;
+		*********/
 	}
 
 	if (floor > 0) {
 		if (up) {
 			// 本层的up call light off
-			SetCallLight(CurrentFooor,true,false);
+			SetCallLight(CurrentFloor,true,false);
 			SetMotorPower(1);
 			*state = MovingUp;
 			printf("Transition:  from Idle to MovingUp.\n");
 		}
 		else {
 			// 本层的down call light off
-			SetCallLight(CurrentFooor,false,false);
+			SetCallLight(CurrentFloor,false,false);
 			SetMotorPower(-1);
 			*state = MovingDown;
 			printf("Transition:  from Idle to MovingDown.\n");

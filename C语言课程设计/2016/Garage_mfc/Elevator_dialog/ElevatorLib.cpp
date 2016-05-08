@@ -40,10 +40,10 @@ int Lib_WillToFloor = -1;
 
 // 开关门定时器已经启动，表示正在开关门,SetDoor()读取，mfc维护
 bool Lib_DoorTimerStarted = false;
-// 开门结束,在mfc中维护
+// 开门结束,初始化为false,在mfc中维护
 bool Lib_DoorOpened = false;
-// 关门结束,在mfc中维护
-bool Lib_DoorClosed = false;
+// 关门结束,初始化为true,在mfc中维护
+bool Lib_DoorClosed = true;
 
 // 一定时间（AutoTimerDuration）无动作，自动下降到1楼,该变量确定定时器是否启动
 bool Lib_AutoTimerStarted = false;
