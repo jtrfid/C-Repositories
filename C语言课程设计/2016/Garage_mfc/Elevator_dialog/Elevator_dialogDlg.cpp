@@ -561,6 +561,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 // 设置电梯内开关门按钮状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 {
+	/**** 移至状态函数MovingUp/MovingDown
 	// 安全设置，运动状态，开关门失效
 	if(m_state == MovingUp || m_state == MovingDown) {
 		printf("运动状态，开关门失效!!!\n");
@@ -569,6 +570,7 @@ void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 		m_Close.setLight(GetCloseDoorLight());
 		return;
 	}
+	*****/
 	// 设置电梯内开关门按钮状态
 	SetOpenDoorLight(m_Open.getLight());
 	SetCloseDoorLight(m_Close.getLight());

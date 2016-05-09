@@ -48,11 +48,10 @@ void StateIdle(int *state)
 		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
-	// 断言在Idle状态，门一定是关闭的, 因此应该不执行从Idle到DoorClosing的装换
+	// 断言在Idle状态，门一定是关闭的, 因此应该不执行从Idle到DoorClosing的转换
 	// 仅读取关门灯，并关闭关门灯，即消费按键行为。
 	else if(GetCloseDoorLight()) {  // 关门
 		SetCloseDoorLight(false); // turn off, 关灯，为了读取一次生效，而后不重复
-
 		ASSERT(IsDoorClosed(CurrentFloor));  // 断言门一定是关闭的
 		return;
 		/********
@@ -83,6 +82,18 @@ void StateIdle(int *state)
 
 void StateMovingUp(int *state)
 {
+	// 安全设置，运动状态，开关门失效，消费相应按钮行为
+	if (GetOpenDoorLight()) { // 消费开门按钮
+		SetOpenDoorLight(false); 
+		printf("运动状态，开关门失效!!!\n");
+		return;
+	}
+	if (GetCloseDoorLight()) { // 消费关门按钮
+		SetCloseDoorLight(false); 
+		printf("运动状态，开关门失效!!!\n");
+		return;
+	}
+
 	int floor = GoingUpToFloor(); // 获得目标楼层
 
 	//double distance = GetFloor();
@@ -117,6 +128,18 @@ void StateMovingUp(int *state)
 
 void StateMovingDown(int *state)
 {
+	// 安全设置，运动状态，开关门失效，消费相应按钮行为
+	if (GetOpenDoorLight()) { // 消费开门按钮
+		SetOpenDoorLight(false);
+		printf("运动状态，开关门失效!!!\n");
+		return;
+	}
+	if (GetCloseDoorLight()) { // 消费关门按钮
+		SetCloseDoorLight(false);
+		printf("运动状态，开关门失效!!!\n");
+		return;
+	}
+
 	int floor = GoingDownToFloor(); // 获得目标楼层
 
 	//double distance = GetFloor();
