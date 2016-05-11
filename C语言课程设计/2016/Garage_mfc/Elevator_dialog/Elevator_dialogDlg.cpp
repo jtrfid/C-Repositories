@@ -252,6 +252,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	// 对话框窗体位置,合并在前面的语句
 	// this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
 	
 	// 启动仿真时钟
 	m_Interval = 100;
@@ -272,7 +273,17 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	// 本窗口句柄，本类静态变量
 	MAIN_WIN = this->GetSafeHwnd();
 
-	
+	// 电梯楼层标志线
+	CStatic *line1 = (CStatic *)GetDlgItem(IDC_STATIC_LINE1); // 3层
+	int floor_lineX, floor_lineY;
+	floor_lineX = back.right - 100;
+	floor_lineY = back.bottom - m_MaxCarPosition;  // 第3层
+	line1->SetWindowPos(0, floor_lineX, floor_lineY, 100, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+	//line1->SetWindowPos(0, 0, floor_lineY, back.right, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+	CStatic *line2 = (CStatic *)GetDlgItem(IDC_STATIC_LINE2); // 2层
+	floor_lineY = back.bottom - m_MaxCarPosition/2;  // 第3层
+	line2->SetWindowPos(0, floor_lineX, floor_lineY, 100, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+
 	// 开始仿真
 	printf("Elevator Startup\n");
 	ElevatorStartup();
@@ -384,6 +395,8 @@ void CElevator_dialogDlg::elevatorState(int state)
 	int step = (int) (Lib_Power*m_step);
 	m_CurrentCarPosition += step;
 	Lib_CurrentCarPosition = (Lib_MaxCarPosition/m_MaxCarPosition)*m_CurrentCarPosition;
+
+	// 暂时未用
 	Lib_CurrentCarVelocity = (Lib_MaxCarPosition/m_MaxCarPosition)*step/(m_Interval*1000);
 
 	//printf("Velocity=%f\n",Lib_CurrentCarVelocity);
