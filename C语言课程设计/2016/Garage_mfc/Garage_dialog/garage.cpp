@@ -31,13 +31,6 @@ void StateDoorOpening(int *state)
 
 void StateDoorClosing(int *state)
 {
-	if(IsBeamBroken()) // Event
-	{
-		SetMotorPower(1); // Transition
-		*state = DoorOpening;
-		return;
-	}
-
 	if (GetDoorPosition() <= Lib_DoorTolerance)  // Event
 	{
 		SetMotorPower(0);  // Transition
