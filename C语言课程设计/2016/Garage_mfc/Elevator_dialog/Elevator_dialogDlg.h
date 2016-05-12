@@ -24,9 +24,9 @@ public:
 private:
    // 仿真时钟周期(ms,默认100ms)
    int m_Interval;
-   // 电梯箱体门开关门时长(ms,默认2000ms,2s)
+   // 开门后有一个延时，模拟给乘客预留上下电梯时间(ms,默认2000ms,2s)
    int m_DoorInterval;
-   // 电梯箱体门开关门动画步长，(门宽度/m_DoorInterval)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
+   // 电梯箱体门开关门动画步长，2s开关门，(门宽度/2000)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
    int m_DoorStep; 
    // 步长,像素值，默认10
    int m_step;
@@ -68,7 +68,7 @@ public:
 	CStatic m_PicDoorRight;
 	int m_DoorRight_x, m_DoorRight_y;
 	RECT m_DoorRect; // 左右门大小是一样的
-	int m_DoorCx; // 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
+	int m_DoorCx; // 门的宽度，用于动画，开门: m_DoorRect.right-->0，步长：m_DoorStep; 关门反之.
 	
 	// 定时器回调函数
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

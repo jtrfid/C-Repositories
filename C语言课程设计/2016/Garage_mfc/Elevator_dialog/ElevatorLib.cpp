@@ -40,10 +40,10 @@ int Lib_WillToFloor = -1;
 
 // 开关门定时器已经启动，表示正在开关门,SetDoor()读取，mfc维护
 bool Lib_DoorTimerStarted = false;
-// 开门结束,在mfc中维护
+// 开门结束,初始化为false,在mfc中维护
 bool Lib_DoorOpened = false;
-// 关门结束,在mfc中维护
-bool Lib_DoorClosed = false;
+// 关门结束,初始化为true,在mfc中维护
+bool Lib_DoorClosed = true;
 
 // 一定时间（AutoTimerDuration）无动作，自动下降到1楼,该变量确定定时器是否启动
 bool Lib_AutoTimerStarted = false;
@@ -211,13 +211,12 @@ bool GetCallLight(int floor, bool up)
  */
 void SetDoor(int floor, bool open)
 {
-	if(!Lib_DoorTimerStarted)  // 防止开关门未结束，再次执行
-	{
-		// 如果门是打开的，就不用再打开了; 如果门是关闭的，就不用再关闭了
-		if((IsDoorOpen(floor) && open) || (IsDoorClosed(floor) && !open)) return;
-		// 发送开关门消息，mfc开启开关门定时器
-		OpenCloseDoor(floor,open);
-	}
+	// 不应在此判断，应该在状态函数中判断
+	// 如果门是打开的，就不用再打开了; 如果门是关闭的，就不用再关闭了
+    //if ((IsDoorOpen(floor) && open) || (IsDoorClosed(floor) && !open)) return;
+
+	// 发送开关门消息
+	OpenCloseDoor(floor, open);
 }
 
 /** 
@@ -346,16 +345,20 @@ int IdleWhatFloorToGoTo(bool *up)
 		ret = IdleGoingUpToFloor();
 		if(ret < 0) { // 只能改变方向转而向下
 			ret = IdleGoingDownToFloor(); 
-			*up = !goingUp;
-			Lib_goingUp = *up;
+			if (ret > 0){
+				*up = !goingUp;
+				Lib_goingUp = *up;
+			}
 		}
 	}
 	else {  //向下
 		ret = IdleGoingDownToFloor();
 		if(ret < 0) { // 只能改变方向转而向上
 			ret = IdleGoingUpToFloor(); 
-			*up = !goingUp;
-			Lib_goingUp = *up;
+			if (ret > 0) {
+				*up = !goingUp;
+				Lib_goingUp = *up;
+			}
 		}
 	}
 
@@ -449,7 +452,7 @@ int IdleGoingDownToFloor()
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
  * ------- 3Floor
- * --- GetFloor()
+ * --- GetFloor(),2.5
  * ------- 2Floor, (int)GetFloor()  当前层
 ***********************************************************************/
 int GoingUpToFloor()
@@ -496,7 +499,7 @@ int GoingUpToFloor()
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1
  * ------- 3Floor 当前层
- * --- GetFloor()
+ * --- GetFloor(), 2.5
  * ------- 2Floor, (int)GetFloor()
  ***********************************************************************/
 int GoingDownToFloor()

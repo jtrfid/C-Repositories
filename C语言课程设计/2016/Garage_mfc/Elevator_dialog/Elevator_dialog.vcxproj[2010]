@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{742E0BF7-65EC-41E2-B542-A634E5D357A7}</ProjectGuid>
-    <RootNamespace>Garage_dialog</RootNamespace>
+    <ProjectGuid>{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}</ProjectGuid>
+    <RootNamespace>Elevator_dialog</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -21,15 +21,13 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -53,7 +51,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,7 +75,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -99,42 +95,64 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\Garage_dialog.ico" />
-    <None Include="res\Garage_dialog.rc2" />
-    <None Include="res\images\Cat.bmp" />
-    <None Include="res\images\Door.bmp" />
-    <None Include="res\images\Door.png" />
-    <None Include="res\images\Garage.bmp" />
-    <None Include="res\images\GarageFore.bmp" />
-    <None Include="res\images\switch.bmp" />
+    <None Include="res\Elevator_dialog.ico" />
+    <None Include="res\Elevator_dialog.rc2" />
+    <None Include="res\images\11.bmp" />
+    <None Include="res\images\12.bmp" />
+    <None Include="res\images\13.bmp" />
+    <None Include="res\images\21.bmp" />
+    <None Include="res\images\22.bmp" />
+    <None Include="res\images\23.bmp" />
+    <None Include="res\images\31.bmp" />
+    <None Include="res\images\32.bmp" />
+    <None Include="res\images\33.bmp" />
+    <None Include="res\images\Car83_166.bmp" />
+    <None Include="res\images\close1.bmp" />
+    <None Include="res\images\close2.bmp" />
+    <None Include="res\images\close3.bmp" />
+    <None Include="res\images\DoorLeft.bmp" />
+    <None Include="res\images\DoorRight.bmp" />
+    <None Include="res\images\DoorRight.png" />
+    <None Include="res\images\down1.bmp" />
+    <None Include="res\images\down2.bmp" />
+    <None Include="res\images\down3.bmp" />
+    <None Include="res\images\ElevatorBackground429_664.bmp" />
+    <None Include="res\images\open1.bmp" />
+    <None Include="res\images\open2.bmp" />
+    <None Include="res\images\open3.bmp" />
+    <None Include="res\images\up1.bmp" />
+    <None Include="res\images\up2.bmp" />
+    <None Include="res\images\up3.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GarageLib.h" />
-    <ClInclude Include="Garage_dialog.h" />
-    <ClInclude Include="Garage_dialogDlg.h" />
+    <ClInclude Include="ElevatorLib.h" />
+    <ClInclude Include="Elevator_dialog.h" />
+    <ClInclude Include="Elevator_dialogDlg.h" />
+    <ClInclude Include="LightBitmapButton.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="garage.cpp" />
-    <ClCompile Include="garageLib.cpp" />
-    <ClCompile Include="Garage_dialog.cpp" />
-    <ClCompile Include="Garage_dialogDlg.cpp" />
+    <ClCompile Include="elevator.cpp" />
+    <ClCompile Include="ElevatorLib.cpp" />
+    <ClCompile Include="Elevator_dialog.cpp" />
+    <ClCompile Include="Elevator_dialogDlg.cpp" />
+    <ClCompile Include="LightBitmapButton.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Garage_dialog.rc" />
+    <ResourceCompile Include="Elevator_dialog.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="Garage_dialog.rc" />
+      <UserProperties RESOURCE_FILE="Elevator_dialog.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

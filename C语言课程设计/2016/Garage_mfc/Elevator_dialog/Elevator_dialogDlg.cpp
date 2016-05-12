@@ -155,7 +155,8 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_PicDoorLeft.GetClientRect(&m_DoorRect); // 0,0,40,166
 	m_DoorLeft_x = m_Car_x + 1;
 	m_DoorLeft_y = m_Car_y;
-	m_DoorRight_x = m_DoorLeft_x + 1 + m_DoorRect.right;
+	//m_DoorRight_x = m_DoorLeft_x + 1 + m_DoorRect.right;  // 左右门中间留1个像素的空隙
+	m_DoorRight_x = m_DoorLeft_x + m_DoorRect.right;  // 左右门紧贴，没有留空隙
 	m_DoorRight_y = m_DoorLeft_y;
 	m_PicDoorLeft.SetWindowPos(0,m_DoorLeft_x,m_DoorLeft_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	m_PicDoorRight.SetWindowPos(0,m_DoorRight_x,m_DoorRight_y,0,0,SWP_NOSIZE | SWP_NOZORDER);
@@ -251,6 +252,7 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	// 对话框窗体位置,合并在前面的语句
 	// this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
 	
 	// 启动仿真时钟
 	m_Interval = 100;
@@ -261,17 +263,27 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_state = Idle;
 	m_CurrentCarPosition = 0;
 	m_MaxCarPosition = back.bottom - car.bottom;
-	// 电梯箱体门开关门时长(ms,默认2000ms,2s)
-	m_DoorInterval = 4000;
-	// 电梯箱体门开关门动画步长，(门宽度/m_DoorInterval)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
-	m_DoorStep = (m_DoorRect.right*m_Interval)/m_DoorInterval + 1; 
-	// 门的宽度，用于动画，开门: m_DoorRect.Right-->0，步长：m_DoorStep; 关门反之.
+	// 开门后有一个延时，模拟给乘客预留上下电梯时间(ms,默认2000ms,2s)
+	m_DoorInterval = 2000;
+	// 电梯箱体门开关门动画步长，2s开关门，(门宽度/2000)*m_Interval + 1, 留1个像素的余量，保证开关门时长内完成其动作
+	m_DoorStep = (m_DoorRect.right*m_Interval)/2000 + 1; 
+	// 门的宽度，用于动画，开门: m_DoorRect.right-->0，步长：m_DoorStep; 关门反之.
 	m_DoorCx = m_DoorRect.right;
 
 	// 本窗口句柄，本类静态变量
 	MAIN_WIN = this->GetSafeHwnd();
 
-	
+	// 电梯楼层标志线
+	CStatic *line1 = (CStatic *)GetDlgItem(IDC_STATIC_LINE1); // 3层
+	int floor_lineX, floor_lineY;
+	floor_lineX = back.right - 100;
+	floor_lineY = back.bottom - m_MaxCarPosition;  // 第3层
+	line1->SetWindowPos(0, floor_lineX, floor_lineY, 100, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+	//line1->SetWindowPos(0, 0, floor_lineY, back.right, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+	CStatic *line2 = (CStatic *)GetDlgItem(IDC_STATIC_LINE2); // 2层
+	floor_lineY = back.bottom - m_MaxCarPosition/2;  // 第3层
+	line2->SetWindowPos(0, floor_lineX, floor_lineY, 100, 1, SWP_SHOWWINDOW | SWP_NOZORDER);
+
 	// 开始仿真
 	printf("Elevator Startup\n");
 	ElevatorStartup();
@@ -334,32 +346,22 @@ void CElevator_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// 如果仿真，退出
 	if(!IsElevatorRunning()) return;
-	
-	CString str("");
 
+	CString str("");
 	switch(nIDEvent) {
 	case ID_ClOCK_TIMER: // 动画仿真时钟
 		main_control(&m_state); // 电梯状态机
 		elevatorState(m_state); // 电梯状态动画仿真
 		elevatorDoor(m_state); // 电梯门动画仿真
 		break;
-	case ID_Door_TIMER: // 开关门计时器
+	case ID_Door_TIMER: // 开关门计时器, 开门后有一个延时，模拟给乘客预留上下电梯时间
 		Lib_DoorTimerStarted = false;
-		//CString str("");
-		if(m_state == DoorOpen) {
-		   m_DoorCx = 0;
-		   str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
-		   Lib_DoorOpened = true;
-		   printf("[%d]楼开门结束\n",GetNearestFloor());
-		}
-		else if(m_state == DoorClosing) {
-		   m_DoorCx = m_DoorRect.right;
-           str.Format(_T("[%d]楼\n关门结束"),GetNearestFloor());
-		   Lib_DoorClosed = true;
-		   printf("[%d]楼关门结束\n",GetNearestFloor());
-		}
-		m_TxtStatus.SetWindowText(str);
+		Lib_DoorOpened = true;
 		KillTimer(ID_Door_TIMER);
+
+		ASSERT(m_state == DoorOpen);  // 断言一定是DoorOpen
+		str.Format(_T("[%d]楼\n开门结束"),GetNearestFloor());
+		printf("[%d]楼开门结束\n",GetNearestFloor());
 		break; 
 	case ID_AUTO_TIMER: // 一定时间后，自动到一楼
 		Lib_AutoTimerStarted = false;
@@ -390,9 +392,11 @@ void CElevator_dialogDlg::elevatorState(int state)
 		printf("没有这种状态!!!\n");  
 	}
 	
-	int step = Lib_Power*m_step;
+	int step = (int) (Lib_Power*m_step);
 	m_CurrentCarPosition += step;
 	Lib_CurrentCarPosition = (Lib_MaxCarPosition/m_MaxCarPosition)*m_CurrentCarPosition;
+
+	// 暂时未用
 	Lib_CurrentCarVelocity = (Lib_MaxCarPosition/m_MaxCarPosition)*step/(m_Interval*1000);
 
 	//printf("Velocity=%f\n",Lib_CurrentCarVelocity);
@@ -429,7 +433,27 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 		printf("没有这种状态!!!\n");  
 	}
 
-	//printf("m_DoorCx=%d\n",m_DoorCx);
+	// 开门结束,延时开始，开门后有一个延时，模拟给乘客预留上下电梯时间
+	if (m_DoorCx < 0) {
+		m_DoorCx = 0;
+		if (!Lib_DoorTimerStarted) {
+			Lib_DoorTimerStarted = true;
+			SetTimer(ID_Door_TIMER, m_DoorInterval, NULL); // 2000ms,2s
+			printf("开门延时,预留乘客上下电梯时间[%ds]...\n", m_DoorInterval / 1000);
+		}
+	}
+	else if (m_DoorCx > m_DoorRect.right) { // 关门结束
+		//printf("m_DoorCx=%d,m_DoorRect.right=%d,m_DoorStep=%d\n", m_DoorCx, m_DoorRect.right, m_DoorStep);
+		m_DoorCx = m_DoorRect.right;
+		// ASSERT(m_state == DoorClosing);  // 断言一定是DoorClosing, 不一定呀!!!
+		if (m_state == DoorClosing) {
+			Lib_DoorClosed = true;
+			CString str("");
+			str.Format(_T("[%d]楼\n关门结束"), GetNearestFloor());
+			printf("[%d]楼关门结束\n", GetNearestFloor());
+			m_TxtStatus.SetWindowText(str);
+	    }
+	}
 
 	// 电梯箱体左右门
 	m_PicDoorLeft.SetWindowPos(0,0,0,m_DoorCx,m_DoorRect.bottom,SWP_NOMOVE | SWP_NOZORDER | SWP_NOCOPYBITS);  
@@ -441,8 +465,6 @@ void CElevator_dialogDlg::elevatorDoor(int state)
 	if(state == DoorOpen) m_DoorCx -= m_DoorStep; // 开门
 	else m_DoorCx += m_DoorStep;  // 关门	
 
-	if(m_DoorCx < 0) m_DoorCx = 0;
-	else if(m_DoorCx > m_DoorRect.right) m_DoorCx = m_DoorRect.right;
 }
 
 // 打印当前状态
@@ -481,8 +503,14 @@ void CElevator_dialogDlg::OnBnClickedOk()
 	b = !b;
 	****/
 	Lib_Running = !Lib_Running;
-	if(Lib_Running) m_BtnOK.SetWindowText(L"运行...");
-	else m_BtnOK.SetWindowText(L"暂停...");
+	if (Lib_Running) {
+		m_BtnOK.SetWindowText(L"运行...");  
+		printf("系统正在运行...\n");
+	}
+	else {
+		m_BtnOK.SetWindowText(L"暂停...");
+		printf("系统暂停...\n");
+	}
 	//CDialogEx::OnOK();
 }
 
@@ -525,8 +553,10 @@ void CElevator_dialogDlg::OnClickedBtnnum1()
 	// 有效性检查，非运动状态，按电梯内本楼层按钮无效
 	if(m_state != MovingUp && m_state != MovingDown) {
 		int CurrentFloor = GetNearestFloor();
-		if(m_FloorNum[CurrentFloor-1].getLight()) m_FloorNum[CurrentFloor-1].setLight(false);
-		printf("已经在[%d]楼，按此楼层按钮无效。\n",CurrentFloor);
+		if (m_FloorNum[CurrentFloor - 1].getLight()) {
+			m_FloorNum[CurrentFloor - 1].setLight(false);
+			printf("已经在[%d]楼，按此楼层按钮无效。\n", CurrentFloor);
+		}
 	}
 	for(int floor = 1; floor <= Lib_FloorNum; floor++){
 		SetPanelFloorLight(floor,m_FloorNum[floor-1].getLight());
@@ -544,6 +574,7 @@ void CElevator_dialogDlg::OnDoubleclickedBtnnum1()
 // 设置电梯内开关门按钮状态，如果当前Light is Off, 置为on;否则保持现状。
 void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 {
+	/**** 移至状态函数MovingUp/MovingDown
 	// 安全设置，运动状态，开关门失效
 	if(m_state == MovingUp || m_state == MovingDown) {
 		printf("运动状态，开关门失效!!!\n");
@@ -552,6 +583,7 @@ void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 		m_Close.setLight(GetCloseDoorLight());
 		return;
 	}
+	*****/
 	// 设置电梯内开关门按钮状态
 	SetOpenDoorLight(m_Open.getLight());
 	SetCloseDoorLight(m_Close.getLight());
@@ -597,39 +629,32 @@ LRESULT CElevator_dialogDlg::OnViewStatusMessage(WPARAM wParam,LPARAM lParam)
 	return 0;
 }
 
-// 接收消息开关门
+// 接收消息开关门，开门后有一个延时，模拟给乘客预留上下电梯时间
 LRESULT CElevator_dialogDlg::OnOpenCloseDoorMessage(WPARAM wParam,LPARAM lParam)
 {
 	int floor = (int)wParam;  // 楼层
 	bool open = (bool)lParam; // 开关门
 	CString str;
 
-	ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
+	// ASSERT(!Lib_DoorTimerStarted); // 断言一定是Lib_DoorTimerStarted = false; 即断言参数为真，否则中断在此
 
-	// 表示正在开关门，不能在此期间再启动
-	Lib_DoorTimerStarted = true;
-
-	// 只要开启定时器，表示正在开门或关门，因此以下表示开关门结束的变量均置为false
-	Lib_DoorOpened = false; 
-	Lib_DoorClosed = false;
-
-	if(open) { // 开门，定时器启动
-		m_DoorCx = m_DoorRect.right;  // 初始化门的宽度
+	if(open) { // 开门
 		str.Format(_T("[%d]楼\n开门..."),floor);	
+		printf("[%d]楼开门...\n", floor);
+		Lib_DoorOpened = false;
 	}
-	else { // 关门，定时器启动		
-	    m_DoorCx = 0;  // 初始化门的宽度
-		//m_DoorCx = m_DoorStep;  // 初始化门的宽度
+	else { // 关门		
 		str.Format(_T("[%d]楼\n关门..."),floor);	
+		printf("[%d]楼关门...\n", floor);
+		Lib_DoorClosed = false;
 	}
-	SetTimer(ID_Door_TIMER,m_DoorInterval,NULL); // 2000ms,2s
-	m_TxtStatus.SetWindowText(str);
 
-	if(open) { // 开门，定时器启动	
-		printf("[%d]楼开门...\n",floor);	
-	}
-	else { // 关门，定时器启动		
-		printf("[%d]楼关门...\n",floor);	
+	m_TxtStatus.SetWindowText(str);
+	
+	// 如果开启,关闭开门后的延时
+	if (Lib_DoorTimerStarted) {
+		KillTimer(ID_Door_TIMER);
+		Lib_DoorTimerStarted = false;
 	}
 
 	return 0;
