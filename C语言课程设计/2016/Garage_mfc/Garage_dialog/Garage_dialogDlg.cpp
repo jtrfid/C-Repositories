@@ -275,7 +275,7 @@ void CGarage_dialogDlg::OnBnClickedOk()
 void CGarage_dialogDlg::OnBnClickedbtnSwitch()
 {
 	printf("车库门开关被按下\n");
-	Lib_ButtonPressed = !Lib_ButtonPressed;
+	Lib_ButtonPressed = true;
 }
 
 // 定时器回调函数
@@ -302,7 +302,7 @@ void CGarage_dialogDlg::OnTimer(UINT_PTR nIDEvent)
 // 开关门动画,
 void CGarage_dialogDlg::DoorUpDown(int state)
 {
-	printfState(state); 
+	//printfState(state); 
 	if (!Lib_Running) return;
 	switch(state)
 	{
