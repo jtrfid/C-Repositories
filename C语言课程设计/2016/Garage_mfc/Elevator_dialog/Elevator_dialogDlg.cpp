@@ -201,7 +201,8 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 	m_UpLight[0].GetClientRect(&rectLight);
 	// 3¥
 	x = back.right - rectLight.right/2 - 50;
-	y = (back.bottom/3 - (rectLight.bottom + 2 + rectLight.bottom))/2;
+	// y = (back.bottom/3 - (rectLight.bottom + 2 + rectLight.bottom))/2;
+	y = 20;
     m_UpLight[2].SetWindowPos(0,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
     m_DownLight[2].SetWindowPos(0,x,y+rectLight.bottom+2,0,0,SWP_NOSIZE | SWP_NOZORDER);
 	// 2¥
