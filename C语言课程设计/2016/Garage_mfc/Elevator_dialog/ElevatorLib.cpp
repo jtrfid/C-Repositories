@@ -493,8 +493,12 @@ int GoingUpToFloor()
 }
 
 /************************************************************************
- * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层(目标楼层)
- * AutoTimerDuration(10s)后无动作，自动下降到一楼，此时返回1.
+ * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层(目标楼层),否则返回-1
+ *
+ * 特别提示：自动下降到1楼的情况：
+ * AutoTimerDuration(10s)后无动作，自动下降到1楼，最终返回1。
+ * 无动作，自动回到MovingDown状态，开始时，此函数返回-1，随后周期调用，由于电机是向下运动，最终就返回1。
+ *
  * 电梯正在下行,在当前楼层和下一层之间的一半高度以上，检查是否下一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚下行经过的楼层，即(int)GetFloor()返回的楼层 + 1
@@ -506,13 +510,13 @@ int GoingDownToFloor()
 {
 	//int floor =  GetNearestFloor(); // 使用四舍五入形式的GetNearestFloor()，判断复杂
 	int floor =  (int)GetFloor(); // 当前楼层的下一层，即刚刚经过的楼层是floor+1
-
+	
 	// 显示下行经过的楼层
 	if(fabs(GetFloor() - floor) < Lib_FloorTolerance) {
 		CString status;
 		status.Format(_T("向下,[%d]楼"),floor);
 		ViewStatus(status);
-		// 如果到1楼，立即返回1. 适用于10s后无动作，自动下降到一楼的情况
+		// 如果到1楼，立即返回1. 适用于10s后无动作，自动下降到1楼的情况
 		if(floor == 1) { Lib_WillToFloor = floor; return floor; }
 	}
 
