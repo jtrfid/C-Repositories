@@ -45,10 +45,10 @@ bool Lib_DoorOpened = false;
 // 关门结束,初始化为true,在mfc中维护
 bool Lib_DoorClosed = true;
 
-// 一定时间（AutoTimerDuration）无动作，自动下降到1楼,该变量确定定时器是否启动
+// 在Idle状态，一定时间（AutoTimerDuration）无动作，自动下降到1楼,该变量确定定时器是否启动
 bool Lib_AutoTimerStarted = false;
 int AutoTimerDuration = 10000;  // ms，时长，缺省10000ms,即10s
-// 一定时间无动作，自动到1楼
+// 在Idle状态，当楼层>1时，调用此函数，一定时间无动作，自动转为MovingDown状态，自动下降到1楼
 extern void AutoTo1Floor() 
 {
 	if (!Lib_AutoTimerStarted)
@@ -57,7 +57,7 @@ extern void AutoTo1Floor()
 		Lib_AutoTimerStarted = true;
 	}
 }
-// 取消自动到1楼
+// 其它状态，取消自动到1楼
 extern void CancelTo1Floor() 
 {
 	if (Lib_AutoTimerStarted)
@@ -177,7 +177,7 @@ bool GetPanelFloorLight(int floor)
 /** 
  * 设置门外Up/Down灯（Call Light）的状态
  * 参数floor: 表示楼层
- * 参数up: 表示设置Up(上升)按钮灯
+ * 参数up: true,表示设置Up(上升)按钮灯;false,表示设置Down(下降)按钮灯
  * 参数s: true,按钮灯亮，false，按钮灯灭
  */
 void SetCallLight(int floor, bool up, bool s)
@@ -191,7 +191,7 @@ void SetCallLight(int floor, bool up, bool s)
 /** 
  * 返回门外Up/Down灯（Call Light）的状态
  * 参数floor: 表示楼层
- * 参数up: 表示返回Up(上升)按钮灯
+ * 参数up: true,表示返回Up(上升)按钮灯;false,表示返回Down(下降)按钮灯
  * 返回: true,按钮灯亮，false，按钮灯灭
  */
 bool GetCallLight(int floor, bool up)
@@ -245,7 +245,7 @@ bool IsDoorClosed(int floor)
 
 /** 
  * 刹车，暂时未用
- * 参数b，true表示使能刹车，否则不刹车
+ * 参数b，true：表示使能刹车，否则，false：表示不刹车
  */
 void SetBrake(bool b)
 {
@@ -326,11 +326,12 @@ void SetLoading(int r)
 
 }
 
-/************************************************************************
+ /************************************************************************
  * 静态监测
- * 电梯处于空闲状态, 确定下一步的运动方向和所到楼层(目标楼层)
+ * 电梯处于空闲状态, 根据电梯门内楼层按钮和门外各个up/down呼叫按钮,
+ * 确定下一步的运动方向和所到楼层(目标楼层)
  *  参数：up 当返回值>0时，下一步电梯的运动方向，true表示向上，false表示向下
- *  返回目标楼层，否则返回-1
+ *  返回目标楼层，否则返回-1,表示没有检测到目标楼层
  * 调用举例:
  * int floor; bool up;
  * floor = IdleWhatFloorToGoTo(&up);
@@ -448,6 +449,7 @@ int IdleGoingDownToFloor()
 
 /************************************************************************
  * 动态监测, 电梯正在上升时，检测将要到达停止的最近楼层(目标楼层)
+ * 返回值：最近的目标楼层; 或者-1，表示没有检测到最近的目标楼层。
  * 电梯正在上行,在当前楼层和上一层之间的一半高度以下，检查是否上一楼层是要到的楼层
  * 如果过了一半，就不检查啦，返回原来存储的值。因为过了一半，就没有时间让直流电机停止啦。
  * 这里的当前楼层指，刚刚上行经过的楼层，即(int)GetFloor()返回的楼层
@@ -494,7 +496,7 @@ int GoingUpToFloor()
 
 /************************************************************************
  * 动态监测, 电梯正在下降时，检测将要到达停止的最近楼层(目标楼层),否则返回-1
- *
+ * 返回值：最近的目标楼层; 或者-1，表示没有检测到最近的目标楼层。
  * 特别提示：自动下降到1楼的情况：
  * AutoTimerDuration(10s)后无动作，自动下降到1楼，最终返回1。
  * 无动作，自动回到MovingDown状态，开始时，此函数返回-1，随后周期调用，由于电机是向下运动，最终就返回1。
