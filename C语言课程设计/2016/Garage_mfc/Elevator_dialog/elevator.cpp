@@ -95,7 +95,7 @@ void StateMovingUp(int *state)
 	}
 
 	int floor = GoingUpToFloor(); // 获得目标楼层
-
+	
 	//double distance = GetFloor();
 	//printf("StateMovingUp %d,%f,%f,%f\n",floor,GetPosition(),distance,distance-floor);
 
