@@ -23,8 +23,37 @@ void ch3_2()
      printf("======ch3_2()\n");
      printf("假定输入回车符为止。\n");
      char ch; int len=0;
-     puts("Type in a sentence,then press <Enter>\n");
-     while((ch=getch())!= '\r') {
+     puts("Type in a sentence,then press <Enter>"); // 自动换行 
+     while((ch=getch())!= '\r') {  // 回车: '\r' 
+        putchar(ch);
+        len++;                  
+     } 
+     printf("\nlen=%d\n",len);
+}
+
+// used getche(),有回显,回车：'\r' 
+void ch3_2_1()
+{
+     printf("======ch3_2_1()\n");
+     printf("假定输入回车符为止。\n");
+     char ch; int len=0;
+     puts("Type in a sentence,then press <Enter>"); // 自动换行 
+     while((ch=getche())!= '\r') {
+        putchar(ch);
+        len++;                  
+     } 
+     printf("\nlen=%d\n",len);
+}
+
+// used getchar(),键入字符存入缓冲区，遇回车开始读取缓冲区中的内容 
+void ch3_2_2()
+{
+     printf("======ch3_2_2()\n");
+     printf("假定输入回车符为止。\n");
+     char ch; int len=0;
+     puts("Type in a sentence,then press <Enter>"); // 自动换行 
+     while((ch=getchar())!= '\n') {  // 使用'\n'判断回车 
+        // printf("\'%d\'",ch); // 如果上句while()条件使用'\r',将会有一个10输出 
         putchar(ch);
         len++;                  
      } 
@@ -63,12 +92,10 @@ void ch3_3()
  {
 	printf("============ch3_4()_1\n");
 	printf("第一种解法，同ch2,第3题。逆序输出数字。\n"); 
-	printf("please input 3bit number abc,eg. 123,input 0,exit\n");
+	printf("please input 3bit number abc,eg. 123, Ctrl-Z,exit\n");
 	int a,b,c,m,cba;
-	while (1) 
+	while (scanf("%d",&m) != EOF) 
 	{
-		scanf("%d",&m);
-		if (m==0) break;
 		a=m/100;
 		b=(m-a*100)/10;
 		//b=(m/10)%10;   // ok
@@ -80,8 +107,7 @@ void ch3_3()
 		// 或 
 		cba=c*100+b*10+a;
 		printf("cba=%03d\n",cba);  // 注意格式%03d, 不够三位左端用零填充，例如，输入100，显示001 
-	}
-      
+	}    
  } 
  
  /******************************************** 
@@ -95,12 +121,10 @@ void ch3_3()
  {
 	printf("============ch3_4_2()\n");
 	printf("第二种解法，循环求取个位数。\n"); 
-	printf("输入多位数，逆序输出，输入0,退出\n");
+	printf("输入多位数，逆序输出，Ctrl-Z,退出\n");
 	int m;
-	while (1) 
+	while (scanf("%d",&m) != EOF)  
 	{
-		scanf("%d",&m);
-		if (m==0) break;
 		if (m<0) { putchar('-'); m=-m; } // 处理负数 
 		while(1) {
           putchar(m%10 + '0');  // 字符数字的ascii码(整数) = 数字 + '0' ，如 '1' = 1 + '0' = 49 
@@ -131,12 +155,10 @@ void ch3_3()
  {
 	printf("============ch3_4_3()\n");
 	printf("第三种解法，函数的递归调用。\n"); 
-	printf("输入多位数，逆序输出，输入0,退出\n");
+	printf("输入多位数，逆序输出，Ctr-Z,退出\n");
 	int m;
-	while (1) 
+	while (scanf("%d",&m) != EOF) 
 	{
-		scanf("%d",&m);
-		if (m==0) break;
 		ch3_4_3_3(m);
         putchar('\n'); 
 	}    
@@ -197,6 +219,8 @@ void ch3()
 	printf("======ch3()\n");
 	//ch3_1();
 	//ch3_2();
+	//ch3_2_1(); 
+	//ch3_2_2();
     //ch3_3(); 
     ch3_4(); 
 	//ch3_5();
