@@ -39,7 +39,7 @@ void ch2_1()
      y = fabs(pow(x,3.0)+log10(x));
      
      // (10) 对整型变量a取反后右移4位
-     int g;
+     unsigned int g = 0x41;
      (~g) >> 4;    
 }
 
@@ -58,8 +58,8 @@ void ch2_2()
      // (1)
      printf("(1): %f\n",(float)(a+b)/2+(int)x%(int)y);  // 3.5
      
-     // (2)
-     printf("(2): %d\n",(a+b)%2+(int)y/(int)x);  // 1, 注，整数/整数的结果是整数， 
+     // (2) 注，整数/整数的结果是整数，不能把%d写为%f,格式描述符必须与变量类型一致 
+     printf("(2): %d\n",(a+b)%2+(int)y/(int)x);  // 1
      
      // (3)
      printf("(3): %d\n",a=(2*a*b)%(b%2));  // 0
@@ -75,12 +75,10 @@ void ch2_2()
 void ch2_3()
 {
 	printf("============ch2_3()\n");
-	printf("please input 3bit number abc,eg. 123,input 0,exit\n");
+	printf("please input 3bit number abc,eg. 123, Ctrl-Z,exit\n");
 	int a,b,c,m,bac;
-	while (1) 
+	while (scanf("%d",&m) != EOF) 
 	{
-		scanf("%d",&m);
-		if (m==0) break;
 		a=m/100;
 		b=(m-a*100)/10;
 		//b=(m/10)%10;   // ok
@@ -140,8 +138,8 @@ void ch2()
 {
 	printf("==========ch2()\n");
 	
-	ch2_2();
+	//ch2_2();
 	ch2_3();
-	ch2_4();
-	ch2_5();
+	//ch2_4();
+	//ch2_5();
 }

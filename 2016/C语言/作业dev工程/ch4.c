@@ -45,10 +45,8 @@ void ch4_5()
 {
     printf("=========ch4_5()\n");
     float x;
-    printf("输入数值，求绝对值。输入0，退出\n"); 
-    while(1) {
-      scanf("%f",&x);
-      if (x==0.0) break; 
+    printf("输入数值，求绝对值。Ctrl-Z退出\n"); 
+    while(scanf("%f",&x) != EOF) {
       printf("%f的绝对值是: %f\n",x,x < 0.0 ? -x : x);
     }  
 }
@@ -60,10 +58,8 @@ void ch4_6()
 {
     printf("=========ch4_6()\n");
     int a,b,c,max;
-    printf("输入3个整数，空格隔开，输出最大的数。输入3个0，退出\n"); 
-    while(1) {
-      scanf("%d%d%d",&a,&b,&c);
-      if (a==0) break;
+    printf("输入3个整数，空格隔开，输出最大的数。Ctrl-Z退出\n"); 
+    while(scanf("%d%d%d",&a,&b,&c) != EOF) {
       max = a; 
       if (b > max) max = b;
       if (c > max) max = c;  
@@ -122,10 +118,8 @@ void ch4_8()
 {
     printf("=========ch4_8()\n");
     float x,y;
-    printf("输入x，输出y。输入0，退出\n"); 
-    while(1) {
-      scanf("%f",&x);
-      if (x==0.0) break;
+    printf("输入x，输出y。Ctrl-Z退出\n"); 
+    while(scanf("%f",&x) != EOF) {
       if (x < 1.0) y = x;
       else if (1.0<=x && x<3.0) y = 2.0*x-1.0;
       else y = 3.0*x*x-10.0; 
@@ -198,10 +192,8 @@ void ch4_9()
 {
     printf("=========ch4_9()\n");
     float x;
-    printf("输入成绩x，输出等级。输入0，退出\n"); 
-    while(1) {
-      scanf("%f",&x);
-      if (x==0.0) break;
+    printf("输入成绩x，输出等级。Ctrl-Z退出\n"); 
+    while(scanf("%f",&x) != EOF) {
       ch4_9_1(x); // 解法一 
       ch4_9_2(x); // 解法二 
     }  
@@ -216,12 +208,10 @@ void ch4_10()
     printf("=========ch4_10()\n");
     int a,b;
     char op;
-    printf("输入整数 运算符 整数，无空格输入。输入0+0，退出\n"); 
-    while(1) {
-      scanf("%d%c%d",&a,&op,&b); // 不要用空格隔开，否则，op=空格，无空格输入,如3+2 
+    printf("输入整数 运算符 整数，无空格输入。Ctrl-Z退出\n"); 
+    while(scanf("%d%c%d",&a,&op,&b) != EOF) { // 不要用空格隔开，否则，op=空格，无空格输入,如3+2 
       // 用下列语句验证输入： 
       printf("验证接收的输入：a,op,b = %d,%c,%d\n",a,op,b);
-      if (a==0) break;
       switch(op)
        {
           case '+': printf("%d+%d=%d\n",a,b,a+b); break;
