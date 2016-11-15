@@ -81,7 +81,7 @@ void ch4_6()
       // 解法三: 条件表达式
       a = a1, b = b1, c = c1;
       max = a > b ? a : b; // max=a和b的大者; 
-      max = max > c ? max : c; // max再与c比较， 
+      max = max > c ? max : c; // max再与c比较； 
       printf("解法三：%d,%d,%d,最大的是: %d\n",a1,b1,c1,max);  
     } 
 }
