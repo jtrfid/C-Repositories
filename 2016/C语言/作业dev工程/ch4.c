@@ -72,10 +72,17 @@ void ch4_6()
       // a[0],a[1]比较，大者交换给a[1]; a[1],a[2]比较，大者给a[2]；即第一趟排序x,x,max;
       // 【本题无关】，第二趟排序，a[1],a[2]比较，大者交换到下面（第二），则三个数由小到大排列。 
       int a1 = a, b1 = b, c1 = c;
+      a = a1; b = b1; c = c1;
       if (a > b) b = a; // 大者给b。这里不是排序，就不用交换了，tmp=a;a=b;b=tmp; 
       if (c > b) max = c;
       else max = b;  
       printf("解法二：%d,%d,%d,最大的是: %d\n",a1,b1,c1,max); 
+      
+      // 解法三: 条件表达式
+      a = a1, b = b1, c = c1;
+      max = a > b ? a : b; // max=a和b的大者; 
+      max = max > c ? max : c; // max再与c比较， 
+      printf("解法三：%d,%d,%d,最大的是: %d\n",a1,b1,c1,max);  
     } 
 }
 
