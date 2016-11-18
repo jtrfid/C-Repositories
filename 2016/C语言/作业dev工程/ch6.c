@@ -363,28 +363,50 @@ void ch6_9()
 void ch6_10()
 {
     printf("ch6_10(), 电文译码。\n");
+    char A_code[26],a_code[26]; // 大小写字母的原码-密码对照表，
+                                // A_code[大写字母原码 - 'A'] = 密码
+                                // a_code[小写写字母原码 - 'A'] = 密码 
     char s1[80],s2[80]; // 电文,译文 
     char c1,c2;
     int i;
     
-    puts("密码->源码对照表");
-    for(i=1,c1 = 'A', c2 = 'a'; c1 <= 'Z'; i++,c1++,c2++)
+    puts("原码->密码对照表");
+    for(i=1,c1 = 'A', c2 = 'a'; c1 <= 'Z'; i++,c1++,c2++) {
+      A_code[i-1] = 'A'+26-i;
+      a_code[i-1] = 'a'+26-i;
       printf("%c->%c\t%c->%c\n",c1,'A'+26-i,c2,'a'+26-i);
+    }
     
-    puts("请输入一行电文，将译为原文。");
+    puts("请输入一行电文，将译为密文。");
     gets(s1);
     
     for(i=0;(c1=s1[i])!='\0'; i++)
     {
-       if (c1>='A' && c1 <= 'Z') s2[i] = 2*'A'-c1+25; // 'A'+26-i = 'A'+26-(c1-'A'+1) 
-       else if (c1>='a' && c1 <= 'z') s2[i] = 2*'a'-c1+25; // 'a'+26-i = 'a'+26-(c1-'a'+1) 
+       if (c1>='A' && c1 <= 'Z') s2[i] = A_code[c1-'A'];  
+       else if (c1>='a' && c1 <= 'z') s2[i] = a_code[c1-'a']; 
        else s2[i] = c1; 
     }
     s2[i] = '\0'; // 不要忘了字符串末尾是'\0' 
-    puts("原文如下：");
+    puts("密文如下：");
     puts(s2);
+    
+    // 再由密文译为原文
+    char s3[80], j;
+    puts("对应的原文如下：");
+    for(i=0;(c1=s2[i])!='\0'; i++)
+    {
+       if (c1>='A' && c1 <= 'Z') {
+           for(j=0;;j++) if (A_code[j] == c1) { s3[i] = j+'A'; break; } 
+       }  
+       else if (c1>='a' && c1 <= 'z') {
+           for(j=0;;j++) if (a_code[j] == c1) { s3[i] = j+'a'; break; } 
+       }  
+       else s3[i] = c1; 
+    }
+    s3[i] = '\0'; // 不要忘了字符串末尾是'\0' 
+    puts(s3); 
 }
- 
+
 void ch6()
 {
 	printf("=======ch6=====\n");
