@@ -100,8 +100,8 @@ void ch5_4()
 int gcd1(int a,int b){
 	printf("循环语句的辗除法,求两个整数的最大公约数,gcd1()\n");
 	int temp;
-	if(a<b){/*交换两个数，使大数放在a上*/
-		temp=a; a=b; b=temp;
+	if(a<b){/*交换两个数，使大数放在a上。其实不用，如果b>a, a%b=a，第一次while循环就调换了a,b*/
+	   temp=a; a=b; b=temp;
 	}
 
 	while(b!=0){/*利用辗除法，直到b为0为止*/
