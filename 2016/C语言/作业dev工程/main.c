@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
   //ch3();
   //ch4(); 
   //ch5();
-  ch6_10();
+  //ch5_2();
+  ch3_4_3_4(103); 
   //ch7();
   //ch8(); 
   //ch9();
