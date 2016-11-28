@@ -222,7 +222,7 @@ void ch6_7()
     printf("输入字符串b:\n");
     gets(b);
     
-    // 求a的长度，不用库函数strlen
+    // 求a的长度，不用库函数strlen(char *s)
     len = 0; 
     while(a[len] != '\0') len++; 
     
@@ -233,7 +233,7 @@ void ch6_7()
        a[len+i]=b[i];
        i++; 
     }
-    a[len+i] = '\0'; // a的末尾一定是'\0' 
+    a[len+i] = '\0'; // 不要忘记，a的末尾一定是'\0' 
     
     // 输出a，验证 
     puts("连接后的a:");
