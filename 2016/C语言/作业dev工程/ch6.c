@@ -127,7 +127,7 @@ void ch6_4()
     
     for(i=0;i<9;i++) 
     {
-       f = (float)a[i]/a[i+1];  // 注意不同于： (float)(a[i]/a[i+1])
+       f = (float)a[i+1]/a[i];  // 注意不同于： (float)(a[i+1]/a[i])
        b[i] = f < 0.0 ? ceil(f-0.5) : floor(f + 0.5); // 四舍五入取整 
        printf("b[%d]=%d ",i,b[i]);
        if((i+1)%3==0) printf("\n"); 
