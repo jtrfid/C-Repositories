@@ -143,6 +143,20 @@ void ch8_2(const char *s1, char *s2, int m)
       *s2 = '\0';
 }
 
+// 返回复制后的s2指针变量 
+char *ch8_2_1(const char *s1, char *s2, int m)
+{
+      int i; char *p = s2; // 记住s2的首地址 
+      for (i=0; *s1 != '\0'; s1++,i++)
+      {
+          if(i >= m-1) { *s2 = *s1; s2++;}
+      }
+      // 别忘了，'\0' 
+      *s2 = '\0';
+      return p;  // 此时s2的指向是'\0';因此一定是返回s2的首地址。 
+}
+
+
 /******************************************************
  * ch8,p192, 3. 编写一个函数，由实参传来一个字符串，统计此字符串中的字母，数字，空格和其它字符的个数，并输出。
  * ch7,p155, 第5题用字符数组实现。
@@ -437,11 +451,15 @@ void ch8()
 	printf("int ch8_1(char *s),求字符串的长度。\n");
     printf("\"12345\"字符串长度为：%d\n",ch8_1("12345")); 
     
-    // ch8_2(char *s1, char *s2, int m)
+    // ch8_2(const char *s1, char *s2, int m)
     printf("ch8_2(const char *s1, char *s2, int m),从s1的第m个字符开始复制成s2\n");
     char s1[]="123456",s2[80];  //s2[0]='\0',注意，一定给字符串初始化为以'\0'结束，
     ch8_2(s1,s2,3);
     printf("从%s的第%d个字符开始复制成%s\n",s1,3,s2);
+    
+    // char *ch8_2_1(const char *s1, char *s2, int m)
+    strcpy(s1,"123456");
+    printf("函数返回字符串=%s\n",ch8_2_1(s1,s2,3)); 
     
     // ch8_3(char *s),统计s中字母、数字、空格和其它字符的个数; 
     printf("ch8_3(char *s),统计s中字母、数字、空格和其它字符的个数\n");
