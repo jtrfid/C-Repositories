@@ -91,14 +91,21 @@ void ch9_2()
  *************************************************************/
 struct time_struct Update(struct time_struct ts)
 {
-     ts.second++;
+     int now_hour,now_minute,now_sec;
+     now_sec = ts.second + 1;
+     ts.second = now_sec%60;
+     now_minute = ts.minute + now_sec/60;
+     ts.minute = now_minute%60;
+     now_hour = ts.hour + now_minute/60;
+     ts.hour = now_hour%24;
      return ts;
 }
+
 void ch9_3()
 {
      printf("=================ch9_3()\n");
 	 struct time_struct ts;
-     varInit_1(&ts,12,0,0);
+     varInit_1(&ts,23,59,59);
      ts = Update(ts);
      print_time_struct(ts);
 }
@@ -238,9 +245,8 @@ void ch9_4()
      int day,month,year;
      while(1)
      {
-        puts("输入年 月 日，输入0 0 0结束");     
-        scanf("%d%d%d",&year,&month,&day);
-        if (year==0 && month==0 && day==0) break;
+        puts("输入年 月 日，输入Ctrl-Z结束");     
+        if (scanf("%d%d%d",&year,&month,&day) == EOF) break;
         // 读入成员 
         d = readDate(day,month,year); 
         // 检查 
