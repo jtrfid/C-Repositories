@@ -125,6 +125,23 @@ int ch8_1(char *s)
       return len; 
 }
 
+// 等效ch8_1，s++是合法的，数组做参数被解释为指针变量，因此，s++是合法的，s不做为"数组名是地址常量"理解 
+int ch8_1_1(char s[]) // 编译系统译为(char *s) 
+{
+      int len = 0;
+      while(*s++ != '\0') len++;
+      return len; 
+}
+
+// 等效ch8_1，没有必要把字符数组转换为指针变量 
+int ch8_1_2(char s[]) // 编译系统译为(char *s) 
+{
+      char *p = s;  // 没有必要，本身s就是指针变量，如果不小心写成int *p = s；就大错特错了 
+      int len = 0;     
+      while(*p != '\0') {p++; len++;} 
+      return len; 
+}
+
 /***************************************
  * ch8,p192, 2.有一个字符串，包含n个字符。
  * 编写一个函数，将此字符串从第m个字符开始的全部字符复制成一个字符串。 
@@ -160,7 +177,9 @@ char *ch8_2_1(const char *s1, char *s2, int m)
 /******************************************************
  * ch8,p192, 3. 编写一个函数，由实参传来一个字符串，统计此字符串中的字母，数字，空格和其它字符的个数，并输出。
  * ch7,p155, 第5题用字符数组实现。
- *  指针参数：Letter，Number, Space, Other，传递字母、数字、空格和其它字符的个数 
+ *  方法1：使用指针做函数的参数，进行双向传递，
+           指针参数：Letter，Number, Space, Other，传递字母、数字、空格和其它字符的个数 
+ *  方法2：使用数组做函数的参数，进行双向传递，4个数组元素分别代表上述个数 
  ******************************************************/ 
 void ch8_3(char *s, int *Letter, int *Number, int *Space, int *Other)
 {    
@@ -171,6 +190,23 @@ void ch8_3(char *s, int *Letter, int *Number, int *Space, int *Other)
          else if ('0' <= c && c <= '9') (*Number)++;
          else if (c == ' ') (*Space)++;
          else (*Other)++;
+     } 
+}
+
+// 使用数组做函数的参数，进行双向传递，4个数组元素分别代表上述个数  
+void ch8_3_1(char *s, int *Num)
+{    
+     char c;
+     
+     // 数组元素初始化
+     int i;
+     for(i=0;i<4;i++) Num[i]=0;
+      
+     while((c = *s++) != 0){ // c = *s++相当于c = *s，s++ 
+         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) Num[0]++;
+         else if ('0' <= c && c <= '9') Num[1]++;
+         else if (c == ' ') Num[2]++;
+         else Num[3]++;
      } 
 } 
 
@@ -194,10 +230,10 @@ void ch8_4(int a[3][3],int n)
        }
      }
      
-    printf("-----\n");
-    for(i=0;i<3;i++)
+    printf("验证：\n");
+    for(i=0;i<n;i++)
     {
-     for(j=0;j<3;j++) printf("%3d",a[i][j]);
+     for(j=0;j<n;j++) printf("%3d",a[i][j]);
      printf("\n");
     }
 } 
@@ -290,8 +326,8 @@ void ch8_5()
  *    // 当str1>str2时，返回正数
  *    // 当str1==str2时，返回0
  *    // 当str1<str2时，返回负数 
+ * const：表示指针指向的内容不能修改 
  ******************************************************/
- 
 int ch8_6(const char *str1,const char *str2)
 {
     for(;*str1 == *str2; str1++,str2++)
@@ -303,18 +339,52 @@ int ch8_6(const char *str1,const char *str2)
 } 
 
 /******************************************************
+ * 递归实现两个字符串比较的自定义版
+ * printf("%d\n",ch8_6_1("12","123"));  // -1
+ * printf("%d\n",ch8_6_1("123","124")); // -1
+ * printf("%d\n",ch8_6_1("123","12"));  // 1
+ * printf("%d\n",ch8_6_1("12","12"));   // 0 
+ * const：表示指针指向的内容不能修改  
+ ******************************************************/
+int ch8_6_1(const char *str1,const char *str2) 
+{
+    if(*str1 < *str2) return -1;
+    if(*str1 > *str2) return 1;
+    // *str1 == *str2 
+    if(*str1 == '\0') return 0;
+    else return ch8_6_1(str1+1,str2+1); // 注意有return的递归函数，调用自己时不能没有return 
+} 
+
+/******************************************************
  * ch8,p192, 7. 编写程序，实现复制字符串的自定义版：
  *    char *strcpy(char *dest,char *source);
- *    // 该函数返回dest的值，即字符串首地址 
+ *    // 该函数返回dest的值，即dest字符串首地址 
+ * const：表示指针指向的内容不能修改  
  ******************************************************/
 char* ch8_7(char *dest,const char *source)
 {   
-    char *s = dest;
+    char *d = dest;  
     
-    while ((*s++ = *source++) != '\0')  // *s++ 相当于*s, s++ 
+    while ((*d++ = *source++) != '\0')  // *d++ 相当于*d, d++;  注意dest也以source的'\0'封闭了 
       ;
     
-    return (dest);  // 此时s指向最后一个字符'\0',因此，不能返回s.          
+    return (dest);  // 此时d指向最后一个字符'\0',因此，不能返回d.          
+}
+
+/******************************************************
+ * 递归实现复制字符串的自定义版
+ ******************************************************/ 
+char* ch8_7_1(char *dest,const char *source)
+{   
+    static char *first_dest = 0;   // 静态变量，仅第一次函数调用时被初始化。 
+    if(first_dest == 0) first_dest = dest;  // 如果是第一次非递归调用，记住first_dest指向dest的首地址（指向首字符） 
+    
+    *dest = *source;  
+    if(*source == '\0') { 
+      char *d = first_dest;  first_dest = 0; // 重置first_dest，供下一次本函数的非递归调用 
+      return d; // 返回dest最初的首地址 
+    }
+    return ch8_7_1(dest+1,source+1); // 注意有return的递归函数，调用自己时不能没有return   
 } 
 
 /*****************************************************
@@ -450,6 +520,8 @@ void ch8()
 	// int ch8_1(char *s)
 	printf("int ch8_1(char *s),求字符串的长度。\n");
     printf("\"12345\"字符串长度为：%d\n",ch8_1("12345")); 
+    char k[]="12345";
+    printf("等效调用ch8_1(): %d\n",ch8_1(k));
     
     // ch8_2(const char *s1, char *s2, int m)
     printf("ch8_2(const char *s1, char *s2, int m),从s1的第m个字符开始复制成s2\n");
@@ -466,7 +538,10 @@ void ch8()
     int Letter,Number,Space,Other; 
     ch8_3("123  d1 --- ",&Letter, &Number, &Space, &Other); 
     printf("字母、数字、空格和其它字符的个数=%d,%d,%d,%d\n",Letter,Number,Space,Other); 
-    
+    int Num[4];
+    ch8_3_1("123  d1 --- ",Num);
+    printf("数组元素做参数，个数分别为：%d,%d,%d,%d\n",Num[0],Num[1],Num[2],Num[3]);
+     
     /**************************************************/
     // ch8_4(int a[][],int n) 矩阵转置。
     printf("ch8_4(int a[][],int n),矩阵转置。\n");
@@ -492,10 +567,21 @@ void ch8()
     printf("123和123比较=%d,%d\n",ch8_6("123","123"),strcmp("123","123"));
     printf("12a和123比较=%d,%d\n",ch8_6("12a","123"),strcmp("12a","123"));
     
+    printf("strcmp递归版：\n");
+    printf("%d\n",ch8_6_1("12","123"));  // -1
+    printf("%d\n",ch8_6_1("123","124")); // -1
+    printf("%d\n",ch8_6_1("123","12"));  // 1
+    printf("%d\n",ch8_6_1("12","12"));   // 0
+    
     // char* ch8_7(char *dest,const char *source)，自定义版的strcpy
-    char dest[80]="";
+    puts("char* ch8_7(char *dest,const char *source)，自定义版的strcpy");
+    char dest[80];
     char source[] = "abcd"; 
     printf("copy %s to dest,%s\n",source,ch8_7(dest,source));
+    printf("strcpy递归版：\n");
+    char d[80];
+    printf("copy %s to dest(%s),%s\n",source,d,ch8_7_1(d,"abcd"));
+    
     
     // int ch8_8(int argc, char *argv[]),模拟main函数，接收命令行参数
     printf("int ch8_8(int argc, char *argv[]),模拟main函数，接收命令行参数\n");
@@ -512,5 +598,4 @@ void ch8()
 		
 	// 学习指导，p60,指针
 	exercise();
-
 }
