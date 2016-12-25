@@ -217,7 +217,7 @@ void ch8_3_1(char *s, int *Num)
  * 方法1，本函数，与方法2的的区别是，参数a描述为二维数组，必须以下标方式指明行数和列数，如，int a[3][3]或a[][3] 
  * 方法2，void NmatrixTranspose(int a[],int n),以一维数组描述，不用定义时指定行数和列数 
  *********************************************************/
-void ch8_4(int a[3][3],int n)
+void ch8_4(int a[][3],int n)
 {
      int i,j,tmp;
      for(i=0;i<n;i++)
