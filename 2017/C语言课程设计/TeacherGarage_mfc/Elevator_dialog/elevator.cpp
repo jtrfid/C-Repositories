@@ -19,6 +19,7 @@ void StateIdle(int *state)
 	if (floor > 0)
 		printf("空闲状态，将要到的楼层【目标楼层】:%d,方向:%s\n", floor, up ? "向上" : "向下");
 
+	// Idle --> DoorOpen
 	// 监测电梯外上下按钮灯(Call Light)，开门请求
 	if (up && GetCallLight(CurrentFloor, true)) {  // 向上
 		// 电梯外Up，Call Light Off
@@ -48,6 +49,7 @@ void StateIdle(int *state)
 		printf("Transition:  from Idle to DoorOpen.\n");
 		return;
 	}
+	// Idle --> Idle
 	// 断言在Idle状态，门一定是关闭的, 因此应该不执行从Idle到DoorClosing的转换
 	// 仅读取关门灯，并关闭关门灯，即消费按键行为。
 	else if(GetCloseDoorLight()) {  // 关门
@@ -62,8 +64,9 @@ void StateIdle(int *state)
 		*********/
 	}
 
+	// Idle --> MovingUp/MovingDown
 	if (floor > 0) {
-		if (up) {
+		if (up) {  
 			// 本层的up call light off
 			SetCallLight(CurrentFloor,true,false);
 			SetMotorPower(1);
@@ -240,19 +243,19 @@ void StateDoorClosing(int *state)
  ***********************************************/
 void main_control(int *state)
 {  
-    if(IsElevatorRunning())
+    if(IsElevatorRunning())  // 仿真正在运行
     {
 		switch(*state)
 		{
 		case Idle:
-			// 一定时间无动作，自动到一楼
+			// Idle状态，一定时间无动作，自动到一楼
 			if(GetNearestFloor() !=1 ) {
 				AutoTo1Floor();
 			}
 			StateIdle(state);
 			break;
 		case MovingUp:
-			CancelTo1Floor();
+			CancelTo1Floor(); // 其它状态，取消自动到一楼
 			StateMovingUp(state);
 			break;
 		case MovingDown:

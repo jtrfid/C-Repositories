@@ -45,19 +45,19 @@ void StateDoorClosing(int *state)
  ***********************************************/
 void main_control(int *state)
 {  
-    if(IsElevatorRunning())
-    {
-		switch(*state)
+	if (IsElevatorRunning())  // 仿真正在运行
+	{
+		switch (*state)
 		{
 		case Idle:
-			// 一定时间无动作，自动到一楼
-			if(GetNearestFloor() !=1 ) {
+			// Idle状态，一定时间无动作，自动到一楼
+			if (GetNearestFloor() != 1) {
 				AutoTo1Floor();
 			}
 			StateIdle(state);
 			break;
 		case MovingUp:
-			CancelTo1Floor();
+			CancelTo1Floor(); // 其它状态，取消自动到一楼
 			StateMovingUp(state);
 			break;
 		case MovingDown:
@@ -73,7 +73,7 @@ void main_control(int *state)
 			StateDoorClosing(state);
 			break;
 		default:
-			printf("没有这种状态!!!\n");  
+			printf("没有这种状态!!!\n");
 		}
-    }
+	}
 }
