@@ -266,7 +266,7 @@ extern double GetVelocity();
 extern double GetFloor();
 
 /** 
- * 获取GetFloor()的最近整数，即它的四舍五入值
+ * 获取当前楼层或最近的楼层，即GetFloor()的最近整数，即它的四舍五入值
  */
 extern int GetNearestFloor();
 

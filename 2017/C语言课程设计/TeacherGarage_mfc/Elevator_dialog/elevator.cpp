@@ -179,7 +179,7 @@ void StateMovingDown(int *state)
  **********************************************/
 void StateDoorOpen(int *state)
 {
-	int floor = GetNearestFloor();
+	int floor = GetNearestFloor();  // 当前楼层
 
 	// 如果正在开门时，按了关门灯，转而关门
 	if (GetCloseDoorLight()) {
@@ -212,7 +212,7 @@ void StateDoorOpen(int *state)
  ********************************************/
 void StateDoorClosing(int *state)
 {
-	int floor = GetNearestFloor();
+	int floor = GetNearestFloor();  // 当前楼层
 
 	// 如果正在关门时，按了开门灯，转而开门
 	if (GetOpenDoorLight()) { 
