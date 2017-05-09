@@ -21,20 +21,16 @@ void StateMovingUp(int *state)
 
 void StateMovingDown(int *state)
 {
+	
 
 }
 
-/**********************************************
- * 开门，开门结束后自动进入关门
- **********************************************/
 void StateDoorOpen(int *state)
 {
 
 }
 
-/********************************************
- * 正在关门，省略红外探测
- ********************************************/
+
 void StateDoorClosing(int *state)
 {
 
@@ -45,13 +41,13 @@ void StateDoorClosing(int *state)
  ***********************************************/
 void main_control(int *state)
 {  
-	if (IsElevatorRunning())  // 仿真正在运行
-	{
-		switch (*state)
+    if(IsElevatorRunning())  // 仿真正在运行
+    {
+		switch(*state)
 		{
 		case Idle:
 			// Idle状态，一定时间无动作，自动到一楼
-			if (GetNearestFloor() != 1) {
+			if(GetNearestFloor() !=1 ) {
 				AutoTo1Floor();
 			}
 			StateIdle(state);
@@ -73,7 +69,7 @@ void main_control(int *state)
 			StateDoorClosing(state);
 			break;
 		default:
-			printf("没有这种状态!!!\n");
+			printf("没有这种状态!!!\n");  
 		}
-	}
+    }
 }
