@@ -44,6 +44,11 @@ private:
    // 打印当前状态
    void printfState(int state);
 
+   // cat按钮在门外位置(初始位置)
+   int catOutDoor_top, catOutDoor_left;
+   // Cat按钮在门下的位置
+   int catInDoor_top, catInDoor_left;
+
 // 实现
 protected:
 	HICON m_hIcon;
@@ -102,6 +107,10 @@ public:
 	// 接收消息，更新电梯内外按钮灯状态
 	afx_msg LRESULT OnLightMessage(WPARAM wParam,LPARAM lParam);
 
+	// Cat按钮
+	CButton m_BtnCat;
+	afx_msg void OnBnClickedBtnCat();
+
 	// 状态文本
 	CStatic m_TxtStatus;
 
@@ -113,5 +122,4 @@ public:
 
 	// 主窗口句柄，在对话框OnInitDialog中被赋值，用于向其发送消息
 	static HWND MAIN_WIN;
-	
 };

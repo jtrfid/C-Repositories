@@ -149,6 +149,9 @@
   <ItemGroup>
     <ResourceCompile Include="Elevator_dialog.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\images\Cat.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

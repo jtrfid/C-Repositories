@@ -6,7 +6,7 @@
 #include "ElevatorLib.h"
 
 /**********************************************
- * 空闲状态，判断是否有按键，判断将要进入何种状态
+ * Idle状态，电梯停止在某楼层，门是关闭的，处于静止状态，等待相关事件的发生，从而转换到下一个状态。
  **********************************************/
 void StateIdle(int *state)
 {
@@ -16,12 +16,10 @@ void StateIdle(int *state)
 void StateMovingUp(int *state)
 {
 	
-
 }
 
 void StateMovingDown(int *state)
 {
-	
 
 }
 
@@ -29,7 +27,6 @@ void StateDoorOpen(int *state)
 {
 
 }
-
 
 void StateDoorClosing(int *state)
 {

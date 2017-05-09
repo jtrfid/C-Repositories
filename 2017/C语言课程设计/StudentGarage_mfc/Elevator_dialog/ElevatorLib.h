@@ -76,6 +76,7 @@ extern void OpenCloseDoor(int floor,bool Open);
  * 说明在ElevatorLib.cpp中定义的全局变量，作为Lib与mfc之间的共享的变量，进行信息传递。
  *******************************************************************************/
 extern bool Lib_Running;       // 正在运行仿真: true; 否则false
+extern bool Lib_BeamBroken;     // 门下部的红外线探测到物体: true,停止关门动作; 否则false
 // 电梯箱体下边沿距离地面的相对高度,初始值0
 extern double Lib_CurrentCarPosition;
 // 电梯箱体速度，Up>0,Down<0
@@ -138,6 +139,11 @@ extern void ElevatorStartup();
  * 结束仿真
  */
 extern void ElevatorShutdown();
+
+/**
+门的下部红外探测到物体，返回true，否则返回false
+**/
+extern bool IsBeamBroken();
 
 /******************************************************************
  * 按钮灯(Lights): 
