@@ -67,6 +67,7 @@ void CElevator_dialogDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TxtStatus, m_TxtStatus);
 	DDX_Control(pDX, IDC_DoorLeft, m_PicDoorLeft);
 	DDX_Control(pDX, IDC_DoorRight, m_PicDoorRight);
+	DDX_Control(pDX, IDC_BtnCat, m_BtnCat);
 }
 
 BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
@@ -99,6 +100,7 @@ BEGIN_MESSAGE_MAP(CElevator_dialogDlg, CDialogEx)
 	ON_MESSAGE(WM_Door_MESSAGE,&CElevator_dialogDlg::OnOpenCloseDoorMessage)
 	ON_BN_CLICKED(IDC_BtnOpen, &CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor)
 	ON_BN_CLICKED(IDC_BtnClose, &CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor)
+	ON_BN_CLICKED(IDC_BtnCat, &CElevator_dialogDlg::OnBnClickedBtnCat)
 END_MESSAGE_MAP()
 
 
@@ -253,6 +255,26 @@ BOOL CElevator_dialogDlg::OnInitDialog()
 
 	// 对话框窗体位置,合并在前面的语句
 	// this->SetWindowPos(0,100,10,0,0,SWP_NOSIZE | SWP_NOZORDER);
+
+	// 加载Cat按钮位图，并使大小与位图一致
+	CBitmap catmap;     // 加载位图对象
+	HBITMAP hcatmap;    // 保存位图对象的句柄
+	catmap.LoadBitmap(IDB_bmpCat);
+	hcatmap = (HBITMAP)catmap.GetSafeHandle();
+	m_BtnCat.SetBitmap(hcatmap);
+	BITMAP catbmSize;
+	catmap.GetBitmap(&catbmSize);
+
+	// 门外Cat按钮位置(初始位置)
+	//catOutDoor_top = rectGarage.bottom - catbmSize.bmHeight;
+	//catOutDoor_left = rectGarage.right + 10;
+	catOutDoor_left = 30;
+	catOutDoor_top = y + rectOpen.bottom + 10;
+	m_BtnCat.SetWindowPos(0, catOutDoor_left, catOutDoor_top, catbmSize.bmWidth, catbmSize.bmHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+
+	// 门内Cat按钮位置
+	catInDoor_top = m_DoorRight_y + m_DoorRect.bottom - catbmSize.bmHeight;
+	catInDoor_left = m_DoorRight_x - catbmSize.bmWidth / 2; // 大约在门的中间
 
 	
 	// 启动仿真时钟
@@ -588,6 +610,32 @@ void CElevator_dialogDlg::OnBnClickedBtnOpenCloseDoor()
 	// 设置电梯内开关门按钮状态
 	SetOpenDoorLight(m_Open.getLight());
 	SetCloseDoorLight(m_Close.getLight());
+}
+
+// Cat按钮
+void CElevator_dialogDlg::OnBnClickedBtnCat()
+{
+	if (m_state == MovingUp || m_state == MovingDown) return;
+
+	RECT catRect;
+	WINDOWPLACEMENT placement;
+	m_BtnCat.GetWindowPlacement(&placement);
+	catRect = placement.rcNormalPosition;
+
+	// 门内Cat按钮位置
+	//printf("%d,%d,%d,%d\n", catRect.left, catRect.top, catRect.right, catRect.bottom);
+	catInDoor_top = m_DoorRight_y + m_DoorRect.bottom - (catRect.bottom - catRect.top);
+
+	if (catRect.left > catOutDoor_left) // 门内-->门外
+	{
+		Lib_BeamBroken = false;  // 门下部的红外线【未】探测到Cat
+		m_BtnCat.SetWindowPos(0, catOutDoor_left, catOutDoor_top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+	else // 门外-->门内
+	{
+		Lib_BeamBroken = true;  // 门下部的红外线探测到Cat
+		m_BtnCat.SetWindowPos(0, catInDoor_left, catInDoor_top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
 }
 
 // 接收消息，更新电梯内外按钮灯状态

@@ -195,11 +195,18 @@ void StateDoorOpen(int *state)
 }
 
 /********************************************
- * 正在关门，省略红外探测
+ * 正在关门，红外探测
  ********************************************/
 void StateDoorClosing(int *state)
 {
 	int floor = GetNearestFloor();  // 当前楼层
+
+	// 门的下部红外探测到物体, 开门
+	if (IsBeamBroken()) {
+		SetDoor(floor, true);
+		*state = DoorOpen;
+		return;
+	}
 
 	// 如果正在关门时，按了开门灯，转而开门
 	if (GetOpenDoorLight()) {   // Event
