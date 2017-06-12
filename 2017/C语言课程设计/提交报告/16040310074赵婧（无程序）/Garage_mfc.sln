@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Garage_dialog", "Garage_dialog\Garage_dialog.vcxproj", "{742E0BF7-65EC-41E2-B542-A634E5D357A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Elevator_dialog", "Elevator_dialog\Elevator_dialog.vcxproj", "{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{742E0BF7-65EC-41E2-B542-A634E5D357A7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{742E0BF7-65EC-41E2-B542-A634E5D357A7}.Debug|Win32.Build.0 = Debug|Win32
+		{742E0BF7-65EC-41E2-B542-A634E5D357A7}.Release|Win32.ActiveCfg = Release|Win32
+		{742E0BF7-65EC-41E2-B542-A634E5D357A7}.Release|Win32.Build.0 = Release|Win32
+		{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}.Debug|Win32.Build.0 = Debug|Win32
+		{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}.Release|Win32.ActiveCfg = Release|Win32
+		{A62E5BAB-A6B5-44C5-AE64-1C8E48F90773}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
