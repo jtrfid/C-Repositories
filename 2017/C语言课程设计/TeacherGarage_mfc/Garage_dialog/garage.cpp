@@ -13,7 +13,7 @@ void StateDoorClosed(int *state)
 	{
 		SetMotorPower(1);  // Transition
 		*state = DoorOpening;
-		printf("Transition: from DoorClosed to DoorOpen.\n");
+		printf("Transition: from DoorClosed to DoorOpening.\n");
 	}
 }
 

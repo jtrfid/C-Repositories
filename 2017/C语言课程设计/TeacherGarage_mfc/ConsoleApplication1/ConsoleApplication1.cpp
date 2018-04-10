@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "garage.h"
 
+// 模拟车库门4个状态函数的调用
 int _tmain(int argc, _TCHAR* argv[])
 {
 	char ch = '0';
