@@ -1,0 +1,1 @@
+void fun1(int a, int *state);
